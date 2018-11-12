@@ -10,7 +10,7 @@ import Tickets from './components/Tickets.vue'
 import NewTicket from './components/NewTicket.vue'
 import Ticket from './components/Ticket.vue'
 import NotFound from './components/NotFound.vue'
-import * as Log from './utils/logging.js';
+import * as log from './utils/logging.js';
 
 Vue.use(VueRouter)
 
@@ -41,7 +41,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  Log.debug(` >>> to ${to.name}`)
+  log.debug(` >>> to ${to.name}`)
   console.log('to', to.name)
   // if (to.meta.private && !state.user) {
   if (to.matched.some(r => r.meta.private) && !state.user) {
