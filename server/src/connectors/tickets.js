@@ -17,6 +17,7 @@ export async function getAll ({ user }) {
 }
 
 export async function getById ({ user }, id) {
+  console.log(` ticket get ${user._id}  ${id}` )
   const ticket = await Tickets.findOne({
     user_id: user._id,
     _id: id,
