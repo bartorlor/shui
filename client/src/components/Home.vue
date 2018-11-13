@@ -9,12 +9,6 @@
         <input type="file" @change="fileChange($event.target.name,$event.target.files);"
                fileCount="$event.target.files.length" accept="application/pdf">
         <hr/>
-        <!--<PDFPage-->
-                <!--v-for="page in pages"-->
-                <!--v-bind="{scale}"-->
-                <!--:key="page.pageNumber"-->
-                <!--:page="page"-->
-        <!--/>-->
     </div>
   </main>
 </template>
@@ -26,30 +20,8 @@
   import debug from 'debug';
 
   const log = debug('app:components/PDFDocument');
-
-  // import PDFPage from './PDFPage';
-
-  import range from 'lodash/range';
- // import(
- //          /* webpackChunkName: 'pdfjs-dist' */
- //          'pdfjs-dist/webpack'
- //          )
   import pdfjs from 'pdfjs-dist/webpack';
   export default {
-    // components: {
-    //   PDFPage,
-    // },
-    // props: {
-    //   url: {
-    //     type: String,
-    //     required: true,
-    //   },
-    //   scale: {
-    //     type: Number,
-    //     default: 1.0,
-    //   },
-    // },
-
     data() {
       return {
         myurl: '',
@@ -77,7 +49,7 @@
         handler(pdf) {
           this.pages = [];
           let self = this;
-          console.log(` page num: ${pdf.numPages}`)
+          console.log(` nov12 page num: ${pdf.numPages}`)
           let promises = [];
           for (let i = 1; i < pdf.numPages + 1; i++) {
             promises.push(pdf.getPage(i));
@@ -128,10 +100,7 @@
         };
       },
       fetchPDF() {
-        // pdfjs
         // console.log(`url : ${this.myurl}`);
-
-        // .then(pdfjs =>
           pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => log('pdf fetched'))
       },
       isNextLine(item) {
