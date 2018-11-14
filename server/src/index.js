@@ -7,8 +7,10 @@ import cors from 'cors'
 import uuid from 'uuid/v4'
 
 import './auth'
+import { MongoClient } from 'mongodb';
 
 import routes from './routes'
+import setDb from './routes'
 
 const PORT = process.env.PORT || 3000
 const SECRET = process.env.SECRET || 'TR7_9cDZ5Re-@lT3Z1|58F'
@@ -18,7 +20,10 @@ const corsOptions = {
   origin: CLIENT_ORIGIN,
   credentials: true,
 }
+let db;
+MongoClient.connect('mongodb://localhost/issuetracker', { useNewUrlParser: true } ).then(connection =>{
 
+db = connection
 const app = express()
 
 app.use(cors(corsOptions))
@@ -42,9 +47,11 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-
 routes(app)
-
+setDb(db)
 app.listen(PORT, () => {
  console.log(`Server listening on port ${PORT}`)
+})
+}).catch(error => {
+  console.log('ERROR:', error);
 })

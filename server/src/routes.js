@@ -4,7 +4,9 @@ import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
 
+let db;
 initData()
+
 
 function privateRoute (req, res, next) {
   if (!req.user) {
@@ -21,7 +23,11 @@ function sendUserInfo (req, res) {
   })
 }
 
-export default function (app) {
+export function setDb(newDb) {
+  db = newDb;
+  console.log('db:', db)
+}
+ export default function (app) {
   app.get('/questions', async (req, res) => {
     const result = await Questions.getAll()
     setTimeout(() => {
@@ -94,3 +100,4 @@ export default function (app) {
     res.json(result)
   })
 }
+
