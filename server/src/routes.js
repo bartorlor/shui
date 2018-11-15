@@ -26,6 +26,21 @@ function sendUserInfo (req, res) {
 export function setDb(newDb) {
   db = newDb;
   console.log('db:', db)
+  insert()
+}
+
+function insert(){
+    let newIssue = {id:1,name:'sean',}
+    db.collection('issues').insertOne(newIssue).then(result =>
+    db.collection('issues').find({ _id: result.insertedId }).limit(1)
+    .next()
+  )
+  .then(savedIssue => {
+    console.log('first issue:',savedIssue)
+  })
+  .catch(error => {
+    console.log(error);
+  })
 }
  export default function (app) {
   app.get('/questions', async (req, res) => {

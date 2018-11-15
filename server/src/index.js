@@ -9,8 +9,7 @@ import uuid from 'uuid/v4'
 import './auth'
 import { MongoClient } from 'mongodb';
 
-import routes from './routes'
-import setDb from './routes'
+import {default as routes,setDb } from './routes'
 
 const PORT = process.env.PORT || 3000
 const SECRET = process.env.SECRET || 'TR7_9cDZ5Re-@lT3Z1|58F'
@@ -22,8 +21,8 @@ const corsOptions = {
 }
 let db;
 MongoClient.connect('mongodb://localhost/issuetracker', { useNewUrlParser: true } ).then(connection =>{
-
-db = connection
+console.log('connection: ',connection)
+db = connection.db('test')
 const app = express()
 
 app.use(cors(corsOptions))
