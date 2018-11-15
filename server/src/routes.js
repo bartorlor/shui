@@ -22,17 +22,20 @@ function sendUserInfo (req, res) {
     username: req.user.username,
   })
 }
-
+let collection
 export function setDb(newDb) {
   db = newDb;
+  collection = db.collection('issues')
+  
   console.log('db:', db)
   insert()
+  insertMany()
 }
 
 function insert(){
     let newIssue = {id:1,name:'sean',}
-    db.collection('issues').insertOne(newIssue).then(result =>
-    db.collection('issues').find({ _id: result.insertedId }).limit(1)
+    collection.insertOne(newIssue).then(result =>
+    collection.find({ _id: result.insertedId }).limit(1)
     .next()
   )
   .then(savedIssue => {
@@ -41,6 +44,23 @@ function insert(){
   .catch(error => {
     console.log(error);
   })
+}
+
+function insertMany(){
+   collection.insertMany( [
+      { item: "card", qty: 15 },
+      { item: "envelope", qty: 20 },
+      { item: "stamps" , qty: 30 }
+   ] ).then(result => {
+     collection.find({_id: result.insertedIds} ).limit(1).next()
+     console.log('1 ',result)
+   })
+   .then(savedIssues => {
+     console.log('new issues:',savedIssues)
+   })
+   .catch(error => {
+     console.log(error);
+   })
 }
  export default function (app) {
   app.get('/questions', async (req, res) => {
