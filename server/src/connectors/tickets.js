@@ -1,11 +1,11 @@
-import { Tickets } from '../providers'
+import {Tickets} from '../providers'
 import * as Users from './users'
 
-async function populateUser (ticket) {
+async function populateUser(ticket) {
   ticket.user = await Users.getById(ticket.user_id)
 }
 
-export async function getAll ({ user }) {
+export async function getAll({user}) {
   const tickets = await Tickets.find({
     user_id: user._id,
   })
@@ -16,8 +16,8 @@ export async function getAll ({ user }) {
   return tickets
 }
 
-export async function getById ({ user }, id) {
-  console.log(` ticket get ${user._id}  ${id}` )
+export async function getById({user}, id) {
+  console.log(` ticket get ${user._id}  ${id}`)
   const ticket = await Tickets.findOne({
     user_id: user._id,
     _id: id,
@@ -28,7 +28,7 @@ export async function getById ({ user }, id) {
   return ticket
 }
 
-export function create ({ user }, { title, description }) {
+export function create({user}, {title, description}) {
   return Tickets.insert({
     title,
     description,

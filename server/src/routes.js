@@ -1,5 +1,5 @@
 import passport from 'passport'
-import { initData } from './providers'
+import {initData} from './providers'
 import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
@@ -8,7 +8,7 @@ let db;
 initData()
 
 
-function privateRoute (req, res, next) {
+function privateRoute(req, res, next) {
   if (!req.user) {
     res.status(403).send('Unauthorized')
   } else {
@@ -16,13 +16,15 @@ function privateRoute (req, res, next) {
   }
 }
 
-function sendUserInfo (req, res) {
+function sendUserInfo(req, res) {
   res.json({
     _id: req.user._id,
     username: req.user.username,
   })
 }
+
 let collection
+
 export function setDb(newDb) {
   db = newDb;
   collection = db.collection('issues')
@@ -32,44 +34,45 @@ export function setDb(newDb) {
   insertMany()
 }
 
-function insert(){
-    let newIssue = {id:1,name:'sean',}
-    collection.insertOne(newIssue).then(result =>
-    collection.find({ _id: result.insertedId }).limit(1)
+function insert() {
+  let newIssue = {id: 1, name: 'sean',}
+  collection.insertOne(newIssue).then(result =>
+    collection.find({_id: result.insertedId}).limit(1)
     .next()
   )
   .then(savedIssue => {
-    console.log('first issue:',savedIssue)
+    console.log('first issue:', savedIssue)
   })
   .catch(error => {
     console.log(error);
   })
 }
 
-function insertMany(){
-   collection.insertMany( [
-      { item: "card", qty: 15 },
-      { item: "envelope", qty: 20 },
-      { item: "stamps" , qty: 30 }
-   ] ).then(result => {
-     collection.find({_id: result.insertedIds} ).limit(1).next()
-     console.log('1 ',result)
-   })
-   .then(savedIssues => {
-     console.log('new issues:',savedIssues)
-   })
-   .catch(error => {
-     console.log(error);
-   })
+function insertMany() {
+  collection.insertMany([
+    {item: "card", qty: 15},
+    {item: "envelope", qty: 20},
+    {item: "stamps", qty: 30}
+  ]).then(result => {
+    collection.find({_id: result.insertedIds}).limit(1).next()
+    console.log('1 ', result)
+  })
+  .then(savedIssues => {
+    console.log('new issues:', savedIssues)
+  })
+  .catch(error => {
+    console.log(error);
+  })
 }
- export default function (app) {
+
+export default function (app) {
   app.get('/questions', async (req, res) => {
     const result = await Questions.getAll()
     setTimeout(() => {
       res.json(result)
     }, 1500)
   })
-
+  
   app.post('/signup', async (req, res) => {
     try {
       if (req.user) {
@@ -80,13 +83,13 @@ function insertMany(){
           email: req.body.email,
           password: req.body.password,
         })
-        res.json({ status: 'ok' })
+        res.json({status: 'ok'})
       }
     } catch (e) {
       res.status(403).send(e.message)
     }
   })
-
+  
   app.post('/login', (req, res, next) => {
     if (req.user) {
       res.status(403).send('Unauthorized')
@@ -100,7 +103,7 @@ function insertMany(){
   }, (err, req, res, next) => {
     res.status(403).send(err)
   })
-
+  
   app.get('/user', (req, res) => {
     if (!req.user) {
       res.send('null')
@@ -108,26 +111,26 @@ function insertMany(){
       sendUserInfo(req, res)
     }
   })
-
+  
   app.get('/logout', (req, res) => {
     req.logout()
-    res.json({ status: 'ok' })
+    res.json({status: 'ok'})
   })
-
+  
   app.get('/tickets', privateRoute, async (req, res) => {
     const result = await Tickets.getAll({
       user: req.user,
     })
     res.json(result)
   })
-
+  
   app.post('/tickets/new', privateRoute, async (req, res) => {
     const result = await Tickets.create({
       user: req.user,
     }, req.body)
     res.json(result)
   })
-
+  
   app.get('/ticket/:id', privateRoute, async (req, res) => {
     const result = await Tickets.getById({
       user: req.user,
