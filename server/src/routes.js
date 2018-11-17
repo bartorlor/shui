@@ -29,40 +29,8 @@ export function setDb(newDb) {
   db = newDb;
   collection = db.collection('txns')
 
+
   console.log('db:', db)
-  insert()
-  insertMany()
-}
-
-function insert() {
-  let newtxn = {id: 1, name: 'sean',}
-  collection.insertOne(newtxn).then(result =>
-    collection.find({_id: result.insertedId}).limit(1)
-    .next()
-  )
-  .then(savedtxn => {
-    console.log('first txn:', savedtxn)
-  })
-  .catch(error => {
-    console.log(error);
-  })
-}
-
-function insertMany() {
-  collection.insertMany([
-    {item: "card", qty: 15},
-    {item: "envelope", qty: 20},
-    {item: "stamps", qty: 30}
-  ]).then(result => {
-    collection.find({_id: result.insertedIds}).limit(1).next()
-    console.log('1 ', result)
-  })
-  .then(savedtxns => {
-    console.log('new txns:', savedtxns)
-  })
-  .catch(error => {
-    console.log(error);
-  })
 }
 
 export default function (app) {
@@ -186,28 +154,28 @@ export default function (app) {
   //}
 //});
 // acct
-app.post('/txns', (req, res) => {
-  const newtxn = req.body;
+app.post('/txns/new', privateRoute, (req, res) => {
+  const newTxn = req.body;
 
-  const err = txn.validatetxn(newtxn);
+  const err = txn.validateTxn(newTxn);
   if (err) {
     res.status(422).json({ message: `Invalid request: ${err}` });
     return;
   }
 
-  db.collection('txns').insertOne(txn.cleanuptxn(newtxn)).then(result =>
+  db.collection('txns').insertOne(txn.cleanupTxn(newTxn)).then(result =>
     db.collection('txns').find({ _id: result.insertedId }).limit(1)
     .next()
   )
-  .then(savedtxn => {
-    res.json(savedtxn);
+  .then(savedTxn => {
+    res.json(savedTxn);
   })
   .catch(error => {
     console.log(error);
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
-app.get('/txns/:id', (req, res) => {
+app.get('/txns/:id',privateRoute ,(req, res) => {
   let txnId;
   try {
     txnId = new ObjectId(req.params.id);
@@ -227,7 +195,7 @@ app.get('/txns/:id', (req, res) => {
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
-app.put('/txns/:id', (req, res) => {
+app.put('/txns/:id',privateRoute,  (req, res) => {
   let txnId;
   try {
     txnId = new ObjectId(req.params.id);
@@ -239,18 +207,18 @@ app.put('/txns/:id', (req, res) => {
   const txn = req.body;
   delete txn._id;
 
-  const err = txn.validatetxn(txn);
+  const err = txn.validateTxn(txn);
   if (err) {
     res.status(422).json({ message: `Invalid request: ${err}` });
     return;
   }
 
-  db.collection('txns').updateOne({ _id: txnId }, txn.converttxn(txn)).then(() =>
+  db.collection('txns').updateOne({ _id: txnId }, txn.convertTxn(txn)).then(() =>
     db.collection('txns').find({ _id: txnId }).limit(1)
     .next()
   )
-  .then(savedtxn => {
-    res.json(savedtxn);
+  .then(savedTxn => {
+    res.json(savedTxn);
   })
   .catch(error => {
     console.log(error);
@@ -258,7 +226,7 @@ app.put('/txns/:id', (req, res) => {
   });
 });
 
-app.delete('/txns/:id', (req, res) => {
+app.delete('/txns/:id', privateRoute, (req, res) => {
   let txnId;
   try {
     txnId = new ObjectId(req.params.id);
