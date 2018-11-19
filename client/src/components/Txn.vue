@@ -6,6 +6,7 @@
 
     <div class="empty" v-else-if="!txn">
       Txn not found.
+     id:  {{this.id}}
     </div>
 
     <template v-else>

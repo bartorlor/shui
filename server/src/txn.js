@@ -1,3 +1,4 @@
+import {debug} from './utils/logging'
 const validTxnAction = {
   buy: true,
   sell: true,
@@ -15,11 +16,13 @@ function cleanupTxn(txn) {
   Object.keys(txn).forEach(field => {
     if (txnFieldType[field]) cleanedUpTxn[field] = txn[field];
   });
+  debug('clean ',cleanedUpTxn);
   return cleanedUpTxn;
 }
 
 function convertTxn(txn) {
   if (txn.stlmtDate) txn.stlmtDate = new Date(txn.stlmtDate);
+  debug('convertTxn ',txn);
   return cleanupTxn(txn);
 }
 
@@ -35,6 +38,7 @@ function validateTxn(txn) {
     errors.push(`${txn.action} is not a valid action.`);
   }
 
+  debug('valid ',errors);
   return (errors.length ? errors.join('; ') : null);
 }
 

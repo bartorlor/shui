@@ -4,6 +4,7 @@ import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
 import txn from './txn'
+import {debug }from './utils/logging'
 
 let db;
 initData()
@@ -156,6 +157,7 @@ app.get('/txns', (req, res) => {
 });
 // acct
 app.post('/txns/new', privateRoute, (req, res) => {
+  debug('new ', req.body);
   const newTxn = req.body;
   const err = txn.validateTxn(newTxn);
   if (err) {
@@ -163,19 +165,25 @@ app.post('/txns/new', privateRoute, (req, res) => {
     return;
   }
 
-  db.collection('txns').insertOne(txn.cleanupTxn(newTxn)).then(result =>
-    db.collection('txns').find({ _id: result.insertedId }).limit(1)
-    .next()
+  db.collection('txns').insertOne(txn.cleanupTxn(newTxn)).then(result => {
+      debug('insert result', result.result)
+      debug('insert result', result.insertedId)
+      db.collection('txns').find({ }).limit(1)
+      //db.collection('txns').find({ _id: result.insertedId }).limit(1)
+      .next()
+    }
   )
   .then(savedTxn => {
+      debug('------------------insert saved result', savedTxn)
     res.json(savedTxn);
   })
   .catch(error => {
-    console.log(error);
+    debug('insert error ', error)
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
 app.get('/txns/:id',privateRoute ,(req, res) => {
+      debug('get ', req.params.id)
   let txnId;
   try {
     txnId = new ObjectId(req.params.id);

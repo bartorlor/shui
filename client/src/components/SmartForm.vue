@@ -18,6 +18,7 @@
 </template>
 
 <script>
+  import {debug} from '../utils/logging'
 export default {
   props: {
     title: {
@@ -50,6 +51,7 @@ export default {
           await this.operation()
         } catch (e) {
           this.error = e.message
+          debug('submit', e)
         }
         this.busy = false
       }

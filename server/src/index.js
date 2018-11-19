@@ -22,16 +22,16 @@ const corsOptions = {
 let db;
 MongoClient.connect('mongodb://localhost/issuetracker', {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
-  db = connection.db('test')
+  db = connection.db('issuetracker')
   const app = express()
-  
+
   app.use(cors(corsOptions))
-  
+
   app.use(cookieParser(SECRET))
-  
+
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
-  
+
   app.use(session({
     genid: () => uuid(),
     secret: SECRET,
@@ -42,10 +42,10 @@ MongoClient.connect('mongodb://localhost/issuetracker', {useNewUrlParser: true})
       secure: process.env.NODE_ENV === 'production',
     },
   }))
-  
+
   app.use(passport.initialize())
   app.use(passport.session())
-  
+
   routes(app)
   setDb(db)
   app.listen(PORT, () => {
