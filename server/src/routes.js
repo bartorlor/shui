@@ -3,6 +3,7 @@ import {initData} from './providers'
 import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
+import txn from './txn'
 
 let db;
 initData()
@@ -156,7 +157,6 @@ app.get('/txns', (req, res) => {
 // acct
 app.post('/txns/new', privateRoute, (req, res) => {
   const newTxn = req.body;
-
   const err = txn.validateTxn(newTxn);
   if (err) {
     res.status(422).json({ message: `Invalid request: ${err}` });

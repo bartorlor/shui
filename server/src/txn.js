@@ -1,13 +1,13 @@
 const validTxnAction = {
-  Buy: true,
-  Sell: true,
+  buy: true,
+  sell: true,
 };
 
 const txnFieldType = {
-  action: 'required',
   symbol: 'required',
+  action: 'required',
   stlmtDate: 'required',
-  txnDate: 'optional',
+  description: 'optional',
 };
 
 function cleanupTxn(txn) {

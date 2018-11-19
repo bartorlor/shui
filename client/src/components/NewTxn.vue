@@ -8,15 +8,20 @@
       <FormInput
         name="symbol"
         v-model="symbol"
-        placeholder="Short description (max 100 chars)"
-        maxlength="100"
+        placeholder="symbo of security (max 8 chars)"
+        maxlength="8"
         required/>
-
+      <FormInput
+        name="action"
+        v-model="action"
+        placeholder="action buy or sell (max 4 chars)"
+        maxlength="4"
+        required/>
       <FormInput
         type="textarea"
         name="description"
         v-model="description"
-        placeholder="Describe your problem in details"
+        placeholder="Describe a transaction in details"
         required
         rows="4"/>
 
@@ -37,17 +42,6 @@
   </div>
 </template>
 
-<!--<script>
-export default {
-  data () {
-    return {
-      symbol: '',
-      description:'',
-    }
-  },
-}
-</script>-->
-
 <script>
 import PersistantData from '../mixins/PersistantData'
 
@@ -55,20 +49,23 @@ export default {
   mixins: [
     PersistantData('NewTxn', [
       'symbol',
+      'action',
       'description',
     ]),
   ],
 
   data () {
     return {
+      stlmtDate: '',
       symbol: '',
-      description: '',
+      action: '',
+      description:'',
     }
   },
 
   computed: {
     valid () {
-      return !!this.symbol && !!this.description
+      return !!this.symbol && !!this.description && !!this.action
     },
   },
 
@@ -77,11 +74,15 @@ export default {
       const result = await this.$fetch('txns/new', {
         method: 'POST',
         body: JSON.stringify({
+          stlmtDate: new Date(),
           symbol: this.symbol,
+          action: 'buy',
           description: this.description,
+          
         }),
       })
       this.symbol = this.description = ''
+      this.stlmtDate = this.action = ''
       this.$router.push({ name: 'txn', params: { id: result._id } })
     },
   },
