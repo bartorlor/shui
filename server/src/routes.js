@@ -105,54 +105,54 @@ export default function (app) {
     }, req.params.id)
     res.json(result)
   })
-//app.get('/txns', (req, res) => {
-  //const filter = {};
-  //if (req.query.symbol) filter.symbol = req.query.symbol;
-  ////if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
-  ////if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
-  ////if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);
-  ////if (req.query.search) filter.$text = { $search: req.query.search };
+app.get('/txns', (req, res) => {
+  const filter = {};
+  if (req.query.symbol) filter.symbol = req.query.symbol;
+  //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
+  //if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
+  //if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);
+  //if (req.query.search) filter.$text = { $search: req.query.search };
 
-  //if (req.query._summary === undefined) {
-    //const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
-    //let limit = req.query._limit ? parseInt(req.query._limit, 10) : 20;
-    //if (limit > 50) limit = 50;
+  if (req.query._summary === undefined) {
+    const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
+    let limit = req.query._limit ? parseInt(req.query._limit, 10) : 20;
+    if (limit > 50) limit = 50;
 
-    //const cursor = db.collection('txns').find(filter).sort({ _id: 1 })
-    //.skip(offset)
-    //.limit(limit);
+    const cursor = db.collection('txns').find(filter).sort({ _id: 1 })
+    .skip(offset)
+    .limit(limit);
 
-    //let totalCount;
-    //cursor.count(false).then(result => {
-      //totalCount = result;
-      //return cursor.toArray();
-    //})
-    //.then(txns => {
-      //res.json({ metadata: { totalCount }, records: txns });
-    //})
-    //.catch(error => {
-      //console.log(error);
-      //res.status(500).json({ message: `Internal Server Error: ${error}` });
-    //});
-  //} else {
-    //db.collection('txns').aggregate([
-      //{ $match: filter },
-      //{ $group: { _id: { owner: '$owner', status: '$status' }, count: { $sum: 1 } } },
-    //]).toArray()
-    //.then(results => {
-      //const stats = {};
-      //results.forEach(result => {
-        //if (!stats[result._id.owner]) stats[result._id.owner] = {};
-        //stats[result._id.owner][result._id.status] = result.count;
-      //});
-      //res.json(stats);
-    //})
-    //.catch(error => {
-      //console.log(error);
-      //res.status(500).json({ message: `Internal Server Error: ${error}` });
-    //});
-  //}
-//});
+    let totalCount;
+    cursor.count(false).then(result => {
+      totalCount = result;
+      return cursor.toArray();
+    })
+    .then(txns => {
+      res.json({ metadata: { totalCount }, records: txns });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    });
+  } else {
+    db.collection('txns').aggregate([
+      { $match: filter },
+      { $group: { _id: { owner: '$owner', status: '$status' }, count: { $sum: 1 } } },
+    ]).toArray()
+    .then(results => {
+      const stats = {};
+      results.forEach(result => {
+        if (!stats[result._id.owner]) stats[result._id.owner] = {};
+        stats[result._id.owner][result._id.status] = result.count;
+      });
+      res.json(stats);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    });
+  }
+});
 // acct
 app.post('/txns/new', privateRoute, (req, res) => {
   const newTxn = req.body;

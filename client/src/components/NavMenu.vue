@@ -3,6 +3,7 @@
     <router-link :to="{ name: 'home' }" exact>Home</router-link>
     <router-link :to="{ name: 'faq' }">FAQ</router-link>
     <router-link :to="{ name: 'tickets' }">Support tickets</router-link>
+    <router-link :to="{ name: 'txns' }">txns</router-link>
     <div class="spacer"></div>
 
     <template v-if="$state.user">
