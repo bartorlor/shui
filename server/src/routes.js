@@ -168,9 +168,11 @@ app.post('/txns/new', privateRoute, (req, res) => {
   db.collection('txns').insertOne(txn.cleanupTxn(newTxn)).then(result => {
       debug('insert result', result.result)
       debug('insert result', result.insertedId)
-      db.collection('txns').find({ }).limit(1)
-      //db.collection('txns').find({ _id: result.insertedId }).limit(1)
-      .next()
+      // let ret = db.collection('txns').find().toArray()
+    // debug('ret: ',ret)
+    //db.collection('txns').find({_id:'5bf376243a58e9036908469c'}).limit(1)
+      let ret = db.collection('txns').find({ _id: result.insertedId }).limit(1).next()
+    return ret
     }
   )
   .then(savedTxn => {
