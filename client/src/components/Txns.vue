@@ -10,6 +10,8 @@
       <div v-for="txn of txns" class="txn-item">
         <!-- <a @click="id = txn._id">{{ txn.title }}</a> -->
         <router-link :to="{name: 'txn', params: { id: txn._id }}">{{ txn.symbol}}</router-link>
+        <span class="badge">{{ txn.symbol}}</span>
+        <span class="badge">{{ txn.description}}</span>
         <span class="badge">{{ txn.action}}</span>
         <span class="date">{{ txn.stlmtDate | date }}</span>
       </div>

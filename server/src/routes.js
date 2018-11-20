@@ -5,6 +5,7 @@ import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
 import txn from './txn'
 import {debug }from './utils/logging'
+import { ObjectId } from 'mongodb';
 
 let db;
 initData()
@@ -184,7 +185,7 @@ app.post('/txns/new', privateRoute, (req, res) => {
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
-app.get('/txns/:id',privateRoute ,(req, res) => {
+app.get('/txn/:id',privateRoute ,(req, res) => {
       debug('get ', req.params.id)
   let txnId;
   try {
@@ -205,7 +206,7 @@ app.get('/txns/:id',privateRoute ,(req, res) => {
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
-app.put('/txns/:id',privateRoute,  (req, res) => {
+app.put('/txn/:id',privateRoute,  (req, res) => {
   let txnId;
   try {
     txnId = new ObjectId(req.params.id);

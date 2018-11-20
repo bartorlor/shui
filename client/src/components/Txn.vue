@@ -15,9 +15,9 @@
         <div class="info">
           Created on <strong>{{ txn.stlmtDate | date }}</strong>
         </div>
-        <div class="info">
-          Author <strong>{{ txn.user.username }}</strong>
-        </div>
+        <!--<div class="info">-->
+          <!--Author <strong>{{ txn.user.username }}</strong>-->
+        <!--</div>-->
         <div class="info">
           Status <span class="badge">{{ txn.action}}</span>
         </div>

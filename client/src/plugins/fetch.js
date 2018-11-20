@@ -1,6 +1,6 @@
 import state from '../state'
 import router from '../router'
-
+import {debug} from '../utils/logging'
 let baseUrl
 
 export async function $fetch (url, options) {
@@ -12,7 +12,11 @@ export async function $fetch (url, options) {
   }, options)
   const response = await fetch(`${baseUrl}${url}`, finalOptions)
   if (response.ok) {
-    const data = await response.json()
+    let data = await response.json()
+    debug('fetch:',data)
+    if(typeof data.metadata !== 'undefined'){
+      data = data.records
+    }
     return data
   } else if (response.status === 403) {
     // If the session is no longer valid
