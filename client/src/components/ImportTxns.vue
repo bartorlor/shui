@@ -13,9 +13,11 @@
     </div>
     <section v-else class="tickets-list">
       <div v-for="para of paras" class="ticket-item">
-        <div v-for="txn of para" class="ticket-item">
-          <div v-for="item of txn" class="ticket-item">
+        <div v-for="(txn,index) in para" class="ticket-item">
+          <div v-for="(item,index2) in txn" class="ticket-item">
+            <span > -{{index}}- {{index2}}- </span>
             <span class="badge">{{ item }}</span>
+            <span > -- </span>
           </div>
         </div>
       </div>
