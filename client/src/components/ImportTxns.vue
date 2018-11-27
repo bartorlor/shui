@@ -1,16 +1,25 @@
 <template>
   <main class="home">
- <router-link
-  tag="button"
-  :to="{name: 'txns'}"
-  class="secondary">
-  Go back
-</router-link>
-     <div class="pdf-document">
-        <input type="file" @change="fileChange($event.target.name,$event.target.files);"
-               fileCount="$event.target.files.length" accept="application/pdf">
-        <hr/>
+    <router-link
+      tag="button"
+      :to="{name: 'txns'}"
+      class="secondary">
+      Go back
+    </router-link>
+      <input type="file" @change="fileChange($event.target.name,$event.target.files);"
+             fileCount="$event.target.files.length" accept="application/pdf">
+    <div class="empty" v-if="paras.length === 0">
+      You don't have any txns yet.
     </div>
+    <section v-else class="tickets-list">
+      <div v-for="para of paras" class="ticket-item">
+        <div v-for="txn of para" class="ticket-item">
+          <div v-for="item of txn" class="ticket-item">
+            <span class="badge">{{ item }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 <script>
@@ -19,11 +28,12 @@
   // rendering of selected pages (but could be easily
   // updated to do so).
 
-  import {debug }from '../utils/logging'
+  import {debug} from '../utils/logging'
   // import debug from 'debug';
 
   const log = debug('app:components/PDFDocument');
   import pdfjs from 'pdfjs-dist/webpack';
+
   export default {
     data() {
       return {
@@ -104,7 +114,7 @@
       },
       fetchPDF() {
         // console.log(`url : ${this.myurl}`);
-          pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => log('pdf fetched'))
+        pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => log('pdf fetched'))
       },
       isNextLine(item) {
         return this.curY !== item.transform[5]
@@ -188,10 +198,10 @@
   };
 </script>
 <style>
-    .pdf-document {
-        position: fixed;
-        overflow: scroll;
-        width: 100%;
-        height: 90%;
-    }
+  .pdf-document {
+    position: fixed;
+    overflow: scroll;
+    width: 100%;
+    height: 90%;
+  }
 </style>
