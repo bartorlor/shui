@@ -1,9 +1,9 @@
 <template>
- <div class="dropdown">
+  <div class="dropdown">
     <select
       v-model="selectedOption"
       @input="event => { $emit('input', event.target.value) }"
-      >
+    >
       <option v-for="(option, name) in options" :value="option">{{ name }}</option>
     </select>
   </div>
@@ -11,26 +11,27 @@
 
 <script>
 
-export default {
-  props: {
-    value: null,
-    options: {
-      type: Object,
-      required: true
-    }  }
-  data () {
-    return {
-      selectedOption: null
-    }
-  },
-  mounted () {
-    this.selectedOption = this.value
-  },
+  export default {
+    props: {
+      value: null,
+      options: {
+        type: Object,
+        required: true
+      }
+    },
+    data() {
+      return {
+        selectedOption: null
+      }
+    },
+    mounted() {
+      this.selectedOption = this.value
+    },
 
-  watch: {
-    value: function (newValue) {
-      this.selectedOption = newValue
+    watch: {
+      value: function (newValue) {
+        this.selectedOption = newValue
+      }
     }
   }
-}
 </script>

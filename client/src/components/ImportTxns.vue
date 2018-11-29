@@ -6,29 +6,28 @@
       class="secondary">
       Go back
     </router-link>
-      <input type="file" @change="fileChange($event.target.name,$event.target.files);"
-             fileCount="$event.target.files.length" accept="application/pdf">
+    <input type="file" @change="fileChange($event.target.name,$event.target.files);"
+           fileCount="$event.target.files.length" accept="application/pdf">
 
-  <div class="filters">
+    <div class="filters">
 
       <label for="component-dropdown">Component-based dropdown: </label>
       <dropdown id="component-dropdown" :options="fruitOptions" v-model="selectedFruit">
       </dropdown>
 
-    <div class="result">
-      Selected: <strong>{{ selectedFruit }}</strong>
+      <div class="result">
+        Selected: <strong>{{ selectedFruit }}</strong>
+      </div>
+
+
     </div>
-
-
-
-  </div>
     <div class="empty" v-if="paras.length === 0">
       You don't have any txns yet.
     </div>
     <section v-else class="tickets-list">
       <div v-for="(txn,index ) in table.rows" class="ticket-item">
-        <span >{{index}} </span>
-          <span v-for="(item,index2) in txn" class="ticket-item">
+        <span>{{index}} </span>
+        <span v-for="(item,index2) in txn" class="ticket-item">
             <span class="badge">{{item}}</span>
         </span>
       </div>
@@ -40,17 +39,17 @@
   // PDF.js and <canvas>. Currently does not support,
   // rendering of selected pages (but could be easily
   // updated to do so).
-  import Dropdown from '@/components/Dropdown'
-  import {debug,info} from '../utils/logging'
+  import Dropdown from './Dropdown'
+  import {debug, info} from '../utils/logging'
   // import debug from 'debug';
 
   // const log = debug('app:components/PDFDocument');
   import pdfjs from 'pdfjs-dist/webpack';
 
   export default {
-  components: {
-    'dropdown': Dropdown
-  },
+    components: {
+      'dropdown': Dropdown
+    },
     data() {
       return {
         myurl: '',
@@ -70,20 +69,20 @@
         numArray: [],
         strArray: [],
         index: 0,
-        table:{
-          headers:[],
-          rows:[],
-        }
+        table: {
+          headers: [],
+          rows: [],
+        },
         selectedFruit: 'Apple',
         fruitOptions: {
-        'Apple': 'Apple',
-        'Banana': 'Banana',
-        'Blueberry': 'Blueberry',
-        'Kiwi': 'Kiwi',
-        'Pear': 'Pear',
-        'Pineapple': 'Pineapple',
-        'Watermelon': 'Watermelon'
-      }
+          'Apple': 'Apple',
+          'Banana': 'Banana',
+          'Blueberry': 'Blueberry',
+          'Kiwi': 'Kiwi',
+          'Pear': 'Pear',
+          'Pineapple': 'Pineapple',
+          'Watermelon': 'Watermelon'
+        }
       };
     },
 
@@ -235,21 +234,22 @@
     width: 100%;
     height: 90%;
   }
-.filters {
-  width: 800px;
-  margin: 0 auto;
-}
 
-.filter {
-  text-align: left;
-}
+  .filters {
+    width: 800px;
+    margin: 0 auto;
+  }
 
-.result {
-  margin-top: 30px;
-  text-align: left;
-}
+  .filter {
+    text-align: left;
+  }
 
-label {
-  display: block;
-}
+  .result {
+    margin-top: 30px;
+    text-align: left;
+  }
+
+  label {
+    display: block;
+  }
 </style>
