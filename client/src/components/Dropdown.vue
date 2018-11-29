@@ -35,3 +35,8 @@
     }
   }
 </script>
+<style lang="stylus" scoped>
+div{
+  display:inline;
+}
+</style>

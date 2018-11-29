@@ -8,16 +8,16 @@
     </router-link>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
-
-    <div class="filters">
-      <label for="component-dropdown">Component-based dropdown: </label>
-      <dropdown id="component-dropdown" :options="fruitOptions" v-model="table.headers[0]">
+    <div v-for="(header,index) in table.headers" class="filters">
+      <!--<label for="component-dropdown">Component-based dropdown: </label>-->
+      <dropdown id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
       </dropdown>
-      <div class="result">
-        Selected: <strong>{{ table.headers[0] }}</strong>
-      </div>
-
+     <span>  |  </span>
+      <!--<div class="result">-->
+        <!--Selected: <strong>{{ table.headers[index] }}</strong>-->
+      <!--</div>-->
     </div>
+
     <div class="empty" v-if="paras.length === 0">
       You don't have any txns yet.
     </div>
@@ -67,20 +67,23 @@
         strArray: [],
         index: 0,
         table: {
-          headers: ['','','','','','','',''],
+          // headers: ['', '', '', '', '', '', '', ''],
+          headers: ['date', 'action', 'symbol', 'desc', 'type', 'qutty', 'price', 'amt'],
           rows: [],
+          headerOptions: {
+            'date': 'date',
+            'action': 'action',
+            'symbol': 'symbol',
+            'desc': 'desc',
+            'type': 'type',
+            'qutty': 'qutty',
+            'price': 'price',
+            'amt': 'amt',
+          }
+
         },
         //selectedFruit: 'Apple',
-        fruitOptions: {
-          'date': 'date',
-          'action': 'action',
-          'symbol': 'symbol',
-          'desc': 'desc',
-          'type': 'type',
-          'qutty': 'qutty',
-          'price': 'price',
-          'amt': 'amt',
-        }
+
       };
     },
 
@@ -236,6 +239,7 @@
   .filters {
     width: 800px;
     margin: 0 auto;
+    display:inline;
   }
 
   .filter {
