@@ -8,10 +8,12 @@
     </router-link>
       <input type="file" @change="fileChange($event.target.name,$event.target.files);"
              fileCount="$event.target.files.length" accept="application/pdf">
+
   <div class="filters">
 
       <label for="component-dropdown">Component-based dropdown: </label>
-      <dropdown id="component-dropdown" :options="fruitOptions"></dropdown>
+      <dropdown id="component-dropdown" :options="fruitOptions" v-model="selectedFruit">
+      </dropdown>
 
     <div class="result">
       Selected: <strong>{{ selectedFruit }}</strong>
@@ -38,7 +40,7 @@
   // PDF.js and <canvas>. Currently does not support,
   // rendering of selected pages (but could be easily
   // updated to do so).
-
+  import Dropdown from '@/components/Dropdown'
   import {debug,info} from '../utils/logging'
   // import debug from 'debug';
 
@@ -46,6 +48,9 @@
   import pdfjs from 'pdfjs-dist/webpack';
 
   export default {
+  components: {
+    'dropdown': Dropdown
+  },
     data() {
       return {
         myurl: '',
@@ -70,6 +75,15 @@
           rows:[],
         }
         selectedFruit: 'Apple',
+        fruitOptions: {
+        'Apple': 'Apple',
+        'Banana': 'Banana',
+        'Blueberry': 'Blueberry',
+        'Kiwi': 'Kiwi',
+        'Pear': 'Pear',
+        'Pineapple': 'Pineapple',
+        'Watermelon': 'Watermelon'
+      }
       };
     },
 
