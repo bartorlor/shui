@@ -6,6 +6,12 @@
      :operation="operation"
      :valid="valid">
       <FormInput
+        name="stlmtDate"
+        v-model="stlmtDate"
+        placeholder="date"
+        maxlength="10"
+        required/>
+      <FormInput
         name="symbol"
         v-model="symbol"
         placeholder="symbo of security (max 8 chars)"
@@ -24,6 +30,30 @@
         placeholder="Describe a transaction in details"
         required
         rows="4"/>
+      <FormInput
+        name="type"
+        v-model="type"
+        placeholder="type of security"
+        maxlength="4"
+        required/>
+      <FormInput
+        name="qty"
+        v-model="qty"
+        placeholder="quatity"
+        maxlength="9"
+        required/>
+      <FormInput
+        name="price"
+        v-model="price"
+        placeholder="price"
+        maxlength="9"
+        required/>
+      <FormInput
+        name="amt"
+        v-model="amt"
+        placeholder="amount"
+        maxlength="12"
+        required/>
 
       <template slot="actions">
         <router-link
@@ -48,18 +78,28 @@ import PersistantData from '../mixins/PersistantData'
 export default {
   mixins: [
     PersistantData('NewTxn', [
+      'stlmtDate',
       'symbol',
       'action',
       'description',
+      'type',
+      'qty',
+      'price',
+      'amt',
     ]),
   ],
 
   data () {
     return {
-      stlmtDate: '',
-      symbol: '',
-      action: '',
-      description:'',
+      stlmtDate: '01-01-2016',
+      action: 'buy',
+      symbol: 'AAPL',
+      description:'this is a init recorder',
+      type: 'shs',
+      qty: 10,
+      price: 97,
+      amt: 971,
+
     }
   },
 
@@ -74,11 +114,15 @@ export default {
       const result = await this.$fetch('txns/new', {
         method: 'POST',
         body: JSON.stringify({
-          stlmtDate: new Date(),
+          stlmtDate: this.stlmtDate,
           symbol: this.symbol,
-          action: 'buy',
+          action: this.action,
           description: this.description,
-          
+          type: this.type,
+          qty: this.qty,
+          price: this.price,
+          amt: this.amt,
+
         }),
       })
       this.symbol = this.description = ''
