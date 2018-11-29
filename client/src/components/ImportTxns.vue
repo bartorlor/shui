@@ -8,18 +8,27 @@
     </router-link>
       <input type="file" @change="fileChange($event.target.name,$event.target.files);"
              fileCount="$event.target.files.length" accept="application/pdf">
+  <div class="filters">
+
+      <label for="component-dropdown">Component-based dropdown: </label>
+      <dropdown id="component-dropdown" :options="fruitOptions"></dropdown>
+
+    <div class="result">
+      Selected: <strong>{{ selectedFruit }}</strong>
+    </div>
+
+
+
+  </div>
     <div class="empty" v-if="paras.length === 0">
       You don't have any txns yet.
     </div>
     <section v-else class="tickets-list">
-      <div v-for="para of paras" class="ticket-item">
-        <div v-for="(txn,index) in para" class="ticket-item">
-          <div v-for="(item,index2) in txn" class="ticket-item">
-            <span > -{{index}}- {{index2}}- </span>
-            <span class="badge">{{ item }}</span>
-            <span > -- </span>
-          </div>
-        </div>
+      <div v-for="(txn,index ) in table.rows" class="ticket-item">
+        <span >{{index}} </span>
+          <span v-for="(item,index2) in txn" class="ticket-item">
+            <span class="badge">{{item}}</span>
+        </span>
       </div>
     </section>
   </main>
@@ -33,7 +42,7 @@
   import {debug,info} from '../utils/logging'
   // import debug from 'debug';
 
-  const log = debug('app:components/PDFDocument');
+  // const log = debug('app:components/PDFDocument');
   import pdfjs from 'pdfjs-dist/webpack';
 
   export default {
@@ -56,10 +65,11 @@
         numArray: [],
         strArray: [],
         index: 0,
-        table{
+        table:{
           headers:[],
           rows:[],
         }
+        selectedFruit: 'Apple',
       };
     },
 
@@ -97,11 +107,11 @@
     },
 
     methods: {
-      whereis(str, flag) {
-        if (typeof str !== 'undefined' && str.includes("30-12-2016")) {
-          debug(` .................................finding ${flag} : ${str}`);
-        }
-      },
+      // whereis(str, flag) {
+      //   if (typeof str !== 'undefined' && str.includes("30-12-2016")) {
+      //     debug(` .................................finding ${flag} : ${str}`);
+      //   }
+      // },
       process() {
         this.createLines()
         this.handleLines()
@@ -180,10 +190,10 @@
       },
       printData() {
         this.paras.forEach((para, i) => {
-          info(`para:--------------------------${i} \n `)
+          debug(`para:--------------------------${i} \n `)
           para.data.forEach((line, i) => {
             info(`line: ${i}-- ${line.join()}`)
-            this.table.rows.add(line);
+            this.table.rows.push(line);
           })
         })
       },
@@ -197,9 +207,9 @@
           debug(`${item}`)
         })
       },
-      created() {
-        // this.fetchPDF();
-      },
+      // created() {
+      //   // this.fetchPDF();
+      // },
     },
 
   };
@@ -211,4 +221,21 @@
     width: 100%;
     height: 90%;
   }
+.filters {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.filter {
+  text-align: left;
+}
+
+.result {
+  margin-top: 30px;
+  text-align: left;
+}
+
+label {
+  display: block;
+}
 </style>
