@@ -30,7 +30,7 @@
   // rendering of selected pages (but could be easily
   // updated to do so).
 
-  import {debug} from '../utils/logging'
+  import {debug,info} from '../utils/logging'
   // import debug from 'debug';
 
   const log = debug('app:components/PDFDocument');
@@ -56,6 +56,10 @@
         numArray: [],
         strArray: [],
         index: 0,
+        table{
+          headers:[],
+          rows:[],
+        }
       };
     },
 
@@ -64,7 +68,7 @@
         handler(pdf) {
           this.pages = [];
           let self = this;
-          console.log(` nov12 page num: ${pdf.numPages}`)
+          debug(` nov12 page num: ${pdf.numPages}`)
           let promises = [];
           for (let i = 1; i < pdf.numPages + 1; i++) {
             promises.push(pdf.getPage(i));
@@ -80,7 +84,7 @@
             .then((texts) => {
               texts.forEach(text => {
                 self.items.push(...text.items)
-                console.log(`......................... num: ${self.items.length}`)
+                debug(`......................... num: ${self.items.length}`)
               })
             }).then(() => {
               self.process()
@@ -95,7 +99,7 @@
     methods: {
       whereis(str, flag) {
         if (typeof str !== 'undefined' && str.includes("30-12-2016")) {
-          console.log(` .................................finding ${flag} : ${str}`);
+          debug(` .................................finding ${flag} : ${str}`);
         }
       },
       process() {
@@ -115,8 +119,8 @@
         };
       },
       fetchPDF() {
-        // console.log(`url : ${this.myurl}`);
-        pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => log('pdf fetched'))
+        // debug(`url : ${this.myurl}`);
+        pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => debug('pdf fetched'))
       },
       isNextLine(item) {
         return this.curY !== item.transform[5]
@@ -135,7 +139,7 @@
           this.line.push(item.str)
         })
         this.lines.forEach((line) => {
-          console.log(`createLines:  ${line.join()} \n`)
+          debug(`createLines:  ${line.join()} \n`)
         })
       },
       isTradeData(array) {
@@ -176,20 +180,21 @@
       },
       printData() {
         this.paras.forEach((para, i) => {
-          console.log(`para:--------------------------${i} \n `)
+          info(`para:--------------------------${i} \n `)
           para.data.forEach((line, i) => {
-            console.log(`line: ${i}-- ${line.join()}`)
+            info(`line: ${i}-- ${line.join()}`)
+            this.table.rows.add(line);
           })
         })
       },
       printMeta() {
-        console.log(`meta num :--------------------------\n `)
+        debug(`meta num :--------------------------\n `)
         this.numArray.forEach((item) => {
-          console.log(`${item}`)
+          debug(`${item}`)
         })
-        console.log(`meta others:--------------------------\n `)
+        debug(`meta others:--------------------------\n `)
         this.strArray.forEach((item) => {
-          console.log(`${item}`)
+          debug(`${item}`)
         })
       },
       created() {
