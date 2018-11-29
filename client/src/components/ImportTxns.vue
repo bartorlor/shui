@@ -65,15 +65,15 @@
         index: 0,
         table: {
           // headers: ['', '', '', '', '', '', '', ''],
-          headers: ['date', 'action', 'symbol', 'desc', 'type', 'qutty', 'price', 'amt'],
+          headers: ['date', 'action', 'symbol', 'description', 'type', 'qty', 'price', 'amt'],
           rows: [],
           headerOptions: {
             'date': 'date',
             'action': 'action',
             'symbol': 'symbol',
-            'desc': 'desc',
+            'description': 'description',
             'type': 'type',
-            'qutty': 'qutty',
+            'qty': 'qty',
             'price': 'price',
             'amt': 'amt',
           }
@@ -136,9 +136,13 @@
             method: 'POST',
             body: JSON.stringify({
               stlmtDate: obj.date,
-              symbol: obj.symbol,
               action: obj.action.toLowerCase(),
-              description: obj.desc,
+              symbol: obj.symbol,
+              description: obj.description,
+              type:obj.type,
+              qty:obj.qty,
+              price:obj.price,
+              amt:obj.amt,
             }),
           })
       }

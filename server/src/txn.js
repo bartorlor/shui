@@ -1,4 +1,4 @@
-import {debug} from './utils/logging'
+import {debug,error} from './utils/logging'
 const validTxnAction = {
   buy: true,
   sell: true,
@@ -9,6 +9,10 @@ const txnFieldType = {
   action: 'required',
   stlmtDate: 'required',
   description: 'optional',
+  type: 'optional',
+  qty: 'required',
+  price: 'required',
+  amt: 'required',
 };
 
 function cleanupTxn(txn) {
@@ -38,7 +42,7 @@ function validateTxn(txn) {
     errors.push(`${txn.action} is not a valid action.`);
   }
 
-  debug('valid ',errors);
+  error('valid ',errors);
   return (errors.length ? errors.join('; ') : null);
 }
 
