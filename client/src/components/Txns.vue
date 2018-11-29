@@ -22,22 +22,26 @@
 </template>
 
 <script>
-import RemoteData from '../mixins/RemoteData'
-// import Ticket from './Ticket.vue'
-//will get database data
-export default {
-  mixins: [
-    RemoteData({
-      txns: 'txns',
-    }),
-  ],
-  // components: {
-  //   Ticket,
-  // },
-  // data () {
-  //   return {
-  //     id: null,
-  //   }
-  // },
-}
+  import RemoteData from '../mixins/RemoteData'
+  import {debug,info} from '../utils/logging'
+  // import Ticket from './Ticket.vue'
+  //will get database data
+  export default {
+    mixins: [
+      RemoteData({
+        txns: 'txns',
+      }),
+    ],
+    watch: {
+      txns(newValue, oldValue) {
+        if(newValue.length > 0){
+          newValue.forEach(item=>{
+            if(item.symbol === 'AMZN'){
+              info('amzn:',JSON.stringify(item));
+            }
+          })
+        }
+      },
+    },
+  }
 </script>

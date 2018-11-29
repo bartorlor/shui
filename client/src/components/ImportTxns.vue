@@ -8,14 +8,11 @@
     </router-link>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
+    <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
     <div v-for="(header,index) in table.headers" class="filters">
-      <!--<label for="component-dropdown">Component-based dropdown: </label>-->
       <dropdown id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
       </dropdown>
-     <span>  |  </span>
-      <!--<div class="result">-->
-        <!--Selected: <strong>{{ table.headers[index] }}</strong>-->
-      <!--</div>-->
+      <span>  |  </span>
     </div>
 
     <div class="empty" v-if="paras.length === 0">
@@ -126,12 +123,42 @@
       //     debug(` .................................finding ${flag} : ${str}`);
       //   }
       // },
+      importData() {
+        let arr = this.table.rows;
+        arr.forEach(row => {
+          let obj = this.createObjects(row)
+          this.operation(obj);
+        });
+      },
+      async operation(obj) {
+        const result = await
+          this.$fetch('txns/new', {
+            method: 'POST',
+            body: JSON.stringify({
+              stlmtDate: obj.date,
+              symbol: obj.symbol,
+              action: obj.action.toLowerCase(),
+              description: obj.desc,
+            }),
+          })
+      }
+      ,
+      createObjects(row) {
+        let obj = {};
+        let arr = this.table.headers.forEach((item, index) => {
+          obj[item] = row[index];
+          return obj[item];
+        })
+        return obj;
+      }
+      ,
       process() {
         this.createLines()
         this.handleLines()
         this.printData()
         this.printMeta()
-      },
+      }
+      ,
       fileChange(name, files) {
         let file = files[0];
         let fileReader = new FileReader();
@@ -141,14 +168,17 @@
           self.myurl = new Uint8Array(this.result);
           self.fetchPDF();
         };
-      },
+      }
+      ,
       fetchPDF() {
         // debug(`url : ${this.myurl}`);
         pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => debug('pdf fetched'))
-      },
+      }
+      ,
       isNextLine(item) {
         return this.curY !== item.transform[5]
-      },
+      }
+      ,
       createLines() {
         this.items.forEach((item) => {
           if (this.curY === 0) {
@@ -165,10 +195,12 @@
         this.lines.forEach((line) => {
           debug(`createLines:  ${line.join()} \n`)
         })
-      },
+      }
+      ,
       isTradeData(array) {
         return array.length >= 6
-      },
+      }
+      ,
       handleLines() {
         this.lines.forEach((line) => {
           if (this.isTradeData(line)) {
@@ -177,7 +209,8 @@
             this.handleMetaData(line)
           }
         })
-      },
+      }
+      ,
       handleTradeData(line) {
         let para = this.para;
         if (para.data.length === 0) {
@@ -192,7 +225,8 @@
           para.cols = line.length
           para.data.push(line)
         }
-      },
+      }
+      ,
       handleMetaData(line) {
         line.forEach((item) => {
           if (item.match(this.reg)) {
@@ -201,7 +235,8 @@
             this.strArray.push(item)
           }
         })
-      },
+      }
+      ,
       printData() {
         this.paras.forEach((para, i) => {
           debug(`para:--------------------------${i} \n `)
@@ -210,7 +245,8 @@
             this.table.rows.push(line);
           })
         })
-      },
+      }
+      ,
       printMeta() {
         debug(`meta num :--------------------------\n `)
         this.numArray.forEach((item) => {
@@ -220,13 +256,15 @@
         this.strArray.forEach((item) => {
           debug(`${item}`)
         })
-      },
+      }
+      ,
       // created() {
       //   // this.fetchPDF();
       // },
     },
 
-  };
+  }
+  ;
 </script>
 <style>
   .pdf-document {
@@ -239,7 +277,7 @@
   .filters {
     width: 800px;
     margin: 0 auto;
-    display:inline;
+    display: inline;
   }
 
   .filter {

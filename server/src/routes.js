@@ -118,7 +118,7 @@ app.get('/txns', (req, res) => {
 
   if (req.query._summary === undefined) {
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
-    let limit = req.query._limit ? parseInt(req.query._limit, 10) : 20;
+    let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
     if (limit > 50) limit = 50;
 
     const cursor = db.collection('txns').find(filter).sort({ _id: 1 })
