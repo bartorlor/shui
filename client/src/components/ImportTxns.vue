@@ -10,15 +10,12 @@
            fileCount="$event.target.files.length" accept="application/pdf">
 
     <div class="filters">
-
       <label for="component-dropdown">Component-based dropdown: </label>
-      <dropdown id="component-dropdown" :options="fruitOptions" v-model="selectedFruit">
+      <dropdown id="component-dropdown" :options="fruitOptions" v-model="table.headers[0]">
       </dropdown>
-
       <div class="result">
-        Selected: <strong>{{ selectedFruit }}</strong>
+        Selected: <strong>{{ table.headers[0] }}</strong>
       </div>
-
 
     </div>
     <div class="empty" v-if="paras.length === 0">
@@ -70,18 +67,19 @@
         strArray: [],
         index: 0,
         table: {
-          headers: [],
+          headers: ['','','','','','','',''],
           rows: [],
         },
-        selectedFruit: 'Apple',
+        //selectedFruit: 'Apple',
         fruitOptions: {
-          'Apple': 'Apple',
-          'Banana': 'Banana',
-          'Blueberry': 'Blueberry',
-          'Kiwi': 'Kiwi',
-          'Pear': 'Pear',
-          'Pineapple': 'Pineapple',
-          'Watermelon': 'Watermelon'
+          'date': 'date',
+          'action': 'action',
+          'symbol': 'symbol',
+          'desc': 'desc',
+          'type': 'type',
+          'qutty': 'qutty',
+          'price': 'price',
+          'amt': 'amt',
         }
       };
     },
