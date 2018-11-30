@@ -1,8 +1,7 @@
 <template>
   <div class="txns" id="txns">
-    <Loading v-if="remoteDataBusy"/>
 
-    <div class="empty" v-else-if="txns.length === 0">
+    <div class="empty" v-if="txns.length === 0">
       You don't have any txn yet.
     </div>
 
@@ -15,6 +14,7 @@
         <span class="badge">{{ txn.qty}}</span>
         <span class="badge">{{ txn.price}}</span>
         <span class="badge">{{ txn.amt}}</span>
+        <button @click="delete(txn._id)">delete</button>
       </div>
     </section>
 
@@ -23,22 +23,45 @@
 </template>
 
 <script>
-  import RemoteData from '../mixins/RemoteData'
-  import {debug,info} from '../utils/logging'
+  // import RemoteData from '../mixins/RemoteData'
+  import {debug, info, error} from '../utils/logging'
   // import Ticket from './Ticket.vue'
   //will get database data
   export default {
-    mixins: [
-      RemoteData({
-        txns: 'txns',
-      }),
-    ],
+    // mixins: [
+    //   RemoteData({
+    //     txns: 'txns',
+    //   }),
+    // ],
+    data(){
+      return {
+        txns: [],
+      }
+    },
+    methods: {
+      delete(id) {
+        this.$fetch(`txns/${id}`, {method: 'DELETE'}).then(response => {
+          if (!response.ok) error('Failed to delete issue');
+          else  this.loadData()
+        })
+      },
+      async loadData() {
+        try {
+          this.txns = await this.$fetch('txns')
+        } catch (e) {
+          error(e)
+        }
+      },
+    },
+    mounted() {
+      this.loadData();
+    },
     watch: {
       txns(newValue, oldValue) {
-        if(newValue.length > 0){
-          newValue.forEach(item=>{
-            if(item.symbol === 'AMZN'){
-              info('amzn:',JSON.stringify(item));
+        if (newValue.length > 0) {
+          newValue.forEach(item => {
+            if (item.symbol === 'AMZN') {
+              info('amzn:', JSON.stringify(item));
             }
           })
         }
