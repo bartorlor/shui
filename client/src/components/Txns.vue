@@ -14,7 +14,7 @@
         <span class="badge">{{ txn.qty}}</span>
         <span class="badge">{{ txn.price}}</span>
         <span class="badge">{{ txn.amt}}</span>
-        <button @click="delete(txn._id)">delete</button>
+        <button @click="deleteOne(txn._id)">delete</button>
       </div>
     </section>
 
@@ -39,11 +39,14 @@
       }
     },
     methods: {
-      delete(id) {
+      deleteOne(id) {
         this.$fetch(`txns/${id}`, {method: 'DELETE'}).then(response => {
-          if (!response.ok) error('Failed to delete issue');
+          if (response.status !== 'ok') error('Failed to delete issue');
           else  this.loadData()
         })
+      },
+      delete2(id) {
+        info('test')
       },
       async loadData() {
         try {

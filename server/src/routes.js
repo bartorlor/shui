@@ -247,7 +247,7 @@ app.delete('/txns/:id', privateRoute, (req, res) => {
   }
 
   db.collection('txns').deleteOne({ _id: txnId }).then((deleteResult) => {
-    if (deleteResult.result.n === 1) res.json({ status: 'OK' });
+    if (deleteResult.result.n === 1) res.json({ status: 'ok' });
     else res.json({ status: 'Warning: object not found' });
   })
   .catch(error => {
@@ -255,9 +255,6 @@ app.delete('/txns/:id', privateRoute, (req, res) => {
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
-
-
-
 
 }
 
