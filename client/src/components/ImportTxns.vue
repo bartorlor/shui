@@ -131,7 +131,7 @@
         });
       },
       async operation(obj) {
-        const result = await
+        await
           this.$fetch('txns/new', {
             method: 'POST',
             body: JSON.stringify({
@@ -149,7 +149,7 @@
       ,
       createObjects(row) {
         let obj = {};
-        let arr = this.table.headers.forEach((item, index) => {
+        this.table.headers.forEach((item, index) => {
           obj[item] = row[index];
           return obj[item];
         })
@@ -283,16 +283,6 @@
     margin: 0 auto;
     display: inline;
   }
-
-  .filter {
-    text-align: left;
-  }
-
-  .result {
-    margin-top: 30px;
-    text-align: left;
-  }
-
   label {
     display: block;
   }
