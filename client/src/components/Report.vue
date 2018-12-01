@@ -3,14 +3,14 @@
     <Loading v-if="remoteDataBusy"/>
 
     <div class="empty" v-else-if="report.length === 0">
-      You don't have any ticket yet.
+      You don't have any row yet.
     </div>
 
     <section v-else class="report-list">
-      <div v-for="ticket of report" class="ticket-item">
-        <router-link :to="{name: 'ticket', params: { id: ticket._id }}">{{ ticket.title }}</router-link>
-        <span class="badge">{{ ticket.status }}</span>
-        <span class="date">{{ ticket.date | date }}</span>
+      <div v-for="row of report" class="ticket-item">
+        <router-link :to="{name: 'account', params: { id: row._id }}">{{ row.title }}</router-link>
+        <span class="badge">{{ row.status }}</span>
+        <span class="date">{{ row.date | date }}</span>
       </div>
     </section>
 
