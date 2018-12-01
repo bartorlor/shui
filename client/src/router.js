@@ -5,8 +5,8 @@ import state from './state'
 import Home from './components/Home.vue'
 import FAQ from './components/FAQ.vue'
 import Login from './components/Login.vue'
-import ReportLayout from './components/ReportLayout.vue'
-import Report from './components/Report.vue'
+import AccountsLayout from './components/AccountsLayout.vue'
+import Accounts from './components/Accounts.vue'
 import NewAccount from './components/NewAccount.vue'
 import Account from './components/Account.vue'
 import TxnsLayout from './components/TxnsLayout.vue'
@@ -23,8 +23,8 @@ const routes = [
   { path: '/', name: 'home', component: Home },
   { path: '/faq', name: 'faq', component: FAQ },
   { path: '/login', name: 'login', component: Login, meta: { guest: true } },
-  { path: '/report', component: ReportLayout, meta: { private: true }, children: [
-    { path: '', name: 'report', component: Report },
+  { path: '/accounts', component: AccountsLayout, meta: { private: true }, children: [
+    { path: '', name: 'accounts', component: Accounts },
     { path: 'new', name: 'new-account', component: NewAccount },
     { path: ':id', name: 'account', component: Account, props: true },
   ] },

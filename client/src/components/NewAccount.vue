@@ -23,7 +23,7 @@
       <template slot="actions">
         <router-link
           tag="button"
-          :to="{name: 'report'}"
+          :to="{name: 'accounts'}"
           class="secondary">
           Go back
         </router-link>
@@ -74,7 +74,7 @@ export default {
 
   methods: {
     async operation () {
-      const result = await this.$fetch('report/new', {
+      const result = await this.$fetch('accounts/new', {
         method: 'POST',
         body: JSON.stringify({
           title: this.title,

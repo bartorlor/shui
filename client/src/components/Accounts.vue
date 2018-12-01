@@ -1,13 +1,13 @@
 <template>
-  <div class="report" id="report">
+  <div class="accounts" id="accounts">
     <Loading v-if="remoteDataBusy"/>
 
-    <div class="empty" v-else-if="report.length === 0">
+    <div class="empty" v-else-if="accounts.length === 0">
       You don't have any row yet.
     </div>
 
-    <section v-else class="report-list">
-      <div v-for="row of report" class="ticket-item">
+    <section v-else class="accounts-list">
+      <div v-for="row of accounts" class="ticket-item">
         <router-link :to="{name: 'account', params: { id: row._id }}">{{ row.title }}</router-link>
         <span class="badge">{{ row.status }}</span>
         <span class="date">{{ row.date | date }}</span>
@@ -23,7 +23,7 @@ import RemoteData from '../mixins/RemoteData'
 export default {
   mixins: [
     RemoteData({
-      report: 'report',
+      accounts: 'accounts',
     }),
   ],
 }

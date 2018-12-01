@@ -37,7 +37,7 @@ export default {
   mixins: [
     RemoteData({
       ticket () {
-        return `ticket/${this.id}`
+        return `account/${this.id}`
       },
     }),
   ],
