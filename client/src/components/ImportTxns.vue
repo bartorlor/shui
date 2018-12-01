@@ -18,7 +18,7 @@
     <div class="empty" v-if="paras.length === 0">
       You don't have any txns yet.
     </div>
-    <section v-else class="tickets-list">
+    <section v-else class="report-list">
       <div v-for="(txn,index ) in table.rows" class="ticket-item">
         <span>{{index}} </span>
         <span v-for="(item,index2) in txn" class="ticket-item">

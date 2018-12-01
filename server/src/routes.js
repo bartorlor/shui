@@ -88,21 +88,21 @@ export default function (app) {
     res.json({status: 'ok'})
   })
 
-  app.get('/tickets', privateRoute, async (req, res) => {
+  app.get('/report', privateRoute, async (req, res) => {
     const result = await Tickets.getAll({
       user: req.user,
     })
     res.json(result)
   })
 
-  app.post('/tickets/new', privateRoute, async (req, res) => {
+  app.post('/accounts/new', privateRoute, async (req, res) => {
     const result = await Tickets.create({
       user: req.user,
     }, req.body)
     res.json(result)
   })
 
-  app.get('/ticket/:id', privateRoute, async (req, res) => {
+  app.get('/account/:id', privateRoute, async (req, res) => {
     const result = await Tickets.getById({
       user: req.user,
     }, req.params.id)

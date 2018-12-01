@@ -1,11 +1,11 @@
 <template>
   <div class="ticket">
-    <h2>Ticket</h2>
+    <h2>Account</h2>
 
     <Loading v-if="remoteDataBusy"/>
 
     <div class="empty" v-else-if="!ticket">
-      Ticket not found.
+      Account not found.
     </div>
 
     <template v-else>

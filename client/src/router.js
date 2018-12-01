@@ -5,10 +5,10 @@ import state from './state'
 import Home from './components/Home.vue'
 import FAQ from './components/FAQ.vue'
 import Login from './components/Login.vue'
-import TicketsLayout from './components/TicketsLayout.vue'
-import Tickets from './components/Tickets.vue'
-import NewTicket from './components/NewTicket.vue'
-import Ticket from './components/Ticket.vue'
+import ReportLayout from './components/ReportLayout.vue'
+import Report from './components/Report.vue'
+import NewAccount from './components/NewAccount.vue'
+import Account from './components/Account.vue'
 import TxnsLayout from './components/TxnsLayout.vue'
 import Txns from './components/Txns.vue'
 import NewTxn from './components/NewTxn.vue'
@@ -23,10 +23,10 @@ const routes = [
   { path: '/', name: 'home', component: Home },
   { path: '/faq', name: 'faq', component: FAQ },
   { path: '/login', name: 'login', component: Login, meta: { guest: true } },
-  { path: '/tickets', component: TicketsLayout, meta: { private: true }, children: [
-    { path: '', name: 'tickets', component: Tickets },
-    { path: 'new', name: 'new-ticket', component: NewTicket },
-    { path: ':id', name: 'ticket', component: Ticket, props: true },
+  { path: '/report', component: ReportLayout, meta: { private: true }, children: [
+    { path: '', name: 'report', component: Report },
+    { path: 'new', name: 'new-account', component: NewAccount },
+    { path: ':id', name: 'account', component: Account, props: true },
   ] },
   { path: '/txns', component: TxnsLayout, meta: { private: true }, children: [
       { path: '', name: 'txns', component: Txns },

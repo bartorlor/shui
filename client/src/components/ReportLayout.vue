@@ -1,11 +1,11 @@
 <template>
-<main class="tickets-layout">
-    <h1>Your Support tickets</h1>
+<main class="report-layout">
+    <h1>Your Support report</h1>
 
-    <!-- <Tickets /> -->
+    <!-- <Report /> -->
 
     <div class="actions">
-      <router-link v-if="$route.name !== 'tickets'" tag="button" class="secondary" :to="{name: 'tickets'}">See all tickets</router-link>
+      <router-link v-if="$route.name !== 'report'" tag="button" class="secondary" :to="{name: 'report'}">See all report</router-link>
       <router-link v-if="$route.name !== 'new-ticket'" tag="button" :to="{name: 'new-ticket'}">New ticket</router-link>
     </div>
 
@@ -14,11 +14,11 @@
 </template>
 
 <!-- <script>
-import Tickets from './Tickets.vue'
+import Report from './Report.vue'
 
 export default {
   components: {
-    Tickets,
+    Report,
   }
 }
 </script> -->

@@ -23,7 +23,7 @@
       <template slot="actions">
         <router-link
           tag="button"
-          :to="{name: 'tickets'}"
+          :to="{name: 'report'}"
           class="secondary">
           Go back
         </router-link>
@@ -53,7 +53,7 @@ import PersistantData from '../mixins/PersistantData'
 
 export default {
   mixins: [
-    PersistantData('NewTicket', [
+    PersistantData('NewAccount', [
       'title',
       'description',
     ]),
@@ -74,7 +74,7 @@ export default {
 
   methods: {
     async operation () {
-      const result = await this.$fetch('tickets/new', {
+      const result = await this.$fetch('report/new', {
         method: 'POST',
         body: JSON.stringify({
           title: this.title,
@@ -82,7 +82,7 @@ export default {
         }),
       })
       this.title = this.description = ''
-      this.$router.push({ name: 'ticket', params: { id: result._id } })
+      this.$router.push({ name: 'account', params: { id: result._id } })
     },
   },
 }
