@@ -1,9 +1,6 @@
 <template>
   <main class="home">
-    <router-link
-      tag="button"
-      :to="{name: 'txns'}"
-      class="secondary">
+    <router-link tag="button" :to="{name: 'txns'}" class="secondary">
       Go back
     </router-link>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"

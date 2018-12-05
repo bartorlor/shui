@@ -11,6 +11,7 @@ import NewAccount from './components/NewAccount.vue'
 import Account from './components/Account.vue'
 import TxnsLayout from './components/TxnsLayout.vue'
 import Txns from './components/Txns.vue'
+import Report from './components/Report.vue'
 import NewTxn from './components/NewTxn.vue'
 import ImportTxns from './components/ImportTxns.vue'
 import Txn from './components/Txn.vue'
@@ -32,6 +33,7 @@ const routes = [
       { path: '', name: 'txns', component: Txns },
       { path: 'new', name: 'new-txn', component: NewTxn },
       { path: 'import', name: 'import-txns', component: ImportTxns },
+      { path: 'report', name: 'report', component: Report },
       { path: ':id', name: 'txn', component: Txn, props: true },
     ] },
   { path: '*', component: NotFound },
