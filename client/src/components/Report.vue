@@ -34,13 +34,13 @@
         records: [
            {
            qty:100,
-           symbol:'vips',
+           symbol:'client vips',
            stlmtDate:'2016-Jan-11',
            years:'2015,2016',
            disposition:1548.95,
            acb:1435.01,
            expense:1.00,
-           gain:22.94,
+           gain:22.93,
            }
         ],
       }
@@ -54,14 +54,14 @@
       },
       async loadData() {
         try {
-          this.records = await this.$fetch('records')
+          this.records = await this.$fetch('report')
         } catch (e) {
           error(e)
         }
       },
     },
     mounted() {
-      /*this.loadData();*/
+      this.loadData();
     },
     watch: {
       records(newValue, oldValue) {

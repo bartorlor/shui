@@ -156,9 +156,33 @@ app.get('/txns', (req, res) => {
     });
   }
 });
+//db.report.insert({ qty:100, symbol:'vips', stlmtDate:'2016-Jan-11',
+// years:'2015,2016', disposition:1548.95, acb:1435.01, expense:1.00, gain:22.94, });
+ 
+ app.get('/report', privateRoute, (req, res) => {
+  const filter = {};
+  if (req.query.symbol) filter.symbol = req.query.symbol;
+    const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
+    let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
+    if (limit > 50) limit = 50;
+  
+     const cursor = db.collection('report').find(filter).sort({ _id: 1 })
+    .skip(offset)
+    .limit(limit);
 
-
-
+    let totalCount;
+    cursor.count(false).then(result => {
+      totalCount = result;
+      return cursor.toArray();
+    })
+    .then(txns=> {
+      res.json({ metadata: { totalCount }, records: txns });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    });
+});
 // acct
 app.post('/txns/new', privateRoute, (req, res) => {
   debug('new ', req.body);
