@@ -7,7 +7,7 @@ const txnsResult = {
   comp: 'tsla',
   gain: 10,
   acb: 1000,
-  qlt: 20,
+  qty: 20,
 }
 
 function getCurYear() {
@@ -17,7 +17,6 @@ function getCurYear() {
 function getCurAccountId() {
   return 1;
 }
-//wr to be to save it.
 function procTxns(arr, year, accountId) {
   let result = {
     accountId: accountId,
@@ -25,12 +24,12 @@ function procTxns(arr, year, accountId) {
     comp: 'vips',
     gain: 0,
     acb: 0,
-    qlt: 0,
+    qty: 0,
   }
   let newArr = arr.map((txn) => {
     txn = calcTxn(result, txn);
     result.acb = txn.newAcb;
-    result.qlt = txn.remainQlt;
+    result.qty = txn.remainQty;
     result.gain += txn.gain;
     printTxn(txn); //update one recorder to db
     return txn;
@@ -45,32 +44,33 @@ function printTxnResult(result) {
 
 function printTxn(txn) {
   debug(`new txn : ${JSON.stringify(txn)}`);
-  
+
 }
 
 
-function rate(date) {
+function rate(stlmtDate) {
   return 1;
 }
 
 function calcTxn(result, txn) {
+  txn.comm = 0;
   if (txn.action === 'buy') {
-    txn.changedAcb = txn.amt * rate(txn.date) + txn.comm * rate(txn.date);
+    txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
     txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQlt = result.qlt + txn.qlt;
+    txn.remainqty = result.qty + txn.qty;
     txn.gain = 0;
   } else if (txn.action === 'sell') {
-    if (result.qlt <= 0) {
-      error(5, `sell 0  security found error before this transaction  ${txn.date} ${txn.action} ${txn.comp}  ${txn.amt}`)
+    if (result.qty <= 0) {
+      error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.comp}  ${txn.amt}`)
       return t;
     }
-    txn.changedAcb = result.acb / result.qlt * txn.qlt;
+    txn.changedAcb = result.acb / result.qty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQlt = result.qlt - txn.qlt;
-    txn.gain = txn.amt * rate(txn.date) - txn.comm * rate(txn.date) * txn.changedAcb;
+    txn.remainQty = result.qty - txn.qty;
+    txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) * txn.changedAcb;
   }
-  if (txn.remainQlt != 0) {
-    txn.newPrc = result.newAcb / txn.remainQlt;
+  if (txn.remainQty != 0) {
+    txn.newPrc = result.newAcb / txn.remainQty;
   } else {
     txn.newPrc = 0;
   }
@@ -84,18 +84,18 @@ function isExistRsult(result) {
 
 function error(num, str) {
   throw error(`${num} : ${str}`);
-  
+
 }
 
-export default {
-  proTxns,
+export {
+  procTxns,
 };
 //function old(arr){
-//TransResult : result = new TransResult(accountId, year,comp,{gain:0},{acb:0},{qlt:0});
+//TransResult : result = new TransResult(accountId, year,comp,{gain:0},{acb:0},{qty:0});
 //for (Trans trans: list){
 //trans = calcTrans(result,trans);
 //result.acb = trans.newAcb;
-//result.qlt = trans.remainQlt;
+//result.qty = trans.remainQty;
 //result.gain += trans.gain;
 //updateTrans(trans); //update one recorder to db
 //}
