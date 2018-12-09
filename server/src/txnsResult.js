@@ -1,4 +1,6 @@
 import {debug, error} from './utils/logging'
+import * as accounting from './accounting'
+
 
 
 const txnsResult = {
@@ -51,13 +53,18 @@ function printTxn(txn) {
 function rate(stlmtDate) {
   return 1;
 }
-
+function u(str){
+  let ret =accounting.unformat(str);
+  debug(ret);
+  return ret;
+}
 function calcTxn(result, txn) {
   txn.comm = 0;
+  txn.qty = parseInt(txn.qty);
   if (txn.action === 'buy') {
-    txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
+    txn.changedAcb = u(txn.amt) * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
     txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainqty = result.qty + txn.qty;
+    txn.remainQty = result.qty + txn.qty;
     txn.gain = 0;
   } else if (txn.action === 'sell') {
     if (result.qty <= 0) {
@@ -67,7 +74,7 @@ function calcTxn(result, txn) {
     txn.changedAcb = result.acb / result.qty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.qty - txn.qty;
-    txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) * txn.changedAcb;
+    txn.gain = u(txn.amt) * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) * txn.changedAcb;
   }
   if (txn.remainQty != 0) {
     txn.newPrc = result.newAcb / txn.remainQty;
@@ -82,8 +89,9 @@ function isExistRsult(result) {
   return false;
 }
 
-function error(num, str) {
-  throw error(`${num} : ${str}`);
+function myerror(num, str) {
+  // throw error(`${num} : ${str}`);
+  error(`${num} : ${str}`);
 
 }
 
