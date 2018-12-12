@@ -1,6 +1,6 @@
 import {debug, error} from './utils/logging'
 import * as accounting from './accounting'
-
+import * as Txn from './txn'
 
 
 const txnsResult = {
@@ -19,6 +19,8 @@ function getCurYear() {
 function getCurAccountId() {
   return 1;
 }
+
+//wr to be basing on different comp do it .
 function procTxns(arr, year, accountId) {
   let result = {
     accountId: accountId,
@@ -27,6 +29,7 @@ function procTxns(arr, year, accountId) {
     gain: 0,
     acb: 0,
     qty: 0,
+    newAcb : 0,
   }
   let newArr = arr.map((txn) => {
     txn = calcTxn(result, txn);
@@ -53,16 +56,16 @@ function printTxn(txn) {
 function rate(stlmtDate) {
   return 1;
 }
-function u(str){
-  let ret =accounting.unformat(str);
-  debug(ret);
-  return ret;
-}
+// function u(str){
+//   let ret =accounting.unformat(str);
+//   debug(ret);
+//   return ret;
+// }
 function calcTxn(result, txn) {
   txn.comm = 0;
   txn.qty = parseInt(txn.qty);
   if (txn.action === 'buy') {
-    txn.changedAcb = u(txn.amt) * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
+    txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.qty + txn.qty;
     txn.gain = 0;
@@ -71,13 +74,13 @@ function calcTxn(result, txn) {
       error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.comp}  ${txn.amt}`)
       return t;
     }
-    txn.changedAcb = result.acb / result.qty * txn.qty;
+    txn.changedAcb = - result.acb / result.qty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.qty - txn.qty;
-    txn.gain = u(txn.amt) * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) * txn.changedAcb;
+    txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
   }
   if (txn.remainQty != 0) {
-    txn.newPrc = result.newAcb / txn.remainQty;
+    txn.newPrc = txn.newAcb / txn.remainQty;
   } else {
     txn.newPrc = 0;
   }

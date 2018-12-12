@@ -23,6 +23,7 @@
 <script>
   // import RemoteData from '../mixins/RemoteData'
   import {debug, info, error} from '../utils/logging'
+  import txn from '../../../server/src/txn'
   export default {
     // mixins: [
     //   RemoteData({
@@ -46,7 +47,11 @@
       },
       async loadData() {
         try {
-          this.txns = await this.$fetch('txns')
+          this.txns = await this.$fetch('txns');
+          this.txns.forEach((item)=>{
+            debug(`txn : ${txn.format(item)}`);
+            debug(item.stlmtDate);
+          })
         } catch (e) {
           error(e)
         }

@@ -122,25 +122,35 @@
       // },
       importData() {
         let arr = this.table.rows;
+        let objs = [];
         arr.forEach(row => {
-          let obj = this.createObjects(row)
-          this.operation(obj);
+          if (row.indexOf('VIPS') > 0) {
+            let obj = this.createObjects(row)
+            obj = this.createObject(obj);
+            objs.push(obj);
+            return ;
+          }
         });
+        this.operation(objs);
       },
-      async operation(obj) {
+      createObject(obj) {
+        return {
+          stlmtDate: obj.date,
+          action: obj.action.toLowerCase(),
+          symbol: obj.symbol,
+          description: obj.description,
+          type: obj.type,
+          qty: obj.qty,
+          price: obj.price,
+          amt: obj.amt,
+        }
+      }
+      ,
+      async operation(objs) {
         await
-          this.$fetch('txns/new', {
+          this.$fetch('txns/newMany', {
             method: 'POST',
-            body: JSON.stringify({
-              stlmtDate: obj.date,
-              action: obj.action.toLowerCase(),
-              symbol: obj.symbol,
-              description: obj.description,
-              type:obj.type,
-              qty:obj.qty,
-              price:obj.price,
-              amt:obj.amt,
-            }),
+            body: JSON.stringify(objs),
           })
       }
       ,
@@ -280,6 +290,7 @@
     margin: 0 auto;
     display: inline;
   }
+
   label {
     display: block;
   }

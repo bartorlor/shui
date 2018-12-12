@@ -12,7 +12,6 @@ let db;
 initData()
 
 
-
 function privateRoute(req, res, next) {
   if (!req.user) {
     res.status(403).send('Unauthorized')
@@ -33,8 +32,8 @@ let collection
 export function setDb(newDb) {
   db = newDb;
   collection = db.collection('txns')
-
-
+  
+  
   console.log('db:', db)
 }
 
@@ -45,7 +44,7 @@ export default function (app) {
       res.json(result)
     }, 1500)
   })
-
+  
   app.post('/signup', async (req, res) => {
     try {
       if (req.user) {
@@ -62,7 +61,7 @@ export default function (app) {
       res.status(403).send(e.message)
     }
   })
-
+  
   app.post('/login', (req, res, next) => {
     if (req.user) {
       res.status(403).send('Unauthorized')
@@ -76,7 +75,7 @@ export default function (app) {
   }, (err, req, res, next) => {
     res.status(403).send(err)
   })
-
+  
   app.get('/user', (req, res) => {
     if (!req.user) {
       res.send('null')
@@ -84,26 +83,26 @@ export default function (app) {
       sendUserInfo(req, res)
     }
   })
-
+  
   app.get('/logout', (req, res) => {
     req.logout()
     res.json({status: 'ok'})
   })
-
+  
   app.get('/accounts', privateRoute, async (req, res) => {
     const result = await Tickets.getAll({
       user: req.user,
     })
     res.json(result)
   })
-
+  
   app.post('/accounts/new', privateRoute, async (req, res) => {
     const result = await Tickets.create({
       user: req.user,
     }, req.body)
     res.json(result)
   })
-
+  
   app.get('/account/:id', privateRoute, async (req, res) => {
     const result = await Tickets.getById({
       user: req.user,
@@ -117,22 +116,25 @@ export default function (app) {
     //if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
     //if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);
     //if (req.query.search) filter.$text = { $search: req.query.search };
-
+    
     if (req.query._summary === undefined) {
       const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
       let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
       if (limit > 50) limit = 50;
-
+      
       const cursor = db.collection('txns').find(filter).sort({_id: 1})
       .skip(offset)
       .limit(limit);
-
+      
       let totalCount;
       cursor.count(false).then(result => {
         totalCount = result;
         return cursor.toArray();
       })
       .then(txns => {
+        txns.forEach((item) => {
+          debug(`txn : ${txn.format(item)}`);
+        })
         res.json({metadata: {totalCount}, records: txns});
       })
       .catch(error => {
@@ -160,7 +162,7 @@ export default function (app) {
   });
 //db.report.insert({ qty:100, symbol:'vips', stlmtDate:'2016-Jan-11',
 // years:'2015,2016', disposition:1548.95, acb:1435.01, expense:1.00, gain:22.94, });
-
+  
   app.get('/report', privateRoute, (req, res) => {
     req.query.symbol = 'VIPS';
     const filter = {};
@@ -168,12 +170,12 @@ export default function (app) {
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
     let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
     if (limit > 50) limit = 50;
-
+    
     const cursor = db.collection('txns').find(filter).sort({_id: 1})
     .skip(offset)
     .limit(limit);
-
-
+    
+    
     let totalCount;
     cursor.count(false).then(result => {
       totalCount = result;
@@ -183,7 +185,7 @@ export default function (app) {
       let obj = Report.procTxns(txns, 2016, 1);
       obj.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
       obj.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
-
+      
       // res.json({metadata: {totalCount}, records: txns});
     })
     .catch(error => {
@@ -200,8 +202,8 @@ export default function (app) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
-
-    db.collection('txns').insertOne(txn.cleanupTxn(newTxn)).then(result => {
+    
+    db.collection('txns').insertOne(txn.convertTxn(newTxn)).then(result => {
         debug('insert result', result.result)
         debug('insert result', result.insertedId)
         // let ret = db.collection('txns').find().toArray()
@@ -220,6 +222,40 @@ export default function (app) {
       res.status(500).json({message: `Internal Server Error: ${error}`});
     });
   });
+  app.post('/txns/newMany', privateRoute, (req, res) => {
+    debug('new ', req.body);
+    let txns = req.body;
+    
+    let errs = [];
+    txns = txns.map((newTxn) => {
+      const err = txn.validateTxn(newTxn);
+      if (err !== null) {
+        errs.push(err);
+      }
+      return txn.convertTxn(newTxn);
+    })
+    errs = errs.length ? errs.join('; ') : null;
+    if (errs) {
+      res.status(422).json({message: `Invalid request: ${errs}`});
+      return;
+    }
+    
+    db.collection('txns').insertMany(txns)
+    .then(result => {
+        debug('insert result', result.result.ok)
+        debug('insert result', result.insertedIds)
+        if (result.result.ok === 1) {
+          res.json(result.result);
+          
+        } else {
+          res.status(500).json({message: `Internal Server Error: ${result.result}`});
+        }
+      }
+    ).catch(error => {
+      debug('insert error ', error)
+      res.status(500).json({message: `Internal Server Error: ${error}`});
+    });
+  });
   app.get('/txn/:id', privateRoute, (req, res) => {
     debug('get ', req.params.id)
     let txnId;
@@ -229,7 +265,7 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
+    
     db.collection('txns').find({_id: txnId}).limit(1)
     .next()
     .then(txn => {
@@ -249,16 +285,16 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
+    
     const txn = req.body;
     delete txn._id;
-
+    
     const err = txn.validateTxn(txn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
-
+    
     db.collection('txns').updateOne({_id: txnId}, txn.convertTxn(txn)).then(() =>
       db.collection('txns').find({_id: txnId}).limit(1)
       .next()
@@ -271,7 +307,7 @@ export default function (app) {
       res.status(500).json({message: `Internal Server Error: ${error}`});
     });
   });
-
+  
   app.delete('/txns/:id', privateRoute, (req, res) => {
     let txnId;
     try {
@@ -280,7 +316,7 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
+    
     db.collection('txns').deleteOne({_id: txnId}).then((deleteResult) => {
       if (deleteResult.result.n === 1) res.json({status: 'ok'});
       else res.json({status: 'Warning: object not found'});
@@ -290,6 +326,6 @@ export default function (app) {
       res.status(500).json({message: `Internal Server Error: ${error}`});
     });
   });
-
+  
 }
 
