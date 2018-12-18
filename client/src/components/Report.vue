@@ -33,7 +33,7 @@
           <span class="badge">{{ record.result.newAcb}}</span>
           <span class="badge">{{ record.result.acb}}</span>
           <span class="badge">{{ record.result.qty}}</span>
-          <span class="badge">{{ record.result.gain}}</span>
+          <!--<span class="badge">{{ accounting.formatMoney(record.result.gain)}}</span>-->
         </div>
         <button @click="download(record._id)">download</button>
       </div>
@@ -44,6 +44,7 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
+  // import * as accounting from './../utils/accounting.js'
 
   export default {
     data() {

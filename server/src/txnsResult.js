@@ -1,5 +1,5 @@
 import {debug, error} from './utils/logging'
-import * as accounting from './accounting'
+import * as accounting from './utils/accounting'
 import * as Txn from './txn'
 
 
