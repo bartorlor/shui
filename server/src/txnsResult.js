@@ -6,7 +6,7 @@ import * as Txn from './txn'
 const txnsResult = {
   accountId: getCurAccountId(),
   year: getCurYear(),
-  comp: 'tsla',
+  symbol: 'tsla',
   gain: 10,
   acb: 1000,
   qty: 20,
@@ -21,12 +21,12 @@ function getCurAccountId() {
 }
 
 function procTxnsByCompany(obj,year,accountId){
-  let comp = obj.comp;
+  let symbol = obj.symbol;
   let arr = obj.txns;
   let result = {
     accountId: accountId,
     year: year,
-    comp: comp,
+    symbol: symbol,
     gain: 0,
     acb: 0,
     qty: 0,
@@ -45,22 +45,22 @@ function procTxnsByCompany(obj,year,accountId){
   printTxnResult(result);
 }
 function procTxns(arr, year, accountId) {
-  //find all comp base on arr
+  //find all symbol base on arr
   //for loop get corresponed records
   let compSet = new Set();
-  arr.forEach(item=>compSet.add(item.comp));
+  arr.forEach(item=>compSet.add(item.symbol));
   let list = [];
-  compSet.forEach(item=>{list.push({comp:item,txns:[]})});
+  compSet.forEach(item=>{list.push({symbol:item,txns:[]})});
   arr.forEach(item=>{
     list.some(item2=>{
-      if(item2.comp === item.comp){
+      if(item2.symbol === item.symbol){
         item2.txns.push(item);
         return true;
       }
     })
   })
   list.forEach(item=>{
-    procTxnsByCompany(item.comp,item.txns,year,accountId);
+    procTxnsByCompany(item.symbol,item.txns,year,accountId);
   })
   return list;
 }
@@ -93,7 +93,7 @@ function calcTxn(result, txn) {
     txn.gain = 0;
   } else if (txn.action === 'sell') {
     if (result.qty <= 0) {
-      error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.comp}  ${txn.amt}`)
+      error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
       return t;
     }
     txn.changedAcb = - result.acb / result.qty * txn.qty;
@@ -110,7 +110,7 @@ function calcTxn(result, txn) {
 }
 
 function isExistRsult(result) {
-  //todo check data base accountId , year and comp
+  //todo check data base accountId , year and symbol
   return false;
 }
 
@@ -124,7 +124,7 @@ export {
   procTxns,
 };
 //function old(arr){
-//TransResult : result = new TransResult(accountId, year,comp,{gain:0},{acb:0},{qty:0});
+//TransResult : result = new TransResult(accountId, year,symbol,{gain:0},{acb:0},{qty:0});
 //for (Trans trans: list){
 //trans = calcTrans(result,trans);
 //result.acb = trans.newAcb;

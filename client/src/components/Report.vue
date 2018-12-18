@@ -12,7 +12,7 @@
       <h6> Portfolio: joint636268</h6>
       <div v-for="record of records" class="record-item">
         <div>
-          <span class="badge">{{ record.comp}}</span>
+          <span class="badge">{{ record.symbol}}</span>
         </div>
         <div v-for="txn of record.txns" class="record-item">
           <span class="badge">{{ txn.qty}}</span>
@@ -43,7 +43,7 @@
       return {
         records: [
           {
-            comp: 'vips',
+            symbol: 'vips',
             txns: [
               {
                 qty: 100,

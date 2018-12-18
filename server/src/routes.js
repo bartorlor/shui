@@ -163,8 +163,9 @@ export default function (app) {
 //db.report.insert({ qty:100, symbol:'vips', stlmtDate:'2016-Jan-11',
 // years:'2015,2016', disposition:1548.95, acb:1435.01, expense:1.00, gain:22.94, });
 //  db.inventory.find( { tags: ["red", "blank"] } )
+  // db.txns.find( { symbol: { $in:["VIPS", "SCTY"]} });
   app.get('/report', privateRoute, (req, res) => {
-    req.query.symbol = { symbol: ["VIPS", "SCTY"] };
+    req.query.symbol = { symbol: { $in:["VIPS", "SCTY"]} };
     const filter = {};
     if (req.query.symbol) filter.symbol = req.query.symbol;
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
