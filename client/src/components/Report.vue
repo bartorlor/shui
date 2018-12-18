@@ -18,22 +18,23 @@
           <span class="date">{{ txn.stlmtDate | date }}</span>
           <span class="badge">{{ txn.action}}</span>
           <span class="badge">{{ txn.qty}}</span>
-          <span class="badge">{{ txn.price}}</span>
-          <span class="badge">{{ txn.amt}}</span>
+          <span class="badge">{{ formatMoney(txn.price)}}</span>
+          <span class="badge">{{ formatMoney(txn.amt)}}</span>
           <span class="badge">{{ txn.qty}}</span>
-          <span class="badge">{{ txn.changedAcb}}</span>
-          <span class="badge">{{ txn.newAcb}}</span>
-          <span class="badge">{{ txn.newPrc}}</span>
+          <span class="badge">{{ formatMoney(txn.changedAcb)}}</span>
+          <span class="badge">{{ formatMoney(txn.newAcb)}}</span>
+          <span class="badge">{{ formatMoney(txn.newPrc)}}</span>
           <span class="badge">{{ txn.remainQty}}</span>
-          <span class="badge">{{ txn.gain}}</span>
+          <span class="badge">{{ formatMoney(txn.gain)}}</span>
         </div>
         <div>
           <span class="badge">{{ record.result.accountId}}</span>
           <span class="badge">{{ record.result.year}}</span>
-          <span class="badge">{{ record.result.newAcb}}</span>
-          <span class="badge">{{ record.result.acb}}</span>
+          <span class="badge">{{ formatMoney(record.result.newAcb)}}</span>
+          <span class="badge">{{ formatMoney(record.result.acb)}}</span>
           <span class="badge">{{ record.result.qty}}</span>
-          <!--<span class="badge">{{ accounting.formatMoney(record.result.gain)}}</span>-->
+          <span class="badge">{{ formatMoney(record.result.gain)}}</span>
+          <!--<span class="badge">{{ test}}</span>-->
         </div>
         <button @click="download(record._id)">download</button>
       </div>
@@ -44,7 +45,7 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
-  // import * as accounting from './../utils/accounting.js'
+  import * as accounting from '../utils/accounting.js'
 
   export default {
     data() {
@@ -74,7 +75,14 @@
         ],
       }
     },
+     computed: {
+         test() {
+           return accounting.formatMoney(100.4)
+    }, },
     methods: {
+      formatMoney(m){
+       return accounting.formatMoney(m)
+      },
       download(id) {
         this.$fetch(`records/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
