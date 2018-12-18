@@ -60,7 +60,7 @@ function procTxns(arr, year, accountId) {
     })
   })
   list.forEach(item=>{
-    procTxnsByCompany(item.symbol,item.txns,year,accountId);
+    procTxnsByCompany(item,year,accountId);
   })
   return list;
 }

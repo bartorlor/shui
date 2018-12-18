@@ -165,7 +165,7 @@ export default function (app) {
 //  db.inventory.find( { tags: ["red", "blank"] } )
   // db.txns.find( { symbol: { $in:["VIPS", "SCTY"]} });
   app.get('/report', privateRoute, (req, res) => {
-    req.query.symbol = { symbol: { $in:["VIPS", "SCTY"]} };
+    req.query.symbol =  { $in:["VIPS", "SCTY"] };
     const filter = {};
     if (req.query.symbol) filter.symbol = req.query.symbol;
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;

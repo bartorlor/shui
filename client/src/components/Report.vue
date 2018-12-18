@@ -15,15 +15,22 @@
           <span class="badge">{{ record.symbol}}</span>
         </div>
         <div v-for="txn of record.txns" class="record-item">
-          <span class="badge">{{ txn.qty}}</span>
           <span class="date">{{ txn.stlmtDate | date }}</span>
-          <span class="badge">{{ txn.years}}</span>
-          <span class="badge">{{ txn.disposition}}</span>
-          <span class="badge">{{ txn.acb}}</span>
-          <span class="badge">{{ txn.expense}}</span>
+          <span class="badge">{{ txn.action}}</span>
+          <span class="badge">{{ txn.qty}}</span>
+          <span class="badge">{{ txn.price}}</span>
+          <span class="badge">{{ txn.amt}}</span>
+          <span class="badge">{{ txn.qty}}</span>
+          <span class="badge">{{ txn.changedAcb}}</span>
+          <span class="badge">{{ txn.newAcb}}</span>
+          <span class="badge">{{ txn.newPrc}}</span>
+          <span class="badge">{{ txn.remainQty}}</span>
           <span class="badge">{{ txn.gain}}</span>
         </div>
         <div>
+          <span class="badge">{{ record.result.accountId}}</span>
+          <span class="badge">{{ record.result.year}}</span>
+          <span class="badge">{{ record.result.newAcb}}</span>
           <span class="badge">{{ record.result.acb}}</span>
           <span class="badge">{{ record.result.qty}}</span>
           <span class="badge">{{ record.result.gain}}</span>
