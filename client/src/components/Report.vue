@@ -11,14 +11,23 @@
       <h3> Capital Gains (or Losses) for Year Ended 2016-Dec-31</h3>
       <h6> Portfolio: joint636268</h6>
       <div v-for="record of records" class="record-item">
-        <span class="badge">{{ record.qty}}</span>
-        <span class="badge">{{ record.symbol}}</span>
-        <span class="date">{{ record.stlmtDate | date }}</span>
-        <span class="badge">{{ record.years}}</span>
-        <span class="badge">{{ record.disposition}}</span>
-        <span class="badge">{{ record.acb}}</span>
-        <span class="badge">{{ record.expense}}</span>
-        <span class="badge">{{ record.gain}}</span>
+        <div>
+          <span class="badge">{{ record.comp}}</span>
+        </div>
+        <div v-for="txn of record.txns" class="record-item">
+          <span class="badge">{{ txn.qty}}</span>
+          <span class="date">{{ txn.stlmtDate | date }}</span>
+          <span class="badge">{{ txn.years}}</span>
+          <span class="badge">{{ txn.disposition}}</span>
+          <span class="badge">{{ txn.acb}}</span>
+          <span class="badge">{{ txn.expense}}</span>
+          <span class="badge">{{ txn.gain}}</span>
+        </div>
+        <div>
+          <span class="badge">{{ record.result.acb}}</span>
+          <span class="badge">{{ record.result.qty}}</span>
+          <span class="badge">{{ record.result.gain}}</span>
+        </div>
         <button @click="download(record._id)">download</button>
       </div>
     </section>
@@ -28,20 +37,32 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
+
   export default {
-    data(){
+    data() {
       return {
         records: [
-           {
-           qty:100,
-           symbol:'client vips',
-           stlmtDate:'02/14/2016',
-           years:'2015,2016',
-           disposition:1548.95,
-           acb:1435.01,
-           expense:1.00,
-           gain:22.93,
-           }
+          {
+            comp: 'vips',
+            txns: [
+              {
+                qty: 100,
+                symbol: 'fake vips',
+                stlmtDate: '02/14/2016',
+                years: '2015,2016',
+                disposition: 1548.95,
+                acb: 1435.01,
+                expense: 1.00,
+                gain: 22.93,
+              },
+            ],
+            result: {
+              acb: 0,
+              qty: 1,
+              gain: 100,
+            }
+
+          }
         ],
       }
     },
@@ -49,7 +70,7 @@
       download(id) {
         this.$fetch(`records/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
-          else  this.loadData()
+          else this.loadData()
         })
       },
       async loadData() {

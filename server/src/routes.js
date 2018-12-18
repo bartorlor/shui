@@ -182,10 +182,11 @@ export default function (app) {
       return cursor.toArray();
     })
     .then(txns => {
-      let obj = Report.procTxns(txns, 2016, 1);
-      obj.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
-      obj.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
-      
+      let objs = Report.procTxns(txns, 2016, 1);
+      // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
+      // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
+     res.json(objs)
+     
     })
     .catch(error => {
       console.log(error);

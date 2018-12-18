@@ -62,7 +62,7 @@ function procTxns(arr, year, accountId) {
   list.forEach(item=>{
     procTxnsByCompany(item.comp,item.txns,year,accountId);
   })
-  return {data:newArr, result:result};
+  return list;
 }
 
 function printTxnResult(result) {
