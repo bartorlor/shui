@@ -45,7 +45,7 @@ function convertDate(str) {
       let dd = str.substr(0,2);
       let mm = str.substr(3,2);
       let yyyy = str.substr(6,4);
-      ret = `${mm}-${dd}-${yyyy}`;
+      ret = `${mm}/${dd}/${yyyy}`;
        // ret = new Date(newDate);
       return ret ;
       
@@ -54,7 +54,7 @@ function convertDate(str) {
       
     } catch (ex) {
       error(`error date ${str}`);
-      ret = new Date('01-01-2000');
+      ret = new Date('01/01/2000');
       return ret ;
     }
 }

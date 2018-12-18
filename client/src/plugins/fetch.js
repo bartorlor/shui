@@ -13,7 +13,9 @@ export async function $fetch (url, options) {
   const response = await fetch(`${baseUrl}${url}`, finalOptions)
   if (response.ok) {
     let data = await response.json()
-    debug('fetch:',data)
+    if(!fetch){
+      debug('fetch:',data)
+    }
     if(typeof data.metadata !== 'undefined'){
       data = data.records
     }

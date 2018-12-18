@@ -124,7 +124,7 @@
         let arr = this.table.rows;
         let objs = [];
         arr.forEach(row => {
-          if (row.indexOf('VIPS') > 0) {
+          if (row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
             let obj = this.createObjects(row)
             obj = this.createObject(obj);
             objs.push(obj);

@@ -35,7 +35,7 @@
            {
            qty:100,
            symbol:'client vips',
-           stlmtDate:'2016-Jan-11',
+           stlmtDate:'02/14/2016',
            years:'2015,2016',
            disposition:1548.95,
            acb:1435.01,

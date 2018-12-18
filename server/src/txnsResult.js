@@ -20,12 +20,13 @@ function getCurAccountId() {
   return 1;
 }
 
-//wr to be basing on different comp do it .
-function procTxns(arr, year, accountId) {
+function procTxnsByCompany(obj,year,accountId){
+  let comp = obj.comp;
+  let arr = obj.txns;
   let result = {
     accountId: accountId,
     year: year,
-    comp: 'vips',
+    comp: comp,
     gain: 0,
     acb: 0,
     qty: 0,
@@ -39,7 +40,28 @@ function procTxns(arr, year, accountId) {
     printTxn(txn); //update one recorder to db
     return txn;
   })
+  obj.txns = newArr;
+  obj.result = result ;
   printTxnResult(result);
+}
+function procTxns(arr, year, accountId) {
+  //find all comp base on arr
+  //for loop get corresponed records
+  let compSet = new Set();
+  arr.forEach(item=>compSet.add(item.comp));
+  let list = [];
+  compSet.forEach(item=>{list.push({comp:item,txns:[]})});
+  arr.forEach(item=>{
+    list.some(item2=>{
+      if(item2.comp === item.comp){
+        item2.txns.push(item);
+        return true;
+      }
+    })
+  })
+  list.forEach(item=>{
+    procTxnsByCompany(item.comp,item.txns,year,accountId);
+  })
   return {data:newArr, result:result};
 }
 

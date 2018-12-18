@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 export function date (value) {
-  let ret =moment(value,'DD-MM-YYYY').format('L')
+  let ret =moment(value,'MM/DD/YYYY').format('L')
   return ret;
 }
 // moment(value).format('L')
