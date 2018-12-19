@@ -17,23 +17,23 @@
         <div v-for="txn of record.txns" class="record-item">
           <span class="date">{{ txn.stlmtDate | date }}</span>
           <span class="badge">{{ txn.action}}</span>
-          <span class="badge">{{ txn.qty}}</span>
-          <span class="badge">{{ formatMoney(txn.price)}}</span>
-          <span class="badge">{{ formatMoney(txn.amt)}}</span>
-          <span class="badge">{{ txn.qty}}</span>
-          <span class="badge">{{ formatMoney(txn.changedAcb)}}</span>
-          <span class="badge">{{ formatMoney(txn.newAcb)}}</span>
-          <span class="badge">{{ formatMoney(txn.newPrc)}}</span>
-          <span class="badge">{{ txn.remainQty}}</span>
-          <span class="badge">{{ formatMoney(txn.gain)}}</span>
+          <span class="badge">qty:{{ txn.qty}}</span>
+          <span class="badge">price:{{ formatMoney(txn.price)}}</span>
+          <span class="badge">amt:{{ formatMoney(txn.amt)}}</span>
+          <span class="badge">qty:{{ txn.qty}}</span>
+          <span class="badge">changedAcb{{ formatMoney(txn.changedAcb)}}</span>
+          <span class="badge">newAcb:{{ formatMoney(txn.newAcb)}}</span>
+          <span class="badge">prc:{{ formatMoney(txn.newPrc)}}</span>
+          <span class="badge">remainQty:{{ txn.remainQty}}</span>
+          <span class="badge">gain:{{ formatMoney(txn.gain)}}</span>
         </div>
         <div>
-          <span class="badge">{{ record.result.accountId}}</span>
-          <span class="badge">{{ record.result.year}}</span>
-          <span class="badge">{{ formatMoney(record.result.newAcb)}}</span>
-          <span class="badge">{{ formatMoney(record.result.acb)}}</span>
-          <span class="badge">{{ record.result.qty}}</span>
-          <span class="badge">{{ formatMoney(record.result.gain)}}</span>
+          <span class="badge">accId:{{ record.result.accountId}}</span>
+          <span class="badge">year:{{ record.result.year}}</span>
+          <span class="badge">newAcb:{{ formatMoney(record.result.newAcb)}}</span>
+          <span class="badge">acb:{{ formatMoney(record.result.acb)}}</span>
+          <span class="badge">qty:{{ record.result.qty}}</span>
+          <span class="badge">gain:{{ formatMoney(record.result.gain)}}</span>
           <!--<span class="badge">{{ test}}</span>-->
         </div>
         <button @click="download(record._id)">download</button>
