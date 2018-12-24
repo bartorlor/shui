@@ -19,7 +19,30 @@ function getCurYear() {
 function getCurAccountId() {
   return 1;
 }
-
+function calcTxn(result, txn) {
+  txn.comm = 0;
+  if (txn.action === 'buy') {
+    txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
+    txn.newAcb = result.acb + txn.changedAcb;
+    txn.remainQty = result.qty + txn.qty;
+    txn.gain = 0;
+  } else if (txn.action === 'sell') {
+    if (result.qty <= 0) {
+      error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
+      return t;
+    }
+    txn.changedAcb = - result.acb / result.qty * txn.qty;
+    txn.newAcb = result.acb + txn.changedAcb;
+    txn.remainQty = result.qty - txn.qty;
+    txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
+  }
+  if (txn.remainQty != 0) {
+    txn.newPrc = txn.newAcb / txn.remainQty;
+  } else {
+    txn.newPrc = 0;
+  }
+  return txn;
+}
 function procTxnsByCompany(obj,year,accountId){
   let symbol = obj.symbol;
   let arr = obj.txns;
@@ -78,36 +101,7 @@ function printTxn(txn) {
 function rate(stlmtDate) {
   return 1;
 }
-// function u(str){
-//   let ret =accounting.unformat(str);
-//   debug(ret);
-//   return ret;
-// }
-function calcTxn(result, txn) {
-  txn.comm = 0;
-  txn.qty = parseInt(txn.qty);
-  if (txn.action === 'buy') {
-    txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
-    txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQty = result.qty + txn.qty;
-    txn.gain = 0;
-  } else if (txn.action === 'sell') {
-    if (result.qty <= 0) {
-      error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
-      return t;
-    }
-    txn.changedAcb = - result.acb / result.qty * txn.qty;
-    txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQty = result.qty - txn.qty;
-    txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
-  }
-  if (txn.remainQty != 0) {
-    txn.newPrc = txn.newAcb / txn.remainQty;
-  } else {
-    txn.newPrc = 0;
-  }
-  return txn;
-}
+
 
 function isExistRsult(result) {
   //todo check data base accountId , year and symbol
