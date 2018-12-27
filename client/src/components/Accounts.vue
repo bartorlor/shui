@@ -6,11 +6,11 @@
       </div>
       <div v-for="(row, index) in accounts" :key="index" class="ticket-item">
         <span class="badge">{{ row._id}}</span>
-        <span v-if="isEditStatus(index)">{{ row.name }}</span>
+        <span v-if="editIndex !== index">{{ row.name }}</span>
         <span v-else>
               <input v-model="row.name">
         </span>
-        <span v-if="editIndex === index">
+        <span v-if="editIndex !== index">
                 <button @click="deleteOne(row._id)">delete</button>
                 <button @click="edit(row,index)">edit</button>
                 <button @click="select(row)">select</button>
@@ -26,9 +26,13 @@
 </template>
 
 <script>
+  import {debug, info, error} from '../utils/logging'
   export default {
-    data() {
+    name: 'my',
+
+    data () {
       return {
+        message: 'Hello Vue.js!',
         accounts: [],
         editIndex: null,
         originalData: null,
