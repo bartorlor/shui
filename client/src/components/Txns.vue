@@ -25,11 +25,6 @@
   import {debug, info, error} from '../utils/logging'
   import txn from '../../../server/src/txn'
   export default {
-    // mixins: [
-    //   RemoteData({
-    //     txns: 'txns',
-    //   }),
-    // ],
     data(){
       return {
         txns: [],
@@ -41,9 +36,6 @@
           if (response.status !== 'ok') error('Failed to delete issue');
           else  this.loadData()
         })
-      },
-      delete2(id) {
-        info('test')
       },
       async loadData() {
         try {
