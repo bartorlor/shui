@@ -1,24 +1,24 @@
 <template>
   <div class="accounts" id="accounts">
-    <div class="empty">
-      Current Portfolio is {{selectedItem.name}}
-    </div>
     <section class="accounts-list">
-      <div v-for="(row,index) of accounts" class="ticket-item">
+      <div   v-if="accounts.length !==0" class="empty">
+        Current Portfolio is {{selectedItem.name}}
+      </div>
+      <div v-for="(row, index) in accounts" :key="index" class="ticket-item">
         <span class="badge">{{ row._id}}</span>
-        <!--<span v-if="isEditStatus">{{ row.name }}</span>-->
-        <!--<span v-else>-->
-              <!--<input v-model="row.name">-->
-        <!--</span>-->
-        <!--<span v-if="isEditStatus">-->
-                <!--<button @click="delete(row._id)">delete</button>-->
-                <!--<button @click="edit(row,index)">edit</button>-->
-                <!--<button @click="select(row)">select</button>-->
-        <!--</span>-->
-        <!--<span v-else>-->
-              <!--<button @click="cancel(row)">Cancel</button>-->
-              <!--<button @click="save(row)">Save</button>-->
-        <!--</span>-->
+        <span v-if="isEditStatus(index)">{{ row.name }}</span>
+        <span v-else>
+              <input v-model="row.name">
+        </span>
+        <span v-if="editIndex === index">
+                <button @click="deleteOne(row._id)">delete</button>
+                <button @click="edit(row,index)">edit</button>
+                <button @click="select(row)">select</button>
+        </span>
+        <span v-else>
+              <button @click="cancel(row)">Cancel</button>
+              <button @click="save(row)">Save</button>
+        </span>
       </div>
     </section>
     <button @click="add()">add</button>
@@ -38,9 +38,6 @@
       isAdd() {
         return (this.originalData === null)
       },
-      isEditStatus() {
-        return (this.editIndex === index)
-      },
       selectedItem() {
         let ret = false;
          ret = this.accounts.filter((item) => {
@@ -51,9 +48,13 @@
       }
     },
     methods: {
+      isEditStatus(index) {
+        return (this.editIndex === index)
+      },
       add() {
         this.originalData = null;
-        this.items.push({_id: '0', name: 'My Portfolio', selected: false,});
+        let selected = this.accounts.length === 0 ? true : false;
+        this.accounts.push({_id: '0', name: 'My Portfolio', selected: selected});
         this.editIndex = this.accounts.length - 1
       },
       edit(item, index) {
@@ -63,7 +64,7 @@
       cancel(item) {
         this.editIndex = null
         if (this.isAdd) {
-          this.items.splice(this.items.indexOf(item), 1)
+          this.accounts.splice(this.accounts.indexOf(item), 1)
         } else {
           Object.assign(item, this.originalData)
           this.originalData = null
@@ -129,7 +130,7 @@
         });
         this.loadData();
       },
-      delete(id) {
+      deleteOne(id) {
         this.$fetch(`accounts/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
           else this.loadData()
