@@ -4,22 +4,52 @@
       <div   v-if="accounts.length !==0" class="empty">
         Current Portfolio is {{selectedItem.name}}
       </div>
-      <div v-for="(row, index) in accounts" :key="index" class="ticket-item">
-        <span class="badge">{{ row._id}}</span>
-        <span v-if="editIndex !== index">{{ row.name }}</span>
-        <span v-else>
-              <input v-model="row.name">
-        </span>
-        <span v-if="editIndex !== index">
-                <button @click="deleteOne(row._id)">delete</button>
-                <button @click="edit(row,index)">edit</button>
-                <button @click="select(row)">select</button>
-        </span>
-        <span v-else>
-              <button @click="cancel(row)">Cancel</button>
-              <button @click="save(row)">Save</button>
-        </span>
-      </div>
+
+
+     <div class="table-line-header flex-container">
+      <label class="cell cell2 header">id</label>
+      <label class="cell cell2 header">Name</label>
+      <label class="cell cell2 header">Actions</label>
+      <label class="cell cell2 header">Delete</label>
+    </div>
+    <div class="table-line flex-container"
+          v-for="(row, index) in accounts" :key="index">
+        <span class="cell cell2">{{ row._id}}</span>
+
+        <span class="cell cell2" v-if="editIndex !== index">{{ row.name }}</span>
+        <input class="cell cell2" v-else v-model="row.name"/>
+
+                <button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>
+                <button v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)">edit</button>
+
+              <button v-if="editIndex === index" class="cell cell2" @click="cancel(row)">Cancel</button>
+              <button v-if="editIndex === index" class="cell cell2"@click="save(row)">Save</button>
+
+      <button v-if="editIndex !== index" class="cell cell2" @click="select(row)">select</button>
+
+      <!--<div class="cell cell 1" @click="disk.enable ^=true">-->
+        <!--<q-checkbox v-model="disk.enable"></q-checkbox>-->
+      <!--</div>-->
+
+    </div>
+
+
+      <!--<div v-for="(row, index) in accounts" :key="index" class="ticket-item">-->
+        <!--<span class="badge">{{ row._id}}</span>-->
+        <!--<span v-if="editIndex !== index">{{ row.name }}</span>-->
+        <!--<span v-else>-->
+              <!--<input v-model="row.name">-->
+        <!--</span>-->
+        <!--<span v-if="editIndex !== index">-->
+                <!--<button @click="deleteOne(row._id)">delete</button>-->
+                <!--<button @click="edit(row,index)">edit</button>-->
+                <!--<button @click="select(row)">select</button>-->
+        <!--</span>-->
+        <!--<span v-else>-->
+              <!--<button @click="cancel(row)">Cancel</button>-->
+              <!--<button @click="save(row)">Save</button>-->
+        <!--</span>-->
+      <!--</div>-->
     </section>
     <button @click="add()">add</button>
   </div>
@@ -157,3 +187,7 @@
     },
   }
 </script>
+<style lang="stylus" scoped>
+  @import '../style/imports';
+  @import '../style/table';
+</style>
