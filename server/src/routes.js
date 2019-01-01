@@ -4,7 +4,7 @@ import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
 import * as Tickets from './connectors/tickets'
 import txn from './txn'
-import account from './account'
+import Account from './account'
 import {debug} from './utils/logging'
 import {ObjectId} from 'mongodb';
 import * as Report from './txnsResult'
@@ -108,7 +108,7 @@ export default function (app) {
   app.post('/accounts/new', privateRoute, (req, res) => {
     debug('new ', req.body);
     const newAccount = req.body;
-    const err = account.validateAccount(newAccount);
+    const err = Account.validateAccount(newAccount);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
@@ -142,13 +142,14 @@ export default function (app) {
     const account = req.body;
     delete account._id;
 
-    const err = account.validateAccount(account);
+    const err = Account.validateAccount(account);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
 
-    db.collection('accounts').updateOne({_id: accountId}, account.convertAccount(account)).then(() =>
+    db.collection('accounts').updateOne(
+      {_id: accountId},{$set:  Account.convertAccount(account)} ).then(() =>
       db.collection('accounts').find({_id: accountId}).limit(1)
       .next()
     )
@@ -293,7 +294,6 @@ export default function (app) {
       res.status(422).json({message: `Invalid request: ${errs}`});
       return;
     }
-
     db.collection('txns').insertMany(txns)
     .then(result => {
         debug('insert result', result.result.ok)
@@ -319,7 +319,6 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
     db.collection('txns').find({_id: txnId}).limit(1)
     .next()
     .then(txn => {
@@ -339,16 +338,13 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
     const txn = req.body;
     delete txn._id;
-
     const err = txn.validateTxn(txn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
-
     db.collection('txns').updateOne({_id: txnId}, txn.convertTxn(txn)).then(() =>
       db.collection('txns').find({_id: txnId}).limit(1)
       .next()

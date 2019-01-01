@@ -17,7 +17,7 @@
     </div>
     <div class="table-line flex-container"
           v-for="(row, index) in accounts" :key="index">
-        <span class="cell cell2">{{ row._id}}</span>
+        <span class="cell cell2">{{ row._id}}-{{row.selected}}</span>
 
         <span class="cell cell2" v-if="editIndex !== index">{{ row.name }}</span>
         <input class="cell cell2" v-else v-model="row.name"/>
@@ -75,12 +75,12 @@
         return (this.originalData === null)
       },
       selectedItem() {
-        let ret = false;
+        let ret = null;
          ret = this.accounts.filter((item) => {
           if (item.selected)
             return item;
         });
-         return ret;
+         return ret[0];
       }
     },
     methods: {
@@ -165,8 +165,8 @@
         this.loadData();
       },
       async realEdit(obj) {
-        const result = await this.$fetch('accounts/update', {
-          method: 'POST',
+        const result = await this.$fetch(`account/${obj._id}`, {
+          method: 'PUT',
           params: {id: obj._id},
           body: JSON.stringify({
             _id: obj._id,
