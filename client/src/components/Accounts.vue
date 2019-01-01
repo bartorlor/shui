@@ -25,10 +25,10 @@
                 <button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>
                 <button v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)">edit</button>
 
-              <button v-if="editIndex === index" class="cell cell2" @click="cancel(row)">Cancel</button>
+              <button v-if="editIndex === index" class="cell cell2 " @click="cancel(row)">Cancel</button>
               <button v-if="editIndex === index" class="cell cell2"@click="save(row)">Save</button>
 
-      <button v-if="editIndex !== index" class="cell cell2" @click="select(row)">select</button>
+      <button v-if="editIndex !== index" class="cell cell2 " @click="select(row)">select</button>
     </div>
 
 
@@ -58,6 +58,7 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
+  import Account from '../../../server/src/account'
   export default {
     name: 'my',
 
@@ -87,6 +88,11 @@
         return (this.editIndex === index)
       },
       add() {
+
+        // this.$dialog.alert('error: has same portfolio name')
+        // .then(function (dialog) {
+        //   debug('Closed');
+        // });
         this.originalData = null;
         let selected = this.accounts.length === 0 ? true : false;
         this.accounts.push({_id: '0', name: 'My Portfolio', selected: selected});
@@ -109,8 +115,6 @@
         if (!this.validate()) {
           return;
         }
-        this.originalData = null;
-        this.editIndex = null;
 
         if (this.isAdd) {
           this.doAdd();
@@ -118,11 +122,18 @@
           const obj = this.accounts[this.editIndex];
           this.realEdit(obj);
         }
+        this.originalData = null;
+        this.editIndex = null;
       },
       validate() {
         const obj = this.accounts[this.editIndex];
         if (this.isSameName(obj.name)) {
-          debug("error portfolio name ");
+          // debug("error portfolio name ");
+
+        this.$dialog.alert('error: has same portfolio name,please change to different name')
+           .then(function (dialog) {
+              debug('Closed')
+            })
           return false;
         }
         return true;
@@ -143,7 +154,7 @@
         let result = this.accounts.filter(obj => {
           return obj.name === newName;
         })
-        return result;
+        return result.length > 1;
       },
       select(obj) {
         let current = this.selectedItem;
@@ -175,8 +186,7 @@
         try {
           this.accounts = await this.$fetch('accounts');
           this.accounts.forEach((item) => {
-            debug(`account : ${account.format(item)}`);
-            debug(item.stlmtDate);
+            debug(`account : ${Account.format(item)}`);
           })
         } catch (e) {
           error(e)

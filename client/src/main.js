@@ -8,6 +8,15 @@ import VueState from './plugins/state'
 import './global-components'
 import * as filters from './filters'
 
+import VuejsDialog from "vuejs-dialog"
+// import VuejsDialogMixin from "vuejs-dialog/vuejs-dialog-mixin.min.js" // only needed in custom components
+
+// include the default style
+import 'vuejs-dialog/dist/vuejs-dialog.min.css' //
+
+// Tell Vue to install the plugin.
+Vue.use(VuejsDialog)
+
 Vue.use(VueFetch, {
   baseUrl: 'http://localhost:3000/',
 })
