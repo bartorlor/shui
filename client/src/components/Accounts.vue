@@ -1,16 +1,14 @@
 <template>
-  <div class="accounts" id="accounts">
-    <section class="accounts-list">
+  <div  id="accounts">
+    <section >
       <div   v-if="accounts.length !==0" class="empty">
         Current Portfolio is {{selectedItem.name}}
       </div>
-
-
      <div class="table-line-header flex-container">
-      <label class="cell cell2 header">id</label>
-      <label class="cell cell2 header">Name</label>
-      <label class="cell cell2 header">Actions</label>
-      <label class="cell cell2 header">Delete</label>
+      <label class="cell cell2 ">id</label>
+      <label class="cell cell2 ">Name</label>
+      <label class="cell cell2 ">Actions</label>
+      <label class="cell cell2 ">Delete</label>
     </div>
     <div class="table-line flex-container"
           v-for="(row, index) in accounts" :key="index">
@@ -26,14 +24,12 @@
               <button v-if="editIndex === index" class="cell cell2"@click="save(row)">Save</button>
 
       <button v-if="editIndex !== index" class="cell cell2" @click="select(row)">select</button>
-
-      <!--<div class="cell cell 1" @click="disk.enable ^=true">-->
-        <!--<q-checkbox v-model="disk.enable"></q-checkbox>-->
-      <!--</div>-->
-
     </div>
 
 
+      <!--<div class="cell cell 1" @click="disk.enable ^=true">-->
+      <!--<q-checkbox v-model="disk.enable"></q-checkbox>-->
+      <!--</div>-->
       <!--<div v-for="(row, index) in accounts" :key="index" class="ticket-item">-->
         <!--<span class="badge">{{ row._id}}</span>-->
         <!--<span v-if="editIndex !== index">{{ row.name }}</span>-->
@@ -188,6 +184,6 @@
   }
 </script>
 <style lang="stylus" scoped>
-  @import '../style/imports';
+  /*@import '../style/imports';*/
   @import '../style/table';
 </style>
