@@ -4,6 +4,11 @@
       <div   v-if="accounts.length !==0" class="empty">
         Current Portfolio is {{selectedItem.name}}
       </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
      <div class="table-line-header flex-container">
       <label class="cell cell2 ">id</label>
       <label class="cell cell2 ">Name</label>
