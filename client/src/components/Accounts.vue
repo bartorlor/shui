@@ -9,6 +9,8 @@
       <br>
       <br>
       <br>
+      <i class="material-icons">radio_button_checked</i>
+      <i class="material-icons">radio_button_unchecked</i>
      <div class="table-line-header flex-container">
       <label class="cell cell2 ">id</label>
       <label class="cell cell2 ">Name</label>
@@ -22,13 +24,16 @@
         <span class="cell cell2" v-if="editIndex !== index">{{ row.name }}</span>
         <input class="cell cell2" v-else v-model="row.name"/>
 
-                <button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>
+                <!--<button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>-->
                 <button v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)">edit</button>
 
               <button v-if="editIndex === index" class="cell cell2 " @click="cancel(row)">Cancel</button>
               <button v-if="editIndex === index" class="cell cell2"@click="save(row)">Save</button>
 
-      <button v-if="editIndex !== index" class="cell cell2 " @click="select(row)">select</button>
+      <span v-if="editIndex !== index" class="cell cell2 " @click="select(row)">
+        <i v-if="row.selected" class="material-icons">radio_button_checked</i>
+        <i v-else class="material-icons">radio_button_unchecked</i>
+      </span>
     </div>
 
 
