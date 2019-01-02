@@ -1,7 +1,7 @@
 <template>
-  <div  id="accounts">
-    <section >
-      <div   v-if="accounts.length !==0" class="empty">
+  <div id="accounts">
+    <section>
+      <div v-if="accounts.length !==0" class="empty">
         Current Portfolio is {{selectedItem.name}}
       </div>
       <br>
@@ -9,66 +9,62 @@
       <br>
       <br>
       <br>
-      <i class="material-icons">radio_button_checked</i>
-      <i class="material-icons">radio_button_unchecked</i>
-     <div class="table-line-header flex-container">
-      <label class="cell cell2 ">id</label>
-      <label class="cell cell2 ">Name</label>
-      <label class="cell cell2 ">Rename</label>
-      <label class="cell cell2 ">Go To</label>
-    </div>
-    <div class="table-line flex-container"
-          v-for="(row, index) in accounts" :key="index">
-        <span class="cell cell2">{{ row._id}}-{{row.selected}}</span>
+      <div class="table-line-header flex-container">
+        <label class="cell cell-long ">Name</label>
+        <label class="cell cell2 ">Rename</label>
+        <label class="cell cell2 ">Go To</label>
+      </div>
+      <div class="table-line flex-container"
+           v-for="(row, index) in accounts" :key="index">
 
-        <span class="cell cell2" v-if="editIndex !== index">{{ row.name }}</span>
-        <input class="cell cell2" v-else v-model="row.name"/>
+        <span class="cell cell-long" v-if="editIndex !== index">{{ row.name }}</span>
+        <input class="cell cell-long" v-else v-model="row.name"/>
 
-                <!--<button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>-->
-                <span v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)"><i class="material-icons">edit</i></span>
-              <span v-if="editIndex === index" class="cell cell2 " >
+        <span v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)"><i class="material-icons">edit</i></span>
+        <span v-if="editIndex === index" class="cell cell2 ">
                 <i @click="cancel(row)" class="material-icons">undo</i>
                 <i @click="save(row)" class="material-icons">save</i>
               </span>
 
-      <span v-if="editIndex !== index" class="cell cell2 " @click="select(row)">
+        <span v-if="editIndex !== index" class="cell cell2 " @click="select(row)">
         <i v-if="row.selected" class="material-icons">radio_button_checked</i>
         <i v-else class="material-icons">radio_button_unchecked</i>
       </span>
-    </div>
+      </div>
+    </section>
+    <span @click="add()"><i class="material-icons">add</i></span>
+  </div>
 
 
       <!--<div class="cell cell 1" @click="disk.enable ^=true">-->
       <!--<q-checkbox v-model="disk.enable"></q-checkbox>-->
       <!--</div>-->
       <!--<div v-for="(row, index) in accounts" :key="index" class="ticket-item">-->
-        <!--<span class="badge">{{ row._id}}</span>-->
-        <!--<span v-if="editIndex !== index">{{ row.name }}</span>-->
-        <!--<span v-else>-->
-              <!--<input v-model="row.name">-->
-        <!--</span>-->
-        <!--<span v-if="editIndex !== index">-->
-                <!--<button @click="deleteOne(row._id)">delete</button>-->
-                <!--<button @click="edit(row,index)">edit</button>-->
-                <!--<button @click="select(row)">select</button>-->
-        <!--</span>-->
-        <!--<span v-else>-->
-              <!--<button @click="cancel(row)">Cancel</button>-->
-              <!--<button @click="save(row)">Save</button>-->
-        <!--</span>-->
+      <!--<span class="badge">{{ row._id}}</span>-->
+      <!--<span v-if="editIndex !== index">{{ row.name }}</span>-->
+      <!--<span v-else>-->
+      <!--<input v-model="row.name">-->
+      <!--</span>-->
+      <!--<span v-if="editIndex !== index">-->
+      <!--<button @click="deleteOne(row._id)">delete</button>-->
+      <!--<button @click="edit(row,index)">edit</button>-->
+      <!--<button @click="select(row)">select</button>-->
+      <!--</span>-->
+      <!--<span v-else>-->
+      <!--<button @click="cancel(row)">Cancel</button>-->
+      <!--<button @click="save(row)">Save</button>-->
+      <!--</span>-->
       <!--</div>-->
-    </section>
-    <button @click="add()">add</button>
-  </div>
 </template>
 
 <script>
   import {debug, info, error} from '../utils/logging'
   import Account from '../../../server/src/account'
+
   export default {
     name: 'my',
 
-    data () {
+    data() {
       return {
         message: 'Hello Vue.js!',
         accounts: [],
@@ -82,11 +78,11 @@
       },
       selectedItem() {
         let ret = null;
-         ret = this.accounts.filter((item) => {
+        ret = this.accounts.filter((item) => {
           if (item.selected)
             return item;
         });
-         return ret[0];
+        return ret[0];
       }
     },
     methods: {
@@ -99,6 +95,13 @@
         // .then(function (dialog) {
         //   debug('Closed');
         // });
+        if (this.accounts.length > 4 ) {
+          this.$dialog.alert('error: the max accounts are five')
+          .then(function (dialog) {
+            debug('Closed')
+          })
+          return false;
+        }
         this.originalData = null;
         let selected = this.accounts.length === 0 ? true : false;
         this.accounts.push({_id: '0', name: 'My Portfolio', selected: selected});
@@ -135,13 +138,13 @@
         const obj = this.accounts[this.editIndex];
         if (this.isSameName(obj.name)) {
           // debug("error portfolio name ");
-
-        this.$dialog.alert('error: has same portfolio name,please change to different name')
-           .then(function (dialog) {
-              debug('Closed')
-            })
+          this.$dialog.alert('error: has same portfolio name,please change to different name')
+          .then(function (dialog) {
+            debug('Closed')
+          })
           return false;
         }
+
         return true;
       },
       async doAdd() {
