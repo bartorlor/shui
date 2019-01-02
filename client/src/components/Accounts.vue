@@ -14,8 +14,8 @@
      <div class="table-line-header flex-container">
       <label class="cell cell2 ">id</label>
       <label class="cell cell2 ">Name</label>
-      <label class="cell cell2 ">Actions</label>
-      <label class="cell cell2 ">Delete</label>
+      <label class="cell cell2 ">Rename</label>
+      <label class="cell cell2 ">Go To</label>
     </div>
     <div class="table-line flex-container"
           v-for="(row, index) in accounts" :key="index">
@@ -25,10 +25,11 @@
         <input class="cell cell2" v-else v-model="row.name"/>
 
                 <!--<button v-if="editIndex !== index" class="cell cell2"  @click="deleteOne(row._id)">delete</button>-->
-                <button v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)">edit</button>
-
-              <button v-if="editIndex === index" class="cell cell2 " @click="cancel(row)">Cancel</button>
-              <button v-if="editIndex === index" class="cell cell2"@click="save(row)">Save</button>
+                <span v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)"><i class="material-icons">edit</i></span>
+              <span v-if="editIndex === index" class="cell cell2 " >
+                <i @click="cancel(row)" class="material-icons">undo</i>
+                <i @click="save(row)" class="material-icons">save</i>
+              </span>
 
       <span v-if="editIndex !== index" class="cell cell2 " @click="select(row)">
         <i v-if="row.selected" class="material-icons">radio_button_checked</i>
