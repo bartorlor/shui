@@ -7,9 +7,10 @@
       :operation="operation"
       :valid="valid">
       <FormInput
-        name="username"
-        v-model="username"
-        placeholder="Username" />
+        name="email"
+        v-model="email"
+        type="email"
+        placeholder="email" />
       <FormInput
         name="password"
         type="password"
@@ -22,11 +23,6 @@
           v-model="password2"
           placeholder="Retype Password"
           :invalid="retypePasswordError" />
-        <FormInput
-          name="email"
-          type="email"
-          v-model="email"
-          placeholder="Email" />
       </template>
 
       <template slot="actions">
@@ -66,10 +62,9 @@ export default {
   data () {
     return {
       mode: 'login',
-      username: '',
       password: '',
       password2: '',
-      email: '',
+      email:'',
     }
   },
 
@@ -86,11 +81,11 @@ export default {
     },
 
     signupValid () {
-      return !!this.password2 && !!this.email && !this.retypePasswordError
+      return !!this.password2 &&  !!this.email && !this.retypePasswordError
     },
 
     valid () {
-      return !!this.username && !!this.password &&
+      return !!this.email && !!this.password &&
       (this.mode !== 'signup' || this.signupValid)
     },
   },
@@ -104,7 +99,7 @@ export default {
       this.$state.user = await this.$fetch('login', {
         method: 'POST',
         body: JSON.stringify({
-          username: this.username,
+          username: this.email,
           password: this.password,
         }),
       })
@@ -115,7 +110,7 @@ export default {
       await this.$fetch('signup', {
         method: 'POST',
         body: JSON.stringify({
-          username: this.username,
+          username: this.email,
           password: this.password,
           email: this.email,
         }),
