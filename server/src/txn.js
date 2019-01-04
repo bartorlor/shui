@@ -17,6 +17,7 @@ const txnFieldType = {
   qty: 'required',
   price: 'required',
   amt: 'required',
+  accountId:'required',
 };
 
 function cleanupTxn(txn) {

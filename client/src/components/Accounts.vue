@@ -47,7 +47,7 @@
       <!--</span>-->
       <!--<span v-if="editIndex !== index">-->
       <!--<button @click="deleteOne(row._id)">delete</button>-->
-      <!--<button @click="edit(row,index)">edit</button>-->
+      <!--<button @click="edit(row,index)">edit</button>--
       <!--<button @click="select(row)">select</button>-->
       <!--</span>-->
       <!--<span v-else>-->
@@ -149,15 +149,17 @@
       },
       async doAdd() {
         const obj = this.accounts[this.editIndex];
-        const result = await this.$fetch('accounts/new', {
+        const response = await this.$fetch('accounts/new', {
           method: 'POST',
           body: JSON.stringify({
             name: obj.name,
             selected: obj.selected,
+            // email:this.$state.user.username,
           }),
         }).then(() => {
           this.loadData();
         });
+        this.saveAcctLocal(response);
       },
       isSameName(newName) {
         let result = this.accounts.filter(obj => {
@@ -174,7 +176,7 @@
         this.loadData();
       },
       async realEdit(obj) {
-        const result = await this.$fetch(`account/${obj._id}`, {
+        const response = await this.$fetch(`account/${obj._id}`, {
           method: 'PUT',
           params: {id: obj._id},
           body: JSON.stringify({
@@ -183,7 +185,15 @@
             selected: obj.selected,
           }),
         });
+        this.saveAcctLocal(response);
         this.loadData();
+      },
+      saveAcctLocal(){
+          if(!!response && response.ok){
+          const account = response;
+          if(account.selected === true)
+          this.$state.user.curAccountId = account.accountId;
+        }
       },
       deleteOne(id) {
         this.$fetch(`accounts/${id}`, {method: 'DELETE'}).then(response => {

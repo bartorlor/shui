@@ -3,6 +3,7 @@ import {debug, error} from './utils/logging'
 const accountFieldType = {
   name: 'required',
   selected: 'required',
+  email: 'required',
 };
 
 function cleanupAccount(account) {
@@ -32,36 +33,48 @@ function convertAccount(account) {
 //   sell: true,
 // };
 
-function validSelected(value){
-  if(value === true || value === false){
+function validSelected(value) {
+  if (value === true || value === false) {
     return true;
-  }else {
+  } else {
     return false;
   }
 }
-function validName(value){
-  if(value.length > 128 || value.length === 0 ){
+
+function validName(value) {
+  if (value.length > 128 || value.length === 0) {
     return false;
-  }else{
+  } else {
     return true;
   }
 }
+
+function validEmail(value) {
+  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+    return (true);
+  }
+  //alert("You have entered an invalid email address!")
+  return (false)
+}
+
 function validateAccount(account) {
   const errors = [];
   Object.keys(accountFieldType).forEach(field => {
-    if (accountFieldType[field] === 'required' && (typeof account[field] === "undefined") ) {
+    if (accountFieldType[field] === 'required' && (typeof account[field] === "undefined")) {
       errors.push(`Missing mandatory field: ${field}`);
     }
   });
-
+  
   if (!validSelected(account.selected)) {
     errors.push(`${account.selected} is not a valid value.`);
   }
   if (!validName(account.name)) {
     errors.push(`${account.name} 's length is larger than 128 or equal to zero.`);
   }
-
-  if(errors.length >0 ) {
+  if (!validEmail(account.email)) {
+    errors.push(`${account.email} 's not a valid value.`);
+  }
+  if (errors.length > 0) {
     error('valid ', errors);
   }
   return (errors.length ? errors.join('; ') : null);
@@ -69,7 +82,7 @@ function validateAccount(account) {
 
 function format(obj) {
   return `name: ${obj.name},selected: ${obj.selected}`
-
+  
 }
 
 export default {

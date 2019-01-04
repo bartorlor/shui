@@ -116,6 +116,22 @@ export default {
         }),
       })
       this.mode = 'login'
+      await this.addDefaultPortfolio();
+    },
+     async addDefaultPortfolio () {
+      const response = await this.$fetch('accounts/new', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: `My Default Portfolio`,
+          selected: true,
+          email: this.email,
+        }),
+      })
+    if(!!response && response.ok){
+      const account = response;
+      if(account.selected === true)
+      this.$state.user.curAccountId = account.accountId;
+    }
     },
   },
 }

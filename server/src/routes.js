@@ -90,7 +90,8 @@ export default function (app) {
     res.json({status: 'ok'})
   })
   app.get('/accounts', privateRoute, async (req, res) => {
-    const cursor = db.collection('accounts').find({}).sort({_id: 1})
+    const email = req.user.username;
+    const cursor = db.collection('accounts').find({email:email}).sort({_id: 1})
     let totalCount;
     cursor.count(false).then(result => {
       totalCount = result;
@@ -108,6 +109,7 @@ export default function (app) {
   app.post('/accounts/new', privateRoute, (req, res) => {
     debug('new ', req.body);
     const newAccount = req.body;
+    newAccount.email = req.user.username;
     const err = Account.validateAccount(newAccount);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
@@ -138,16 +140,13 @@ export default function (app) {
       res.status(422).json({message: `Invalid Transaction ID format: ${error}`});
       return;
     }
-
     const account = req.body;
     delete account._id;
-
     const err = Account.validateAccount(account);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
-
     db.collection('accounts').updateOne(
       {_id: accountId},{$set:  Account.convertAccount(account)} ).then(() =>
       db.collection('accounts').find({_id: accountId}).limit(1)
@@ -162,9 +161,9 @@ export default function (app) {
     });
   });
 
-
   app.get('/txns', (req, res) => {
     const filter = {};
+    filter.accountId = req.user.curAccountId;
     if (req.query.symbol) filter.symbol = req.query.symbol;
     //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
     //if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
@@ -252,6 +251,7 @@ export default function (app) {
   app.post('/txns/new', privateRoute, (req, res) => {
     debug('new ', req.body);
     const newTxn = req.body;
+    newTxn.accountId = req.user.curAccountId;
     const err = txn.validateTxn(newTxn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
@@ -283,6 +283,7 @@ export default function (app) {
 
     let errs = [];
     txns = txns.map((newTxn) => {
+      newTxn.accountId = req.user.curAccountId;
       const err = txn.validateTxn(newTxn);
       if (err !== null) {
         errs.push(err);
