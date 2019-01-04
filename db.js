@@ -7,15 +7,15 @@ while ( cursor.hasNext() ) {
 
 }
 
-var db = new Mongo().getDB("issuetracker");
+var db = new Mongo().getDB("tax");
 let r = db.adminCommand('listDatabases')
 
-//print('1 ---------------------');
-//print(JSON.stringify(r));
+print('1 ---------------------');
+print(JSON.stringify(r));
 
-//print('2 ---------------------');
-//r = db.getCollectionNames()
-//print(JSON.stringify(r));
+print('2 ---------------------');
+r = db.getCollectionNames()
+print(JSON.stringify(r));
 
 print('3 ---------------------');
 r = db.accounts.find({}).pretty();

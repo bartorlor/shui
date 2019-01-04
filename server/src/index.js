@@ -22,7 +22,7 @@ const corsOptions = {
 let db;
 MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
-  db = connection.db('issuetracker')
+  db = connection.db('tax')
   const app = express()
 
   app.use(cors(corsOptions))

@@ -48,7 +48,8 @@ export default function (app) {
 
   app.post('/signup', async (req, res) => {
     try {
-      if (req.user) {
+      debug(`signup user: ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
+      if (typeof req.user !== 'undefined') {
         throw Error('Unauthorized')
       } else {
         const newDoc = await Users.createUser({
@@ -57,6 +58,7 @@ export default function (app) {
           password: req.body.password,
         })
         res.json({status: 'ok'})
+        debug(`add a new user `)
       }
     } catch (e) {
       res.status(403).send(e.message)
@@ -64,6 +66,7 @@ export default function (app) {
   })
 
   app.post('/login', (req, res, next) => {
+    debug(`login user: ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
     if (req.user) {
       res.status(403).send('Unauthorized')
     } else {
@@ -90,6 +93,7 @@ export default function (app) {
     res.json({status: 'ok'})
   })
   app.get('/accounts', privateRoute, async (req, res) => {
+    debug(` accounts list : ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
     const email = req.user.username;
     const cursor = db.collection('accounts').find({email:email}).sort({_id: 1})
     let totalCount;
@@ -107,7 +111,7 @@ export default function (app) {
   });
 
   app.post('/accounts/new', privateRoute, (req, res) => {
-    debug('new ', req.body);
+    debug(` accounts new : ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
     const newAccount = req.body;
     newAccount.email = req.user.username;
     const err = Account.validateAccount(newAccount);
@@ -125,7 +129,8 @@ export default function (app) {
     )
     .then(savedAccount => {
       debug('------------------insert saved result', savedAccount)
-      res.json(savedAccount);
+      // res.json(savedAccount);
+      res.json({metadata:1, records: savedAccount});
     })
     .catch(error => {
       debug('insert error ', error)
@@ -270,7 +275,7 @@ export default function (app) {
     )
     .then(savedTxn => {
       debug('------------------insert saved result', savedTxn)
-      res.json(savedTxn);
+      res.json({metadata:1, records: savedTxn});
     })
     .catch(error => {
       debug('insert error ', error)

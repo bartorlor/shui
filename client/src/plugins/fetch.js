@@ -11,12 +11,13 @@ export async function $fetch (url, options) {
     credentials: 'include',
   }, options)
   const response = await fetch(`${baseUrl}${url}`, finalOptions)
+  debug(`fetch response :${JSON.stringify(response)}`)
   if (response.ok) {
     let data = await response.json()
-    if(!fetch){
-      debug('fetch:',data)
-    }
-    if(typeof data.metadata !== 'undefined'){
+    // if(!fetch){
+      debug(`fetch data :${JSON.stringify(data)}`)
+    // }
+    if(data !== null && typeof data.metadata !== 'undefined'){
       data = data.records
     }
     return data

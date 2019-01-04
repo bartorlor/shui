@@ -192,7 +192,7 @@
           if(!!response && response.ok){
           const account = response;
           if(account.selected === true)
-          this.$state.user.curAccountId = account.accountId;
+          this.$state.user.curAccountId = account._id;
         }
       },
       deleteOne(id) {

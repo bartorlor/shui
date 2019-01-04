@@ -1,4 +1,4 @@
-let _log_level = 'info';
+let _log_level = 'debug';
 
 let debug = () => {};
 let info = () => {};

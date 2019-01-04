@@ -65,6 +65,7 @@ export default {
       password: '',
       password2: '',
       email:'',
+      firstTimeLogin: true,
     }
   },
 
@@ -103,6 +104,10 @@ export default {
           password: this.password,
         }),
       })
+      if(this.firstTimeLogin === true){
+        this.firstTimeLogin = false;
+        await this.addDefaultPortfolio();
+      }
       this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
     },
 
@@ -116,7 +121,7 @@ export default {
         }),
       })
       this.mode = 'login'
-      await this.addDefaultPortfolio();
+      this.firstTimeLogin = false;
     },
      async addDefaultPortfolio () {
       const response = await this.$fetch('accounts/new', {
@@ -127,10 +132,10 @@ export default {
           email: this.email,
         }),
       })
-    if(!!response && response.ok){
+    if(response !== null && typeof response !== 'undefined'){
       const account = response;
       if(account.selected === true)
-      this.$state.user.curAccountId = account.accountId;
+      this.$state.user.curAccountId = account._id;
     }
     },
   },
