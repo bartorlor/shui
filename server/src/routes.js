@@ -146,6 +146,7 @@ export default function (app) {
       return;
     }
     const account = req.body;
+    account.email = req.user.username;
     delete account._id;
     const err = Account.validateAccount(account);
     if (err) {

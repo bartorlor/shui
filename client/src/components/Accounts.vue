@@ -168,9 +168,17 @@
         return result.length > 1;
       },
       select(obj) {
-        let current = this.selectedItem;
-        current.selected = false;
-        this.realEdit(current);
+        // let current = this.selectedItem;
+        // current.selected = false;
+        // this.realEdit(current);
+        // let item ;
+        // for( item in accouts)
+        this.accounts.map(item=>{
+          if(item.selected === true){
+            item.selected = false;
+            this.realEdit(item);
+          }
+        })
         obj.selected = true;
         this.realEdit(obj);
         this.loadData();

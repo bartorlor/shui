@@ -4,6 +4,7 @@ import {debug} from '../utils/logging'
 let baseUrl
 
 export async function $fetch (url, options) {
+  debug(`fetch url :${JSON.stringify(url)}`)
   const finalOptions = Object.assign({}, {
     headers: {
       'Content-Type': 'application/json',

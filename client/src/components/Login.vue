@@ -107,8 +107,6 @@ export default {
       })
       if(await this.hasAccount() === false){
         await this.addDefaultPortfolio();
-      }else {
-        debug(`has some accounts`)
       }
       this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
     },
@@ -128,7 +126,7 @@ export default {
         try {
           let accounts = await this.$fetch('accounts');
           let ret = accounts.length > 0  ?  true : false;
-          info(`hasAccount :${ret}`)
+          // info(`hasAccount :${ret}`)
           return ret
         } catch (e) {
           error(e)
