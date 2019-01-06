@@ -10,16 +10,20 @@ while ( cursor.hasNext() ) {
 var db = new Mongo().getDB("tax");
 let r = db.adminCommand('listDatabases')
 
-print('1 ---------------------');
-print(JSON.stringify(r));
+//print('1 ---------------------');
+//print(JSON.stringify(r));
 
-print('2 ---------------------');
-r = db.getCollectionNames()
-print(JSON.stringify(r));
+//print('2 ---------------------');
+//r = db.getCollectionNames()
+//print(JSON.stringify(r));
+
+//db.accounts.remove({});
 
 print('3 ---------------------');
 r = db.accounts.find({}).pretty();
 printRecorders(r);
+
+
 
 //print('4 ---------------------');
 //r = db.txns.find({}).pretty();
@@ -33,7 +37,6 @@ printRecorders(r);
 //report
 //txns
  //db.issue.find({'name.first': 'John', age: {$gte: 44}}, {'name.first': 1, age: 1});
-// db.issues.remove({});
 //
 // db.issues.insert([
 //   {

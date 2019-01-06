@@ -58,6 +58,8 @@
 </template>
 
 <script>
+
+import {debug, info, error} from '../utils/logging'
 export default {
   data () {
     return {
@@ -65,7 +67,6 @@ export default {
       password: '',
       password2: '',
       email:'',
-      firstTimeLogin: true,
     }
   },
 
@@ -104,9 +105,10 @@ export default {
           password: this.password,
         }),
       })
-      if(this.firstTimeLogin === true){
-        this.firstTimeLogin = false;
+      if(await this.hasAccount() === false){
         await this.addDefaultPortfolio();
+      }else {
+        debug(`has some accounts`)
       }
       this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
     },
@@ -121,8 +123,17 @@ export default {
         }),
       })
       this.mode = 'login'
-      this.firstTimeLogin = false;
     },
+      async hasAccount() {
+        try {
+          let accounts = await this.$fetch('accounts');
+          let ret = accounts.length > 0  ?  true : false;
+          info(`hasAccount :${ret}`)
+          return ret
+        } catch (e) {
+          error(e)
+        }
+      },
      async addDefaultPortfolio () {
       const response = await this.$fetch('accounts/new', {
         method: 'POST',
