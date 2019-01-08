@@ -74,6 +74,7 @@
 
 <script>
 import PersistantData from '../mixins/PersistantData'
+import {debug, info, error} from '../utils/logging'
 
 export default {
   mixins: [
@@ -111,6 +112,7 @@ export default {
 
   methods: {
     async operation () {
+      debug(`added auccount id ${this.$state.user.curAccountId}`);
       const result = await this.$fetch('txns/new', {
         method: 'POST',
         body: JSON.stringify({
@@ -122,7 +124,7 @@ export default {
           qty: this.qty,
           price: this.price,
           amt: this.amt,
-
+          accountId : this.$state.user.curAccountId,
         }),
       })
       this.symbol = this.description = ''

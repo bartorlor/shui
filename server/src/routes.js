@@ -257,7 +257,7 @@ export default function (app) {
   app.post('/txns/new', privateRoute, (req, res) => {
     debug('new ', req.body);
     const newTxn = req.body;
-    newTxn.accountId = req.user.curAccountId;
+    // newTxn.accountId = req.user.curAccountId;
     const err = txn.validateTxn(newTxn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
@@ -289,7 +289,7 @@ export default function (app) {
 
     let errs = [];
     txns = txns.map((newTxn) => {
-      newTxn.accountId = req.user.curAccountId;
+      // newTxn.accountId = req.user.curAccountId;
       const err = txn.validateTxn(newTxn);
       if (err !== null) {
         errs.push(err);

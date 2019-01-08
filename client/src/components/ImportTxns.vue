@@ -123,17 +123,18 @@
       importData() {
         let arr = this.table.rows;
         let objs = [];
+        const self = this;
         arr.forEach(row => {
           if (row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
             let obj = this.createObjects(row)
-            obj = this.createObject(obj);
+            obj = this.createObject(obj,self);
             objs.push(obj);
             return ;
           }
         });
         this.operation(objs);
       },
-      createObject(obj) {
+      createObject(obj,self) {
         return {
           stlmtDate: obj.date,
           action: obj.action.toLowerCase(),
@@ -143,6 +144,7 @@
           qty: obj.qty,
           price: obj.price,
           amt: obj.amt,
+          accountId : self.$state.user.curAccountId,
         }
       }
       ,

@@ -83,7 +83,7 @@ function convertTxn(txn) {
 function validateTxn(txn) {
   const errors = [];
   Object.keys(txnFieldType).forEach(field => {
-    if (txnFieldType[field] === 'required' && (typeof txn[field] !== "undefined")) {
+    if (txnFieldType[field] === 'required' && (typeof txn[field] === "undefined")) {
       errors.push(`Missing mandatory field: ${field}`);
     }
   });

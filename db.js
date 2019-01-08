@@ -19,15 +19,15 @@ let r = db.adminCommand('listDatabases')
 
 //db.accounts.remove({});
 
-print('3 ---------------------');
-r = db.accounts.find({}).pretty();
-printRecorders(r);
-
-
-
-//print('4 ---------------------');
-//r = db.txns.find({}).pretty();
+//print('3 ---------------------');
+//r = db.accounts.find({}).pretty();
 //printRecorders(r);
+
+
+
+print('4 ---------------------');
+r = db.txns.find({}).pretty();
+printRecorders(r);
 
 
 

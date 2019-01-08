@@ -108,6 +108,7 @@ export default {
       if(await this.hasAccount() === false){
         await this.addDefaultPortfolio();
       }
+      await this.saveCurAccount();
       this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
     },
 
@@ -141,12 +142,24 @@ export default {
           email: this.email,
         }),
       })
-    if(response !== null && typeof response !== 'undefined'){
-      const account = response;
-      if(account.selected === true)
-      this.$state.user.curAccountId = account._id;
-    }
     },
+      async saveCurAccount() {
+        try {
+          let accounts = await this.$fetch('accounts');
+          let ret = accounts.length > 0 ? true : false;
+          accounts.forEach(item => {
+            if (item !== null && typeof item !== 'undefined') {
+              const account = item;
+              if (account.selected === true)
+                this.$state.user.curAccountId = account._id;
+            }
+          })
+          // info(`hasAccount :${ret}`)
+          return ret
+        } catch (e) {
+          error(e)
+        }
+      },
   },
 }
 </script>
