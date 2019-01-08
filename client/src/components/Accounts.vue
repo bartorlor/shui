@@ -32,7 +32,7 @@
       </span>
       </div>
     </section>
-    <span @click="add()"><i class="material-icons">add</i></span>
+    <span @click="add()"><i class="material-icons mycursor">add</i></span>
   </div>
 
 
@@ -226,6 +226,8 @@
   }
 </script>
 <style lang="stylus" scoped>
+  .mycursor
+    cursor pointer
   /*@import '../style/imports';*/
   @import '../style/table';
 </style>
