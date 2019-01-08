@@ -1,8 +1,8 @@
 <template>
   <div class="app-layout">
     <header class="header">
-      <div><img class="img" src="../assets/logo.svg"/></div>
-      <div>My shirt shop</div>
+      <!--<div><img class="img" src="../assets/logo.svg"/></div>-->
+      <div>ACB shop</div>
     </header>
     <NavMenu />
 
