@@ -7,8 +7,6 @@ import FAQ from './components/FAQ.vue'
 import Login from './components/Login.vue'
 import AccountsLayout from './components/AccountsLayout.vue'
 import Accounts from './components/Accounts.vue'
-import NewAccount from './components/NewAccount.vue'
-import Account from './components/Account.vue'
 import TxnsLayout from './components/TxnsLayout.vue'
 import Txns from './components/Txns.vue'
 import Report from './components/Report.vue'
@@ -26,8 +24,6 @@ const routes = [
   { path: '/login', name: 'login', component: Login, meta: { guest: true } },
   { path: '/accounts', component: AccountsLayout, meta: { private: true }, children: [
     { path: '', name: 'accounts', component: Accounts },
-    { path: 'new', name: 'new-account', component: NewAccount },
-    { path: ':id', name: 'account', component: Account, props: true },
   ] },
   { path: '/txns', component: TxnsLayout, meta: { private: true }, children: [
       { path: '', name: 'txns', component: Txns },
