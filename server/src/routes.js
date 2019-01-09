@@ -169,8 +169,9 @@ export default function (app) {
 
   app.get('/txns', (req, res) => {
     const filter = {};
-    filter.accountId = req.user.curAccountId;
-    if (req.query.symbol) filter.symbol = req.query.symbol;
+    if (req.query.accountId) filter.accountId= req.query.accountId;
+    // filter.accountId = req.user.curAccountId;
+    // if (req.query.symbol) filter.symbol = req.query.symbol;
     //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
     //if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
     //if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);

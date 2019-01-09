@@ -99,8 +99,20 @@ function validateTxn(txn) {
 }
 
 function format(obj) {
+  // let obj2 = Array.from(obj,item=>{
+  //  if(typeof item === 'undefined'){
+  //    return 'un';
+  //  }
+  // })
+  //  Object.keys(obj).forEach(item=>{
+  //    if(typeof obj[item] === 'undefined'){
+  //      obj[item] = 'un';
+  //      return 'un';
+  //    }
+  // })
+  // let obj2 = obj;
   return `${obj.stlmtDate},${obj.symbol},${obj.action},${obj.price} * ${obj.qty}=${obj.amt}\
-          acb:c:${obj.changedAcb},n:${obj.newAcb},rQty: ${obj.remainQty},gain: ${obj.gain}`
+          acb:ch:${obj.changedAcb},new:${obj.newAcb},rQty: ${obj.remainQty},gain: ${obj.gain}`
   
 }
 
