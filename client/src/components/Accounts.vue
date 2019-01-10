@@ -68,12 +68,7 @@
         return (this.editIndex === index)
       },
       add() {
-
-        // this.$dialog.alert('error: has same portfolio name')
-        // .then(function (dialog) {
-        //   debug('Closed');
-        // });
-        if (this.list.length > 4 ) {
+        if (this.list.length > 4) {
           this.$dialog.alert('error: the max accounts are five')
           .then(function (dialog) {
             debug('Closed')
@@ -151,8 +146,8 @@
         // this.realEdit(current);
         // let item ;
         // for( item in accouts)
-        this.list.map(item=>{
-          if(item.selected === true){
+        this.list.map(item => {
+          if (item.selected === true) {
             item.selected = false;
             this.realEdit(item);
           }
@@ -174,11 +169,11 @@
         this.saveAcctLocal(response);
         this.loadData();
       },
-      saveAcctLocal(){
-          if(!!response && response.ok){
+      saveAcctLocal() {
+        if (!!response && response.ok) {
           const account = response;
-          if(account.selected === true)
-          this.$state.user.curAccountId = account._id;
+          if (account.selected === true)
+            this.$state.user.curAccountId = account._id;
         }
       },
       deleteOne(id) {
@@ -206,6 +201,7 @@
 <style lang="stylus" scoped>
   .mycursor
     cursor pointer
+
   /*@import '../style/imports';*/
   @import '../style/table';
 </style>

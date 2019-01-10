@@ -1,7 +1,7 @@
 <template>
-  <div class="txns" id="txns">
+  <div class="list" id="txns">
 
-    <div class="empty" v-if="txns.length === 0">
+    <div class="empty" v-if="list.length === 0">
       You don't have any txn yet.
     </div>
     <section v-else class="txns-list">
@@ -16,8 +16,8 @@
         <label class="cell cell2 ">Delete</label>
       </div>
       <div class="table-line flex-container"
-           v-for="(row, index) in txns" :key="index">
-    
+           v-for="(row, index) in list" :key="index">
+
         <span class="cell cell2" v-if="editIndex !== index">{{ row.symbol}}</span>
         <input class="cell cell2" v-else v-model="row.symbol"/>
 
@@ -41,7 +41,7 @@
         </span>
 
         <button class="cell cell2" @click="deleteOne(row._id)">delete</button>
-       </div>
+      </div>
     </section>
     <span @click="add()"><i class="material-icons mycursor">add</i></span>
   </div>
@@ -54,9 +54,22 @@
   export default {
     data() {
       return {
-        txns: [],
+        list: [],
         editIndex: null,
         originalData: null,
+      }
+    },
+    computed: {
+      isAdd() {
+        return (this.originalData === null)
+      },
+      selectedItem() {
+        let ret = null;
+        ret = this.list.filter((item) => {
+          if (item.selected)
+            return item;
+        });
+        return ret[0];
       }
     },
     methods: {
@@ -73,8 +86,8 @@
           query.accountId = this.$state.user.curAccountId;
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
-          this.txns = await this.$fetch(`txns?${search}`);
-          this.txns.forEach((item) => {
+          this.list = await this.$fetch(`txns?${search}`);
+          this.list.forEach((item) => {
             debug(`txn : ${txn.format(item)}`);
             debug(item.stlmtDate);
           })
@@ -87,7 +100,7 @@
       this.loadData()
     },
     watch: {
-      txns(newValue, oldValue) {
+      list(newValue, oldValue) {
         if (newValue.length > 0) {
           newValue.forEach(item => {
             if (item.symbol === 'AMZN') {
@@ -103,6 +116,7 @@
 <style lang="stylus" scoped>
   .mycursor
     cursor pointer
+
   @import '../style/imports';
   @import '../style/table';
 </style>
