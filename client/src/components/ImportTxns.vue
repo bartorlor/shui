@@ -1,44 +1,46 @@
 <template>
   <main class="home">
 
+    <div > Step 1) : please select a pdf file  </div>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
+    <div > Step 2) : please select an header for each item column using  an drop down </div>
+    <div > Step 3) : please click import button to store the data to your portfolio .</div>
     <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
 
-    <div class="empty" v-if="paras.length === 0"> You don't have any txns yet. </div>
-    <section v-else >
-    <div class="table-line-header flex-container">
+       <div class="table-line-header flex-container">
         <span class="cell cell2">index </span>
-    <span class="cell cell2" v-for="(header,index) in table.headers" >
-      <dropdown  id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
-      </dropdown>
-    </span>
-    </div>
+        <span class="cell cell2" v-for="(header,index) in table.headers">
+          <dropdown id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
+          </dropdown>
+        </span>
+      </div>
+
+    <div class="empty" v-if="paras.length === 0"> You don't have any txns yet.</div>
+    <section v-else>
 
       <div class="table-line flex-container"
-          v-for="(row,index ) in table.rows" >
+           v-for="(row,index ) in table.rows">
         <span class="cell cell2">{{index}} </span>
-        <span class="cell cell2" v-for="(item,index2) in row" >
-            {{item}}
-        </span>
+        <span class="cell cell2" v-for="(item,index2) in row"> {{item}} </span>
       </div>
 
 
     </section>
   </main>
-        <!--<div class="table-line flex-container"-->
-           <!--v-for="(row, index) in list" :key="index">-->
-        <!--<span class="cell cell2" >{{ index}}</span>-->
-        <!--<span class="cell cell2" >{{ row.stlmtDate}}</span>-->
-        <!--<span class="cell cell2" >{{ row.action}}</span>-->
-        <!--<span class="cell cell2" >{{ row.symbol}}</span>-->
-        <!--<span class="cell cell2" >{{ row.description}}</span>-->
-        <!--<span class="cell cell2" >{{ row.type}}</span>-->
-        <!--<span class="cell cell2" >{{ row.qty}}</span>-->
-        <!--<span class="cell cell2" >{{ row.price}}</span>-->
-        <!--<span class="cell cell2" >{{ row.amt}}</span>-->
-      <!--</div>-->
- <!---->
+  <!--<div class="table-line flex-container"-->
+  <!--v-for="(row, index) in list" :key="index">-->
+  <!--<span class="cell cell2" >{{ index}}</span>-->
+  <!--<span class="cell cell2" >{{ row.stlmtDate}}</span>-->
+  <!--<span class="cell cell2" >{{ row.action}}</span>-->
+  <!--<span class="cell cell2" >{{ row.symbol}}</span>-->
+  <!--<span class="cell cell2" >{{ row.description}}</span>-->
+  <!--<span class="cell cell2" >{{ row.type}}</span>-->
+  <!--<span class="cell cell2" >{{ row.qty}}</span>-->
+  <!--<span class="cell cell2" >{{ row.price}}</span>-->
+  <!--<span class="cell cell2" >{{ row.amt}}</span>-->
+  <!--</div>-->
+  <!---->
 </template>
 <script>
   // PDFDocument renders an entire PDF inline using
@@ -142,14 +144,14 @@
         arr.forEach(row => {
           if (row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
             let obj = this.createObjects(row)
-            obj = this.createObject(obj,self);
+            obj = this.createObject(obj, self);
             objs.push(obj);
-            return ;
+            return;
           }
         });
         this.operation(objs);
       },
-      createObject(obj,self) {
+      createObject(obj, self) {
         return {
           stlmtDate: obj.date,
           action: obj.action.toLowerCase(),
@@ -159,7 +161,7 @@
           qty: obj.qty,
           price: obj.price,
           amt: obj.amt,
-          accountId : self.$state.user.curAccountId,
+          accountId: self.$state.user.curAccountId,
         }
       }
       ,
@@ -297,6 +299,11 @@
 <style lang="stylus" scoped>
   @import '../style/imports';
   @import '../style/table';
+
+  .table-line-header
+    width 120 * 9px
+  .table-line
+    width 120 * 9px
   .mycursor
     cursor pointer
 

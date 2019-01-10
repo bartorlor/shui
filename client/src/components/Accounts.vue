@@ -24,12 +24,13 @@
         <span v-if="editIndex === index" class="cell cell2 ">
                 <i @click="cancel(row)" class="material-icons">undo</i>
                 <i @click="save(row)" class="material-icons">save</i>
-              </span>
+        </span>
 
         <span v-if="editIndex !== index" class="cell cell2 " @click="select(row)">
         <i v-if="row.selected" class="material-icons">radio_button_checked</i>
         <i v-else class="material-icons">radio_button_unchecked</i>
-      </span>
+        </span>
+
       </div>
     </section>
     <span @click="add()"><i class="material-icons mycursor">add</i></span>
@@ -199,6 +200,11 @@
   }
 </script>
 <style lang="stylus" scoped>
+  .table-line-header
+    width 200 * 4px
+    border solid
+  .table-line
+    width 200 * 4px
   .mycursor
     cursor pointer
 
