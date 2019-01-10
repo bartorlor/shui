@@ -1,7 +1,7 @@
 <template>
   <div id="accounts">
     <section>
-      <div v-if="accounts.length !==0" class="empty">
+      <div v-if="list.length !==0" class="empty">
         Current Portfolio is {{selectedItem.name}}
       </div>
       <br>
@@ -15,7 +15,7 @@
         <label class="cell cell2 ">Go To</label>
       </div>
       <div class="table-line flex-container"
-           v-for="(row, index) in accounts" :key="index">
+           v-for="(row, index) in list" :key="index">
 
         <span class="cell cell-long" v-if="editIndex !== index">{{ row.name }}</span>
         <input class="cell cell-long" v-else v-model="row.name"/>
@@ -34,27 +34,6 @@
     </section>
     <span @click="add()"><i class="material-icons mycursor">add</i></span>
   </div>
-
-
-      <!--<div class="cell cell 1" @click="disk.enable ^=true">-->
-      <!--<q-checkbox v-model="disk.enable"></q-checkbox>-->
-      <!--</div>-->
-      <!--<div v-for="(row, index) in accounts" :key="index" class="ticket-item">-->
-      <!--<span class="badge">{{ row._id}}</span>-->
-      <!--<span v-if="editIndex !== index">{{ row.name }}</span>-->
-      <!--<span v-else>-->
-      <!--<input v-model="row.name">-->
-      <!--</span>-->
-      <!--<span v-if="editIndex !== index">-->
-      <!--<button @click="deleteOne(row._id)">delete</button>-->
-      <!--<button @click="edit(row,index)">edit</button>--
-      <!--<button @click="select(row)">select</button>-->
-      <!--</span>-->
-      <!--<span v-else>-->
-      <!--<button @click="cancel(row)">Cancel</button>-->
-      <!--<button @click="save(row)">Save</button>-->
-      <!--</span>-->
-      <!--</div>-->
 </template>
 
 <script>
@@ -66,8 +45,7 @@
 
     data() {
       return {
-        message: 'Hello Vue.js!',
-        accounts: [],
+        list: [],
         editIndex: null,
         originalData: null,
       }
@@ -78,7 +56,7 @@
       },
       selectedItem() {
         let ret = null;
-        ret = this.accounts.filter((item) => {
+        ret = this.list.filter((item) => {
           if (item.selected)
             return item;
         });
@@ -95,7 +73,7 @@
         // .then(function (dialog) {
         //   debug('Closed');
         // });
-        if (this.accounts.length > 4 ) {
+        if (this.list.length > 4 ) {
           this.$dialog.alert('error: the max accounts are five')
           .then(function (dialog) {
             debug('Closed')
@@ -103,9 +81,9 @@
           return false;
         }
         this.originalData = null;
-        let selected = this.accounts.length === 0 ? true : false;
-        this.accounts.push({_id: '0', name: 'My Portfolio', selected: selected});
-        this.editIndex = this.accounts.length - 1
+        let selected = this.list.length === 0 ? true : false;
+        this.list.push({_id: '0', name: 'My Portfolio', selected: selected});
+        this.editIndex = this.list.length - 1
       },
       edit(item, index) {
         this.originalData = Object.assign({}, item)
@@ -114,7 +92,7 @@
       cancel(item) {
         this.editIndex = null
         if (this.isAdd) {
-          this.accounts.splice(this.accounts.indexOf(item), 1)
+          this.list.splice(this.list.indexOf(item), 1)
         } else {
           Object.assign(item, this.originalData)
           this.originalData = null
@@ -128,14 +106,14 @@
         if (this.isAdd) {
           this.doAdd();
         } else {
-          const obj = this.accounts[this.editIndex];
+          const obj = this.list[this.editIndex];
           this.realEdit(obj);
         }
         this.originalData = null;
         this.editIndex = null;
       },
       validate() {
-        const obj = this.accounts[this.editIndex];
+        const obj = this.list[this.editIndex];
         if (this.isSameName(obj.name)) {
           // debug("error portfolio name ");
           this.$dialog.alert('error: has same portfolio name,please change to different name')
@@ -148,7 +126,7 @@
         return true;
       },
       async doAdd() {
-        const obj = this.accounts[this.editIndex];
+        const obj = this.list[this.editIndex];
         const response = await this.$fetch('accounts/new', {
           method: 'POST',
           body: JSON.stringify({
@@ -162,7 +140,7 @@
         this.saveAcctLocal(response);
       },
       isSameName(newName) {
-        let result = this.accounts.filter(obj => {
+        let result = this.list.filter(obj => {
           return obj.name === newName;
         })
         return result.length > 1;
@@ -173,7 +151,7 @@
         // this.realEdit(current);
         // let item ;
         // for( item in accouts)
-        this.accounts.map(item=>{
+        this.list.map(item=>{
           if(item.selected === true){
             item.selected = false;
             this.realEdit(item);
@@ -211,8 +189,8 @@
       },
       async loadData() {
         try {
-          this.accounts = await this.$fetch('accounts');
-          this.accounts.forEach((item) => {
+          this.list = await this.$fetch('accounts');
+          this.list.forEach((item) => {
             debug(`account : ${Account.format(item)}`);
           })
         } catch (e) {
