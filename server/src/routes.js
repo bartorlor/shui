@@ -2,8 +2,7 @@ import passport from 'passport'
 import {initData} from './providers'
 import * as Users from './connectors/users'
 import * as Questions from './connectors/questions'
-import * as Tickets from './connectors/tickets'
-import txn from './txn'
+import TxnUtil from './txn'
 import Account from './account'
 import {debug} from './utils/logging'
 import {ObjectId} from 'mongodb';
@@ -193,7 +192,7 @@ export default function (app) {
       })
       .then(txns => {
         txns.forEach((item) => {
-          debug(`txn : ${txn.format(item)}`);
+          debug(`txn : ${TxnUtil.format(item)}`);
         })
         res.json({metadata: {totalCount}, records: txns});
       })
@@ -259,13 +258,13 @@ export default function (app) {
     debug('new ', req.body);
     const newTxn = req.body;
     // newTxn.accountId = req.user.curAccountId;
-    const err = txn.validateTxn(newTxn);
+    const err = TxnUtil.validateTxn(newTxn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
 
-    db.collection('txns').insertOne(txn.convertTxn(newTxn)).then(result => {
+    db.collection('txns').insertOne(TxnUtil.convertTxn(newTxn)).then(result => {
         debug('insert result', result.result)
         debug('insert result', result.insertedId)
         // let ret = db.collection('txns').find().toArray()
@@ -291,11 +290,11 @@ export default function (app) {
     let errs = [];
     txns = txns.map((newTxn) => {
       // newTxn.accountId = req.user.curAccountId;
-      const err = txn.validateTxn(newTxn);
+      const err = TxnUtil.validateTxn(newTxn);
       if (err !== null) {
         errs.push(err);
       }
-      return txn.convertTxn(newTxn);
+      return TxnUtil.convertTxn(newTxn);
     })
     errs = errs.length ? errs.join('; ') : null;
     if (errs) {
@@ -318,7 +317,7 @@ export default function (app) {
       res.status(500).json({message: `Internal Server Error: ${error}`});
     });
   });
-  app.get('/txn/:id', privateRoute, (req, res) => {
+  app.get('/txns/:id', privateRoute, (req, res) => {
     debug('get ', req.params.id)
     let txnId;
     try {
@@ -338,7 +337,7 @@ export default function (app) {
       res.status(500).json({message: `Internal Server Error: ${error}`});
     });
   });
-  app.put('/txn/:id', privateRoute, (req, res) => {
+  app.put('/txns/:id', privateRoute, (req, res) => {
     let txnId;
     try {
       txnId = new ObjectId(req.params.id);
@@ -348,12 +347,13 @@ export default function (app) {
     }
     const txn = req.body;
     delete txn._id;
-    const err = txn.validateTxn(txn);
+    const err = TxnUtil.validateTxn(txn);
     if (err) {
       res.status(422).json({message: `Invalid request: ${err}`});
       return;
     }
-    db.collection('txns').updateOne({_id: txnId}, txn.convertTxn(txn)).then(() =>
+     db.collection('txns').updateOne(
+      {_id: txnId},{$set:  TxnUtil.convertTxn(txn)} ).then(() =>
       db.collection('txns').find({_id: txnId}).limit(1)
       .next()
     )

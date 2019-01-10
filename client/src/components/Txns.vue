@@ -31,8 +31,6 @@
         <input class="cell cell2" v-else v-model="row.price"/>
         <span class="cell cell2" v-if="editIndex !== index">{{ row.amt}}</span>
         <input class="cell cell2" v-else v-model="row.amt"/>
-        <span class="cell cell2" v-if="editIndex !== index">{{ row.amt}}</span>
-        <input class="cell cell2" v-else v-model="row.amt"/>
 
         <span v-if="editIndex !== index" class="cell cell2" @click="edit(row,index)"><i class="material-icons">edit</i></span>
         <span v-if="editIndex === index" class="cell cell2 ">
@@ -49,7 +47,7 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
-  import txn from '../../../server/src/txn'
+  import TxnUtil from '../../../server/src/txn'
 
   export default {
     data() {
@@ -73,6 +71,80 @@
       }
     },
     methods: {
+      isEditStatus(index) {
+        return (this.editIndex === index)
+      },
+      add() {
+        this.originalData = null;
+        const obj =  {
+           stlmtDate: '01-01-2018', action: 'buy', symbol: '', description:'some memo', type: '', qty: 0, price: 0, amt: 0,
+        }
+        this.list.push(obj);
+        this.editIndex = this.list.length - 1
+      },
+      edit(item, index) {
+        this.originalData = Object.assign({}, item)
+        this.editIndex = index;
+      },
+      cancel(item) {
+        this.editIndex = null
+        if (this.isAdd) {
+          this.list.splice(this.list.indexOf(item), 1)
+        } else {
+          Object.assign(item, this.originalData)
+          this.originalData = null
+        }
+      },
+      save(row) {
+        const obj = row;
+        obj.accountId = this.$state.user.curAccountId;
+        if (!this.validate(obj)) {
+          return;
+        }
+        if (this.isAdd) {
+          this.doAdd(obj);
+        } else {
+          this.realEdit(obj);
+        }
+        this.originalData = null;
+        this.editIndex = null;
+      },
+      validate(obj) {
+        const err = TxnUtil.validateTxn(obj);
+        if (err) {
+            this.$dialog.alert(err)
+            .then(function (dialog) {
+              debug('Closed')
+            })
+          return false;
+        }
+        return true;
+      },
+          /*stlmtDate: obj.stlmtDate,*/
+          /*symbol: obj.symbol,*/
+          /*action: obj.action,*/
+          /*description: obj.description,*/
+          /*type: obj.type,*/
+          /*qty: obj.qty,*/
+          /*price: obj.price,*/
+          /*amt: obj.amt,*/
+          /*accountId : obj.$state.user.curAccountId,*/
+      async doAdd(obj) {
+        await this.$fetch('txns/new', {
+        method: 'POST',
+        body: JSON.stringify(obj),
+        }).then(() => {
+          this.loadData();
+        });
+      },
+      async realEdit(obj) {
+        await this.$fetch(`txns/${obj._id}`, {
+          method: 'PUT',
+          params: {id: obj._id},
+          body: JSON.stringify(obj),
+        });
+        this.loadData();
+      },
       deleteOne(id) {
         this.$fetch(`txns/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
@@ -88,7 +160,7 @@
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
           this.list = await this.$fetch(`txns?${search}`);
           this.list.forEach((item) => {
-            debug(`txn : ${txn.format(item)}`);
+            debug(`txn : ${TxnUtil.format(item)}`);
             debug(item.stlmtDate);
           })
         } catch (e) {

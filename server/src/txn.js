@@ -49,10 +49,10 @@ function convertDate(str) {
       ret = `${mm}/${dd}/${yyyy}`;
        // ret = new Date(newDate);
       return ret ;
-      
+
       // moment()
       // ret = moment.parse(str,dateFormat);
-      
+
     } catch (ex) {
       error(`error date ${str}`);
       ret = new Date('01/01/2000');
@@ -64,7 +64,7 @@ function unformat(str){
  let ret = accounting.unformat(str);
  ret = Math.abs(ret);
  return ret;
- 
+
 }
 
 function convertTxn(txn) {
@@ -87,11 +87,11 @@ function validateTxn(txn) {
       errors.push(`Missing mandatory field: ${field}`);
     }
   });
-  
+
   if (!validTxnAction[txn.action]) {
     errors.push(`${txn.action} is not a valid action.`);
   }
-  
+
   if(errors.length >0 ) {
     error('valid ', errors);
   }
@@ -113,7 +113,7 @@ function format(obj) {
   // let obj2 = obj;
   return `${obj.stlmtDate},${obj.symbol},${obj.action},${obj.price} * ${obj.qty}=${obj.amt}\
           acb:ch:${obj.changedAcb},new:${obj.newAcb},rQty: ${obj.remainQty},gain: ${obj.gain}`
-  
+
 }
 
 export default {

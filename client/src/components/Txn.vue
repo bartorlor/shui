@@ -38,7 +38,7 @@ export default {
   mixins: [
     RemoteData({
       txn () {
-        return `txn/${this.id}`
+        return `txns/${this.id}`
       },
     }),
   ],
