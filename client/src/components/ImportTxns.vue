@@ -1,27 +1,26 @@
 <template>
   <main class="home">
-    <router-link tag="button" :to="{name: 'txns'}" class="secondary">
-      Go back
-    </router-link>
+
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
     <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
-    <div v-for="(header,index) in table.headers" class="filters">
-      <dropdown id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
-      </dropdown>
-      <span>  |  </span>
-    </div>
 
-    <div class="empty" v-if="paras.length === 0">
-      You don't have any txns yet.
+    <div class="empty" v-if="paras.length === 0"> You don't have any txns yet. </div>
+    <section v-else >
+    <div class="table-line-header flex-container">
+    <span class="cell cell2" v-for="(header,index) in table.headers" >
+      <dropdown  id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
+      </dropdown>
+    </span>
     </div>
-    <section v-else class="accounts-list">
       <div v-for="(txn,index ) in table.rows" class="ticket-item">
         <span>{{index}} </span>
         <span v-for="(item,index2) in txn" class="ticket-item">
             <span class="badge">{{item}}</span>
         </span>
       </div>
+
+      
     </section>
   </main>
 </template>
@@ -279,7 +278,12 @@
   }
   ;
 </script>
-<style>
+<style lang="stylus" scoped>
+  @import '../style/imports';
+  @import '../style/table';
+  .mycursor
+    cursor pointer
+
   .pdf-document {
     position: fixed;
     overflow: scroll;
@@ -296,4 +300,7 @@
   label {
     display: block;
   }
+
+
 </style>
+

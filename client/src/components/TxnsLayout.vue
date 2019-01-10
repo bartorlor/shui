@@ -6,7 +6,6 @@
 
     <div class="actions">
       <router-link v-if="$route.name !== 'txns'" tag="button" class="secondary" :to="{name: 'txns'}">See all txns</router-link>
-      <router-link v-if="$route.name === 'txns'" tag="button" :to="{name: 'new-txn'}">New</router-link>
       <router-link v-if="$route.name === 'txns'" tag="button" :to="{name: 'import-txns'}">Import</router-link>
       <router-link v-if="$route.name === 'txns'" tag="button" :to="{name: 'report'}">Report</router-link>
     </div>
