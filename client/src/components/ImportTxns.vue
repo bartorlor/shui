@@ -8,21 +8,37 @@
     <div class="empty" v-if="paras.length === 0"> You don't have any txns yet. </div>
     <section v-else >
     <div class="table-line-header flex-container">
+        <span class="cell cell2">index </span>
     <span class="cell cell2" v-for="(header,index) in table.headers" >
       <dropdown  id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
       </dropdown>
     </span>
     </div>
-      <div v-for="(txn,index ) in table.rows" class="ticket-item">
-        <span>{{index}} </span>
-        <span v-for="(item,index2) in txn" class="ticket-item">
-            <span class="badge">{{item}}</span>
+
+      <div class="table-line flex-container"
+          v-for="(row,index ) in table.rows" >
+        <span class="cell cell2">{{index}} </span>
+        <span class="cell cell2" v-for="(item,index2) in row" >
+            {{item}}
         </span>
       </div>
 
-      
+
     </section>
   </main>
+        <!--<div class="table-line flex-container"-->
+           <!--v-for="(row, index) in list" :key="index">-->
+        <!--<span class="cell cell2" >{{ index}}</span>-->
+        <!--<span class="cell cell2" >{{ row.stlmtDate}}</span>-->
+        <!--<span class="cell cell2" >{{ row.action}}</span>-->
+        <!--<span class="cell cell2" >{{ row.symbol}}</span>-->
+        <!--<span class="cell cell2" >{{ row.description}}</span>-->
+        <!--<span class="cell cell2" >{{ row.type}}</span>-->
+        <!--<span class="cell cell2" >{{ row.qty}}</span>-->
+        <!--<span class="cell cell2" >{{ row.price}}</span>-->
+        <!--<span class="cell cell2" >{{ row.amt}}</span>-->
+      <!--</div>-->
+ <!---->
 </template>
 <script>
   // PDFDocument renders an entire PDF inline using
