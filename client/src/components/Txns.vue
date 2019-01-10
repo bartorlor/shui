@@ -37,8 +37,8 @@
           <i @click="cancel(row)" class="material-icons">undo</i>
           <i @click="save(row)" class="material-icons">save</i>
         </span>
-
-        <button class="cell cell2" @click="deleteOne(row._id)">delete</button>
+        <!--<button class="cell cell2" @click="deleteOne(row._id)">delete</button>-->
+        <span class="cell cell2" @click="deleteOne(row._id)"><i class="material-icons mycursor">delete</i></span>
       </div>
     </section>
     <span @click="add()"><i class="material-icons mycursor">add</i></span>
@@ -146,6 +146,10 @@
         this.loadData();
       },
       deleteOne(id) {
+        const ret = confirm("Are you sure to delete it?")
+        if(ret === false) {
+          return;
+        }
         this.$fetch(`txns/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
           else this.loadData()
