@@ -7,40 +7,65 @@
       You don't have any record yet.
     </div>
 
-    <section v-else class="records-list">
+    <section v-else class="txns-list">
       <h3> Capital Gains (or Losses) for Year Ended 2016-Dec-31</h3>
       <h6> Portfolio: joint636268</h6>
+      //all recorders
       <div v-for="record of records" class="record-item">
         <div>
-          <span class="badge">{{ record.symbol}}</span>
+          <span class="cell cell2">{{ record.symbol}}</span>
         </div>
-        <div v-for="txn of record.txns" class="record-item">
-          <span class="date">{{ txn.stlmtDate | date }}</span>
-          <span class="badge">{{ txn.action}}</span>
-          <span class="badge">qty:{{ txn.qty}}</span>
-          <span class="badge">price:{{ formatMoney(txn.price)}}</span>
-          <span class="badge">amt:{{ formatMoney(txn.amt)}}</span>
-          <span class="badge">qty:{{ txn.qty}}</span>
-          <span class="badge">changedAcb{{ formatMoney(txn.changedAcb)}}</span>
-          <span class="badge">newAcb:{{ formatMoney(txn.newAcb)}}</span>
-          <span class="badge">prc:{{ formatMoney(txn.newPrc)}}</span>
-          <span class="badge">remainQty:{{ txn.remainQty}}</span>
-          <span class="badge">gain:{{ formatMoney(txn.gain)}}</span>
+        //header
+        <div class="table-line-header flex-container">
+          <label class="cell cell2">Symbol</label>
+          <label class="cell cell2">Date</label>
+          <label class="cell cell2 ">Action</label>
+          <label class="cell cell2 ">Quantity</label>
+          <label class="cell cell2 ">Price</label>
+          <label class="cell cell2 ">Amount</label>
+          <label class="cell cell2 ">Changed ACB</label>
+          <label class="cell cell2 ">New ACB</label>
+          <label class="cell cell2 ">New Price</label>
+          <label class="cell cell2 ">Remain Quantity</label>
+          <label class="cell cell2 ">Gain</label>
+        </div>
+        <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
+          <span class="cell cell2" >{{ row.symbol}}</span>
+          <span class="cell cell2">{{ row.stlmtDate | date }}</span>
+          <span class="cell cell2">{{ row.action}}</span>
+          <span class="cell cell2">{{ row.qty}}</span>
+          <span class="cell cell2">{{ formatMoney(row.price)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
+          <span class="cell cell2">{{ row.qty}}</span>
+          <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
+          <span class="cell cell2">{{ row.remainQty}}</span>
+          <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
+        </div>
+        //header 2
+        <div class="table-line-header flex-container">
+          <label class="cell cell2">Account Id</label>
+          <label class="cell cell2">Year</label>
+          <label class="cell cell2 ">new ACB</label>
+          <label class="cell cell2 ">ACB</label>
+          <label class="cell cell2 ">Quantity</label>
+          <label class="cell cell2 ">Gain</label>
         </div>
         <div>
-          <span class="badge">accId:{{ record.result.accountId}}</span>
-          <span class="badge">year:{{ record.result.year}}</span>
-          <span class="badge">newAcb:{{ formatMoney(record.result.newAcb)}}</span>
-          <span class="badge">acb:{{ formatMoney(record.result.acb)}}</span>
-          <span class="badge">qty:{{ record.result.qty}}</span>
-          <span class="badge">gain:{{ formatMoney(record.result.gain)}}</span>
-          <!--<span class="badge">{{ test}}</span>-->
+          <span class="cell cell2">{{ record.result.accountId}}</span>
+          <span class="cell cell2">{{ record.result.year}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.newAcb)}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
+          <span class="cell cell2">{{ record.result.qty}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
         </div>
         <button @click="download(record._id)">download</button>
       </div>
+
     </section>
 
-  </div>
+   </div>
 </template>
 
 <script>
@@ -113,3 +138,14 @@
     },
   }
 </script>
+<style lang="stylus" scoped>
+  @import '../style/imports';
+  @import '../style/table';
+
+  .table-line-header
+    width 120 * 9px
+  .table-line
+    width 120 * 9px
+
+</style>
+

@@ -2,12 +2,16 @@
   <main class="home">
 
     <div > Step 1) : please select a pdf file  </div>
+           <br>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
            <br>
     <div > Step 2) : please select an header for each item column using  an drop down </div>
+           <br>
     <div > Step 3) : please click import button to store the data to your portfolio .</div>
+           <br>
     <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
+           <br>
 
        <div class="table-line-header flex-container">
         <span class="cell cell2">index </span>
