@@ -38,6 +38,10 @@ export function get_logging() {
   return _log_level;
 }
 
+export function isDebug(){
+  return true;
+}
+
 export { debug, info, warn, error };
 
 // Initialize logging level

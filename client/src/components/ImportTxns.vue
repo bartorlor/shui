@@ -4,6 +4,7 @@
     <div > Step 1) : please select a pdf file  </div>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf">
+           <br>
     <div > Step 2) : please select an header for each item column using  an drop down </div>
     <div > Step 3) : please click import button to store the data to your portfolio .</div>
     <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
@@ -48,7 +49,7 @@
   // rendering of selected pages (but could be easily
   // updated to do so).
   import Dropdown from './Dropdown'
-  import {debug, info} from '../utils/logging'
+  import {isDebug, debug, info} from '../utils/logging'
   // import debug from 'debug';
 
   // const log = debug('app:components/PDFDocument');
@@ -166,11 +167,13 @@
       }
       ,
       async operation(objs) {
-        await
-          this.$fetch('txns/newMany', {
+        const response = await this.$fetch('txns/newMany', {
             method: 'POST',
             body: JSON.stringify(objs),
-          })
+        })
+        if(response.ok === 1){
+          alert(`Successfully imported ${response.n} rows!`)
+        }
       }
       ,
       createObjects(row) {

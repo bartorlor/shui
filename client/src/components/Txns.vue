@@ -146,10 +146,12 @@
         this.loadData();
       },
       deleteOne(id) {
-        const ret = confirm("Are you sure to delete it?")
-        if(ret === false) {
-          return;
-        }
+       if(!isDebug()){
+         const ret = confirm("Are you sure to delete it?")
+         if(ret === false) {
+           return;
+         }
+       }
         this.$fetch(`txns/${id}`, {method: 'DELETE'}).then(response => {
           if (response.status !== 'ok') error('Failed to delete issue');
           else this.loadData()
