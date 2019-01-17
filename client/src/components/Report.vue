@@ -40,14 +40,12 @@
         </div>
         <div class="table-line-header table-line-header-short flex-container">
           <label class="cell cell2">Year</label>
-          <label class="cell cell2 ">new ACB</label>
           <label class="cell cell2 ">ACB</label>
           <label class="cell cell2 ">Quantity</label>
           <label class="cell cell2 ">Gain</label>
         </div>
         <div class="table-line table-line-short flex-container ">
           <span class="cell cell2">{{ record.result.year}}</span>
-          <span class="cell cell2">{{ formatMoney(record.result.newAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
           <span class="cell cell2">{{ record.result.qty}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
@@ -63,6 +61,7 @@
 <script>
   import {debug, info, error} from '../utils/logging'
   import * as accounting from '../utils/accounting.js'
+  import TxnUtil from '../../../server/src/txn'
 
   export default {
     data() {
@@ -120,8 +119,8 @@
           query.accountId = this.$state.user.curAccountId;
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
-          this.list = await this.$fetch(`report?${search}`);
-          this.list.forEach((item) => {
+          this.records = await this.$fetch(`report?${search}`);
+          this.records.forEach((item) => {
             debug(`txn : ${TxnUtil.format(item)}`);
             debug(item.stlmtDate);
           })

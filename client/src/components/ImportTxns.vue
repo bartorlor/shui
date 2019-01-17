@@ -147,7 +147,7 @@
         let objs = [];
         const self = this;
         arr.forEach(row => {
-          if (row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
+          if (true){ //row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
             let obj = this.createObjects(row)
             obj = this.createObject(obj, self);
             objs.push(obj);

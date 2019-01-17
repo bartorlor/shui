@@ -15,7 +15,6 @@ import * as Txn from './txn'
 function getCurYear() {
   return 2016;
 }
-
 // function getCurAccountId() {
 //   return 1;
 // }
@@ -29,7 +28,7 @@ function calcTxn(result, txn) {
   } else if (txn.action === 'sell') {
     if (result.qty <= 0) {
       error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
-      return t;
+      return null;
     }
     txn.changedAcb = - result.acb / result.qty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
@@ -50,10 +49,9 @@ function procTxnsByCompany(obj,year,accountId){
     accountId: accountId,
     year: year,
     symbol: symbol,
-    gain: 0,
     acb: 0,
     qty: 0,
-    newAcb : 0,
+    gain: 0,
   }
   let newArr = arr.map((txn) => {
     txn = calcTxn(result, txn);
@@ -67,25 +65,53 @@ function procTxnsByCompany(obj,year,accountId){
   obj.result = result ;
   printTxnResult(result);
 }
-function procTxns(arr, year, accountId) {
-  //find all symbol base on arr
+
+function getTxnGroupByCompany(orgTxns){
+    //find all symbol base on orgTxns
   //for loop get corresponed records
-  let compSet = new Set();
-  arr.forEach(item=>compSet.add(item.symbol));
-  let list = [];
-  compSet.forEach(item=>{list.push({symbol:item,txns:[]})});
-  arr.forEach(item=>{
-    list.some(item2=>{
+  let companys = new Set();
+  orgTxns.forEach(item=>companys.add(item.symbol));
+  let objs = [];
+  companys.forEach(item=>{objs.push({symbol:item,txns:[]})});
+  orgTxns.forEach(item=>{
+    objs.some(item2=>{
       if(item2.symbol === item.symbol){
         item2.txns.push(item);
         return true;
       }
     })
   })
-  list.forEach(item=>{
-    procTxnsByCompany(item,year,accountId);
+  return objs;
+}
+
+function getSymbolsOfQtyNotMatch(objs){ //wr to be..
+  let symbols = [];
+  objs.forEach(item =>{
+    let buy = 0;
+    let sell = 0;
+    for(let txn in item.txns){
+      if(txn.action === 'buy'){
+        buy += txn.qty;
+      }else if(txn.action === 'sell'){
+        sell += txn.qty;
+      }
+      if(buy < sell){
+        symbols.push(txn.symbol);
+        break;
+      }
+    }
+  });
+  return symbols;
+}
+function procTxns(orgTxns, year, accountId) {
+  let objs = getTxnGroupByCompany(orgTxns);
+  let symbols = getSymbolsOfQtyNotMatch(objs);
+  objs.forEach(item=>{
+    if(!symbols.includes(item.symbol)){
+      procTxnsByCompany(item,year,accountId);
+    }
   })
-  return list;
+  return objs;
 }
 
 function printTxnResult(result) {

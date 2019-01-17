@@ -224,7 +224,7 @@ export default function (app) {
 //  db.inventory.find( { tags: ["red", "blank"] } )
   // db.txns.find( { symbol: { $in:["VIPS", "SCTY"]} });
   app.get('/report', privateRoute, (req, res) => {
-    req.query.symbol =  { $in:["VIPS", "SCTY"] };
+    //req.query.symbol =  { $in:["VIPS", "SCTY"] };
     const filter = {};
     if (req.query.symbol) filter.symbol = req.query.symbol;
     if (req.query.accountId) filter.accountId= req.query.accountId;
@@ -246,7 +246,7 @@ export default function (app) {
       let objs = Report.procTxns(txns, 2016, 1);
       // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
       // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
-     res.json(objs)
+      res.json({metadata:objs.length, records: objs});
 
     })
     .catch(error => {
