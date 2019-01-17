@@ -1,6 +1,6 @@
 <template>
 <main class="txns-layout">
-    <h1>Your Support txns</h1>
+    <h1>Current Portfolio :{{$state.user.curAccountName}}</h1>
 
     <!-- <Txns /> -->
 

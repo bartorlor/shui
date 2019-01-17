@@ -10,14 +10,11 @@
     <section v-else class="txns-list">
       <h3> Capital Gains (or Losses) for Year Ended 2016-Dec-31</h3>
       <h6> Portfolio: joint636268</h6>
-      //all recorders
       <div v-for="record of records" class="record-item">
         <div>
           <span class="cell cell2">{{ record.symbol}}</span>
         </div>
-        //header
         <div class="table-line-header flex-container">
-          <label class="cell cell2">Symbol</label>
           <label class="cell cell2">Date</label>
           <label class="cell cell2 ">Action</label>
           <label class="cell cell2 ">Quantity</label>
@@ -30,30 +27,25 @@
           <label class="cell cell2 ">Gain</label>
         </div>
         <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
-          <span class="cell cell2" >{{ row.symbol}}</span>
           <span class="cell cell2">{{ row.stlmtDate | date }}</span>
           <span class="cell cell2">{{ row.action}}</span>
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
-          <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
           <span class="cell cell2">{{ row.remainQty}}</span>
           <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
         </div>
-        //header 2
-        <div class="table-line-header flex-container">
-          <label class="cell cell2">Account Id</label>
+        <div class="table-line-header table-line-header-short flex-container">
           <label class="cell cell2">Year</label>
           <label class="cell cell2 ">new ACB</label>
           <label class="cell cell2 ">ACB</label>
           <label class="cell cell2 ">Quantity</label>
           <label class="cell cell2 ">Gain</label>
         </div>
-        <div>
-          <span class="cell cell2">{{ record.result.accountId}}</span>
+        <div class="table-line table-line-short flex-container ">
           <span class="cell cell2">{{ record.result.year}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.newAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
@@ -114,9 +106,25 @@
           else this.loadData()
         })
       },
-      async loadData() {
+      // async loadData() {
+      //   try {
+      //     this.records = await this.$fetch('report')
+      //   } catch (e) {
+      //     error(e)
+      //   }
+      // },
+       async loadData() {
         try {
-          this.records = await this.$fetch('report')
+          const query = {};
+          // query.year = 2016;
+          query.accountId = this.$state.user.curAccountId;
+          const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
+          // return fetch(`${urlBase || ''}/api/issues?${search}`)
+          this.list = await this.$fetch(`report?${search}`);
+          this.list.forEach((item) => {
+            debug(`txn : ${TxnUtil.format(item)}`);
+            debug(item.stlmtDate);
+          })
         } catch (e) {
           error(e)
         }
@@ -147,5 +155,9 @@
   .table-line
     width 120 * 9px
 
+  .table-line-header-short
+    width 120 * 6px
+  .table-line-short
+    width 120 * 6px
 </style>
 

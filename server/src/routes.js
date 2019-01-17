@@ -227,6 +227,7 @@ export default function (app) {
     req.query.symbol =  { $in:["VIPS", "SCTY"] };
     const filter = {};
     if (req.query.symbol) filter.symbol = req.query.symbol;
+    if (req.query.accountId) filter.accountId= req.query.accountId;
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
     let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
     if (limit > 50) limit = 50;

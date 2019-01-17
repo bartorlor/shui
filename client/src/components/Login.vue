@@ -152,6 +152,7 @@ export default {
               const account = item;
               if (account.selected === true)
                 this.$state.user.curAccountId = account._id;
+                this.$state.user.curAccountName = account.name;
             }
           })
           // info(`hasAccount :${ret}`)

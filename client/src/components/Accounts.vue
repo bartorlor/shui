@@ -175,6 +175,7 @@
           const account = response;
           if (account.selected === true)
             this.$state.user.curAccountId = account._id;
+          this.$state.user.curAccountName = account.name;
         }
       },
       deleteOne(id) {

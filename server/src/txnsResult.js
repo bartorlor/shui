@@ -3,22 +3,22 @@ import * as accounting from './utils/accounting'
 import * as Txn from './txn'
 
 
-const txnsResult = {
-  accountId: getCurAccountId(),
-  year: getCurYear(),
-  symbol: 'tsla',
-  gain: 10,
-  acb: 1000,
-  qty: 20,
-}
+// const txnsResult = {
+//   accountId: getCurAccountId(),
+//   year: getCurYear(),
+//   symbol: 'tsla',
+//   gain: 10,
+//   acb: 1000,
+//   qty: 20,
+// }
 
 function getCurYear() {
   return 2016;
 }
 
-function getCurAccountId() {
-  return 1;
-}
+// function getCurAccountId() {
+//   return 1;
+// }
 function calcTxn(result, txn) {
   txn.comm = 0;
   if (txn.action === 'buy') {
