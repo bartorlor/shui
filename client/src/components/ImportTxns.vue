@@ -55,7 +55,7 @@
   // updated to do so).
   import Dropdown from './Dropdown'
   import {isDebug, debug, info} from '../utils/logging'
-  import MyDate from '../utils/date'
+  import ValidDate from '../utils/ValidDate'
   // import debug from 'debug';
 
   // const log = debug('app:components/PDFDocument');
@@ -163,7 +163,7 @@
         let dates = objs.map(item => {
           return item.stlmtDate;
         })
-        MyDate.getInstance().transfer(dates);
+        ValidDate.getInstance().transfer(dates);
       },
       createObject(obj, self) {
         return {
