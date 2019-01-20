@@ -32,11 +32,11 @@
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
-          <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
-          <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
-          <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
-          <span class="cell cell2">{{ row.remainQty}}</span>
-          <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
+          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.changedAcb)}}</span>
+          <span class="cell cell2" v-if="record.result.status  === 'ok' "  >{{ formatMoney(row.newAcb)}}</span>
+          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.newPrc)}}</span>
+          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ row.remainQty}}</span>
+          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.gain)}}</span>
         </div>
         <div class="table-line-header table-line-header-short flex-container">
           <label class="cell cell2">Year</label>
@@ -44,6 +44,11 @@
           <label class="cell cell2 ">Quantity</label>
           <label class="cell cell2 ">Gain</label>
         </div>
+
+        <div class="empty" v-if="record.result.status  !== 'ok' "> Transaction data has some error. Can't create result
+
+        </div>
+
         <div class="table-line table-line-short flex-container ">
           <span class="cell cell2">{{ record.result.year}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>

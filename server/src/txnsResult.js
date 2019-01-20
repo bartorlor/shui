@@ -52,9 +52,11 @@ function procTxnsByCompany(obj,year,accountId){
     acb: 0,
     qty: 0,
     gain: 0,
+    status: 'ok',
   }
   let newArr = arr.map((txn) => {
     txn = calcTxn(result, txn);
+    // if(txn === null ) return txn;
     result.acb = txn.newAcb;
     result.qty = txn.remainQty;
     result.gain += txn.gain;
@@ -84,19 +86,21 @@ function getTxnGroupByCompany(orgTxns){
   return objs;
 }
 
-function getSymbolsOfQtyNotMatch(objs){ //wr to be..
+function getSymbolsOfQtyNotMatch(objs){
   let symbols = [];
   objs.forEach(item =>{
     let buy = 0;
     let sell = 0;
-    for(let txn in item.txns){
+    for(let index in item.txns){
+      let txn = item.txns[index];
       if(txn.action === 'buy'){
         buy += txn.qty;
       }else if(txn.action === 'sell'){
         sell += txn.qty;
       }
-      if(buy < sell){
+      if(buy < Math.abs(sell)){
         symbols.push(txn.symbol);
+        error(`${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`)
         break;
       }
     }
@@ -109,6 +113,8 @@ function procTxns(orgTxns, year, accountId) {
   objs.forEach(item=>{
     if(!symbols.includes(item.symbol)){
       procTxnsByCompany(item,year,accountId);
+    }else{
+     item.result = {status : 'SellTooMuch'};
     }
   })
   return objs;

@@ -243,7 +243,7 @@ export default function (app) {
       return cursor.toArray();
     })
     .then(txns => {
-      let objs = Report.procTxns(txns, 2016, 1);
+      let objs = Report.procTxns(txns, 2016, filter.accountId);
       // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
       // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
       res.json({metadata:objs.length, records: objs});
