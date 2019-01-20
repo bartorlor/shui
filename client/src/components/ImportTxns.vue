@@ -4,7 +4,8 @@
     <div > Step 1) : please select a pdf file  </div>
            <br>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
-           fileCount="$event.target.files.length" accept="application/pdf">
+           fileCount="$event.target.files.length" accept="application/pdf" />
+    <!--v-model="/Users\/admin\/Downloads/edoc2117.pdf"-->
            <br>
     <div > Step 2) : please select an header for each item column using  an drop down </div>
            <br>
@@ -54,6 +55,7 @@
   // updated to do so).
   import Dropdown from './Dropdown'
   import {isDebug, debug, info} from '../utils/logging'
+  import MyDate from '../utils/date'
   // import debug from 'debug';
 
   // const log = debug('app:components/PDFDocument');
@@ -154,7 +156,14 @@
             return;
           }
         });
+        this.convertDatesToYmd(objs);
         this.operation(objs);
+      },
+      convertDatesToYmd(objs){
+        let dates = objs.map(item => {
+          return item.stlmtDate;
+        })
+        MyDate.getInstance().transfer(dates);
       },
       createObject(obj, self) {
         return {
