@@ -114,7 +114,7 @@ function procTxns(orgTxns, year, accountId) {
     if(!symbols.includes(item.symbol)){
       procTxnsByCompany(item,year,accountId);
     }else{
-     item.result = {status : 'SellTooMuch'};
+     item.result = {status : 'SellTooMuch',msg: 'Error:  selling quantity is more than your have! '};
     }
   })
   return objs;

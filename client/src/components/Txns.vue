@@ -6,6 +6,7 @@
     </div>
     <section v-else class="txns-list">
       <div class="table-line-header flex-container">
+        <label class="cell cell2">Seq</label>
         <label class="cell cell2">Symbol</label>
         <label class="cell cell2">Date</label>
         <label class="cell cell2 ">Action</label>
@@ -18,6 +19,7 @@
       <div class="table-line flex-container"
            v-for="(row, index) in list" :key="index">
 
+        <span class="cell cell2" >{{ index }}</span>
         <span class="cell cell2" v-if="editIndex !== index">{{ row.symbol}}</span>
         <input class="cell cell2" v-else v-model="row.symbol"/>
 

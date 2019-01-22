@@ -20,11 +20,13 @@
           <label class="cell cell2 ">Quantity</label>
           <label class="cell cell2 ">Price</label>
           <label class="cell cell2 ">Amount</label>
-          <label class="cell cell2 ">Changed ACB</label>
-          <label class="cell cell2 ">New ACB</label>
-          <label class="cell cell2 ">New Price</label>
-          <label class="cell cell2 ">Remain Quantity</label>
-          <label class="cell cell2 ">Gain</label>
+          <section v-if=" record.status === 'ok'">
+            <label class="cell cell2 ">Changed ACB</label>
+            <label class="cell cell2 ">New ACB</label>
+            <label class="cell cell2 ">New Price</label>
+            <label class="cell cell2 ">Remain Quantity</label>
+            <label class="cell cell2 ">Gain</label>
+          </section>
         </div>
         <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
           <span class="cell cell2">{{ row.stlmtDate | date }}</span>
@@ -32,35 +34,61 @@
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
-          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.changedAcb)}}</span>
-          <span class="cell cell2" v-if="record.result.status  === 'ok' "  >{{ formatMoney(row.newAcb)}}</span>
-          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.newPrc)}}</span>
-          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ row.remainQty}}</span>
-          <span class="cell cell2" v-if="record.result.status  === 'ok' ">{{ formatMoney(row.gain)}}</span>
-        </div>
-        <div class="table-line-header table-line-header-short flex-container">
-          <label class="cell cell2">Year</label>
-          <label class="cell cell2 ">ACB</label>
-          <label class="cell cell2 ">Quantity</label>
-          <label class="cell cell2 ">Gain</label>
+          <section v-if=" record.status === 'ok'">
+            <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
+            <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
+            <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
+            <span class="cell cell2">{{ row.remainQty}}</span>
+            <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
+          </section>
         </div>
 
-        <div class="empty" v-if="record.result.status  !== 'ok' "> Transaction data has some error. Can't create result
-
+        <div class="errorResult" v-if="record.result.status  !== 'ok' "> {{record.result.msg}}</div>
+        <div v-else>
+          <div class="table-line-header table-line-header-short flex-container">
+            <label class="cell cell2">Year</label>
+            <label class="cell cell2 ">ACB</label>
+            <label class="cell cell2 ">Quantity</label>
+            <label class="cell cell2 ">Gain</label>
+          </div>
+          <div class="table-line table-line-short flex-container ">
+            <span class="cell cell2">{{ record.result.year}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
+            <span class="cell cell2">{{ record.result.qty}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
+          </div>
+          <button @click="download(record._id)">download</button>
         </div>
-
-        <div class="table-line table-line-short flex-container ">
-          <span class="cell cell2">{{ record.result.year}}</span>
-          <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
-          <span class="cell cell2">{{ record.result.qty}}</span>
-          <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
-        </div>
-        <button @click="download(record._id)">download</button>
+        <br>
+        <br>
       </div>
+          <div class="table-line-header table-line-header-short flex-container">
+            <label class="cell cell2">Symbol</label>
+            <label class="cell cell2">Year</label>
+            <label class="cell cell2 ">ACB</label>
+            <label class="cell cell2 ">Quantity</label>
+            <label class="cell cell2 ">Gain</label>
+          </div>
 
+      <div class="table-line flex-container" v-for="(record, index) in records" :key="index">
+        <section v-if=" record.status === 'ok'">
+            <span class="cell cell2">{{ record.symbol}}</span>
+            <span class="cell cell2">{{ record.result.year}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
+            <span class="cell cell2">{{ record.result.qty}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
+        </section>
+     </div>
+      <div class="table-line flex-container" >
+        <span class="cell cell2"></span>
+        <span class="cell cell2"></span>
+        <span class="cell cell2"></span>
+        <span class="cell cell2"></span>
+        <span class="cell cell2"></span>
+      </div>
     </section>
 
-   </div>
+  </div>
 </template>
 
 <script>
@@ -96,13 +124,14 @@
         ],
       }
     },
-     computed: {
-         test() {
-           return accounting.formatMoney(100.4)
-    }, },
+    computed: {
+      test() {
+        return accounting.formatMoney(100.4)
+      },
+    },
     methods: {
-      formatMoney(m){
-       return accounting.formatMoney(m)
+      formatMoney(m) {
+        return accounting.formatMoney(m)
       },
       download(id) {
         this.$fetch(`records/${id}`, {method: 'DELETE'}).then(response => {
@@ -117,7 +146,7 @@
       //     error(e)
       //   }
       // },
-       async loadData() {
+      async loadData() {
         try {
           const query = {};
           // query.year = 2016;
@@ -147,6 +176,13 @@
           })
         }
       },
+      totalGain(){
+        let ret = records.map(item => {
+          if(item.result.status === 'ok'){
+            ret += //wr to be...
+          }
+        })
+      }
     },
   }
 </script>
@@ -156,12 +192,17 @@
 
   .table-line-header
     width 120 * 9px
+
   .table-line
     width 120 * 9px
 
   .table-line-header-short
     width 120 * 6px
+
   .table-line-short
     width 120 * 6px
+
+  .errorResult
+    background-color greenyellow
 </style>
 
