@@ -20,13 +20,13 @@
           <label class="cell cell2 ">Quantity</label>
           <label class="cell cell2 ">Price</label>
           <label class="cell cell2 ">Amount</label>
-          <section v-if=" record.status === 'ok'">
+          <!--<section v-if=" record.result.status === 'ok'">-->
             <label class="cell cell2 ">Changed ACB</label>
             <label class="cell cell2 ">New ACB</label>
             <label class="cell cell2 ">New Price</label>
             <label class="cell cell2 ">Remain Quantity</label>
             <label class="cell cell2 ">Gain</label>
-          </section>
+          <!--</section>-->
         </div>
         <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
           <span class="cell cell2">{{ row.stlmtDate | date }}</span>
@@ -34,13 +34,13 @@
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
-          <section v-if=" record.status === 'ok'">
+          <!--<section v-if=" record.result.status === 'ok'">-->
             <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
             <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
             <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
             <span class="cell cell2">{{ row.remainQty}}</span>
             <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
-          </section>
+          <!--</section>-->
         </div>
 
         <div class="errorResult" v-if="record.result.status  !== 'ok' "> {{record.result.msg}}</div>
@@ -62,20 +62,20 @@
         <br>
         <br>
       </div>
-          <div class="table-line-header table-line-header-short flex-container">
+          <div class="table-line-header  flex-container">
             <label class="cell cell2">Symbol</label>
             <label class="cell cell2">Year</label>
             <label class="cell cell2 ">ACB</label>
-            <label class="cell cell2 ">Quantity</label>
+            <label class="cell cell2 ">Number</label>
             <label class="cell cell2 ">Gain</label>
           </div>
 
-      <div class="table-line flex-container" v-for="(record, index) in records" :key="index">
-        <section v-if=" record.status === 'ok'">
+      <div  v-for="(record, index) in records" :key="index">
+        <section class="table-line flex-container" v-if=" record.result.status === 'ok'">
             <span class="cell cell2">{{ record.symbol}}</span>
             <span class="cell cell2">{{ record.result.year}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
-            <span class="cell cell2">{{ record.result.qty}}</span>
+            <span class="cell cell2">{{ record.result.sellQty}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
         </section>
      </div>
@@ -83,8 +83,8 @@
         <span class="cell cell2"></span>
         <span class="cell cell2"></span>
         <span class="cell cell2"></span>
-        <span class="cell cell2"></span>
-        <span class="cell cell2"></span>
+        <span class="cell cell2">Total Gain:</span>
+        <span class="cell cell2">{{ formatMoney(totalGain)}}</span>
       </div>
     </section>
 
@@ -128,6 +128,17 @@
       test() {
         return accounting.formatMoney(100.4)
       },
+       totalGain(){
+        let ret = 0;
+        if(this.records.length > 0){
+            this.records.map(item => {
+              if(item.result.status === 'ok'){
+                ret += item.result.gain;
+              }
+            })
+        }
+        return ret;
+      }
     },
     methods: {
       formatMoney(m) {
@@ -162,6 +173,7 @@
           error(e)
         }
       },
+
     },
     mounted() {
       this.loadData();
@@ -176,13 +188,7 @@
           })
         }
       },
-      totalGain(){
-        let ret = records.map(item => {
-          if(item.result.status === 'ok'){
-            ret += //wr to be...
-          }
-        })
-      }
+
     },
   }
 </script>

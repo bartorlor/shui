@@ -34,6 +34,7 @@ function calcTxn(result, txn) {
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.qty - txn.qty;
     txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
+    result.sellQty += txn.qty;
   }
   if (txn.remainQty != 0) {
     txn.newPrc = txn.newAcb / txn.remainQty;
@@ -52,6 +53,7 @@ function procTxnsByCompany(obj,year,accountId){
     acb: 0,
     qty: 0,
     gain: 0,
+    sellQty: 0,
     status: 'ok',
   }
   let newArr = arr.map((txn) => {
