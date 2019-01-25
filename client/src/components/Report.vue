@@ -46,15 +46,21 @@
         <div class="errorResult" v-if="record.result.status  !== 'ok' "> {{record.result.msg}}</div>
         <div v-else>
           <div class="table-line-header table-line-header-short flex-container">
+            <label class="cell cell2 ">Number</label>
+            <label class="cell cell2">Date</label>
             <label class="cell cell2">Year</label>
+            <label class="cell cell2 ">sellAmt</label>
+            <label class="cell cell2 ">buyAmt</label>
             <label class="cell cell2 ">ACB</label>
-            <label class="cell cell2 ">Quantity</label>
             <label class="cell cell2 ">Gain</label>
           </div>
           <div class="table-line table-line-short flex-container ">
-            <span class="cell cell2">{{ record.result.year}}</span>
+            <span class="cell cell2">{{ record.result.sellQty}}</span>
+            <span class="cell cell2">{{ record.result.lastSellDate}}</span>
+            <span class="cell cell2">{{ record.result.yearOfAcquisition.join(',')}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.sellAmt)}}</span>
+            <span class="cell cell2">{{ formatMoney(record.result.buyAmt)}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
-            <span class="cell cell2">{{ record.result.qty}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
           </div>
           <button @click="download(record._id)">download</button>

@@ -23,18 +23,24 @@ function calcTxn(result, txn) {
   if (txn.action === 'buy') {
     txn.changedAcb = txn.amt * rate(txn.stlmtDate) + txn.comm * rate(txn.stlmtDate);
     txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQty = result.qty + txn.qty;
+    txn.remainQty = result.remainQty + txn.qty;
     txn.gain = 0;
+    result.buyAmt += txn.changedAcb;
   } else if (txn.action === 'sell') {
-    if (result.qty <= 0) {
+    if (result.remainQty <= 0) {
       error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
       return null;
     }
-    txn.changedAcb = - result.acb / result.qty * txn.qty;
+    txn.changedAcb = - result.acb / result.remainQty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
-    txn.remainQty = result.qty - txn.qty;
+    txn.remainQty = result.remainQty - txn.qty;
     txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
     result.sellQty += txn.qty;
+    result.lastSellDate = txn.stlmtDate;
+    result.yearOfAcquisition.add(new Date(txn.stlmtDate).getFullYear());
+    result.sellAmt += txn.amt * rate(txn.stlmtDate)  - txn.comm * rate(txn.stlmtDate);
+    
+    
   }
   if (txn.remainQty != 0) {
     txn.newPrc = txn.newAcb / txn.remainQty;
@@ -51,16 +57,20 @@ function procTxnsByCompany(obj,year,accountId){
     year: year,
     symbol: symbol,
     acb: 0,
-    qty: 0,
+    remainQty: 0,
     gain: 0,
     sellQty: 0,
+    lastSellDate: '01-01-2016',
+    yearOfAcquisition :new Set(),
+    buyAmt : 0,
+    sellAmt: 0,
     status: 'ok',
   }
   let newArr = arr.map((txn) => {
     txn = calcTxn(result, txn);
     // if(txn === null ) return txn;
     result.acb = txn.newAcb;
-    result.qty = txn.remainQty;
+    result.remainQty = txn.remainQty;
     result.gain += txn.gain;
     printTxn(txn); //update one recorder to db
     return txn;
@@ -151,16 +161,4 @@ function myerror(num, str) {
 export {
   procTxns,
 };
-//function old(arr){
-//TransResult : result = new TransResult(accountId, year,symbol,{gain:0},{acb:0},{qty:0});
-//for (Trans trans: list){
-//trans = calcTrans(result,trans);
-//result.acb = trans.newAcb;
-//result.qty = trans.remainQty;
-//result.gain += trans.gain;
-//updateTrans(trans); //update one recorder to db
-//}
-//storeTransResult(result);
-//}
-
 
