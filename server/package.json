@@ -23,6 +23,7 @@
     "nodemon": "^1.18.7",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "pdfmake": "^0.1.40",
     "uuid": "^3.0.1"
   }
 }
