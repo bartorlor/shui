@@ -7,6 +7,7 @@ import Account from './account'
 import {debug} from './utils/logging'
 import {ObjectId} from 'mongodb';
 import * as Report from './txnsResult'
+import * as Pdf from './pdf'
 
 let db;
 initData()
@@ -65,6 +66,7 @@ export default function (app) {
   })
 
   app.post('/login', (req, res, next) => {
+    Pdf.processPdf();
     debug(`login user: ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
     if (req.user) {
       res.status(403).send('Unauthorized')
