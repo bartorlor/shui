@@ -39,7 +39,8 @@
             <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
             <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
             <span class="cell cell2">{{ row.remainQty}}</span>
-            <span class="cell cell2">{{ formatMoney(row.gain)}}</span>
+            <span class="cell cell2" v-if="row.action === 'buy' "> - </span>
+            <span class="cell cell2" v-else >{{ formatMoney(row.gain)}}</span>
           <!--</section>-->
         </div>
 

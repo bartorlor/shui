@@ -25,7 +25,6 @@ function calcTxn(result, txn) {
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.remainQty + txn.qty;
     txn.gain = 0;
-    result.buyAmt += txn.changedAcb;
   } else if (txn.action === 'sell') {
     if (result.remainQty <= 0) {
       error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
@@ -39,6 +38,7 @@ function calcTxn(result, txn) {
     result.lastSellDate = txn.stlmtDate;
     result.yearOfAcquisition.add(new Date(txn.stlmtDate).getFullYear());
     result.sellAmt += txn.amt * rate(txn.stlmtDate)  - txn.comm * rate(txn.stlmtDate);
+    result.buyAmt += Math.abs(txn.changedAcb);
     
     
   }
