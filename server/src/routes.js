@@ -10,6 +10,7 @@ import * as Report from './txnsResult'
 import * as Pdf from './pdf'
 
 let db;
+const LimitTxns = 5000;
 initData()
 
 
@@ -180,10 +181,10 @@ export default function (app) {
 
     if (req.query._summary === undefined) {
       const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
-      let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
-      if (limit > 50) limit = 50;
+      let limit = req.query._limit ? parseInt(req.query._limit, 10) : LimitTxns;
+      if (limit > LimitTxns) limit = LimitTxns;
 
-      const cursor = db.collection('txns').find(filter).sort({_id: 1})
+      const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
       .skip(offset)
       .limit(limit);
 
@@ -231,10 +232,10 @@ export default function (app) {
     if (req.query.symbol) filter.symbol = req.query.symbol;
     if (req.query.accountId) filter.accountId= req.query.accountId;
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
-    let limit = req.query._limit ? parseInt(req.query._limit, 10) : 50;
-    if (limit > 50) limit = 50;
+    let limit = req.query._limit ? parseInt(req.query._limit, 10) : LimitTxns;
+    if (limit > LimitTxns) limit = LimitTxns;
 
-    const cursor = db.collection('txns').find(filter).sort({_id: 1})
+    const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
     .skip(offset)
     .limit(limit);
 
@@ -270,9 +271,6 @@ export default function (app) {
     db.collection('txns').insertOne(TxnUtil.convertTxn(newTxn)).then(result => {
         debug('insert result', result.result)
         debug('insert result', result.insertedId)
-        // let ret = db.collection('txns').find().toArray()
-        // debug('ret: ',ret)
-        //db.collection('txns').find({_id:'5bf376243a58e9036908469c'}).limit(1)
         let ret = db.collection('txns').find({_id: result.insertedId}).limit(1).next()
         return ret
       }
