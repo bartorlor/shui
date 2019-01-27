@@ -67,7 +67,6 @@ export default function (app) {
   })
 
   app.post('/login', (req, res, next) => {
-    Pdf.processPdf();
     debug(`login user: ${JSON.stringify(req.user)} body: ${JSON.stringify(req.body)} `)
     if (req.user) {
       res.status(403).send('Unauthorized')
@@ -249,7 +248,9 @@ export default function (app) {
       let objs = Report.procTxns(txns, 2016, filter.accountId);
       // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
       // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
+      Pdf.processPdf(objs,2016,filter.accountId);
       res.json({metadata:objs.length, records: objs});
+      
 
     })
     .catch(error => {

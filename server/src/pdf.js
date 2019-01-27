@@ -6,7 +6,7 @@ var PdfPrinter = require('pdfmake');
 var fs = require('fs');
 var fontsfile = require('pdfmake/build/vfs_fonts.js');
 
-function processPdf(orgTxns, year, accountId) {
+function processPdf(records, year, accountId) {
 // Define font files
   var fonts = {
     Roboto: {
@@ -19,25 +19,40 @@ function processPdf(orgTxns, year, accountId) {
   
   var printer = new PdfPrinter(fonts);
   
+  // headers are automatically repeated if the table spans over multiple pages
+  // you can declare how many rows should be treated as headers
+  // widths: ['*', 'auto', 100, '*'],
+  // [{text: 'Bold value', bold: true}, 'Val 2', 'Val 3', 'Val 4']
   var docDefinition = {
     content: [
       {
         layout: 'lightHorizontalLines', // optional
         table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
           headerRows: 1,
-          widths: ['*', 'auto', 100, '*'],
-          
+          widths: ['auto', 'auto', 'auto', 'auto', 'auto'],
           body: [
-            ['First', 'Second', 'Third', 'The last one'],
-            ['Value 1', 'Value 2', 'Value 3', 'Value 4'],
-            [{text: 'Bold value', bold: true}, 'Val 2', 'Val 3', 'Val 4']
+            ['Symbol', 'Year', 'ACB', 'Number','Gain'],
+            // ['Value 1', 'Value 2', 'Value 3', 'Value 4'],
           ]
         }
       }
     ]
   };
+  let mydata = docDefinition.content[0].table.body;
+  let total = 0;
+  let row = [];
+  for(let index in records){
+    let record = records[index];
+    row[0] = record.symbol;
+    row[1] = record.result.year.toString(10);
+    row[2] = accounting.formatMoney(record.result.acb).toString(10);
+    row[3] = record.result.sellQty.toString(10);
+    row[4] = accounting.formatMoney(record.result.gain).toString(10);
+    mydata.push(row);
+    total += record.result.gain;
+  }
+  mydata.push(['','','','total:',total]);
+  
   var pdfDoc = printer.createPdfKitDocument(docDefinition);
   pdfDoc.pipe(fs.createWriteStream('document.pdf'));
   pdfDoc.end();
