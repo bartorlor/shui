@@ -29,7 +29,7 @@
           <!--</section>-->
         </div>
         <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
-          <span class="cell cell2">{{ row.stlmtDate | date }}</span>
+          <span class="cell cell2">{{ row.stlmtDate }}</span>
           <span class="cell cell2">{{ row.action}}</span>
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>

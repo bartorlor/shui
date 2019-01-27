@@ -23,8 +23,9 @@
   //r = db.accounts.find({}).pretty();
   //printRecorders(r);
 
-db.txns.remove({ symbol : "VIPS" })
-  db.txns.remove({ symbol : "SCTY" })
+// db.txns.remove({ symbol : "VIPS" })
+//   db.txns.remove({ symbol : "SCTY" })
+  db.txns.remove({  })
 
   print('4 ---------------------');
   r = db.txns.find({}).pretty();

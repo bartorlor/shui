@@ -24,7 +24,9 @@
         <input class="cell cell2" v-else v-model="row.symbol"/>
 
         <span class="cell cell2" v-if="editIndex !== index">{{ row.stlmtDate}}</span>
-        <input class="cell cell2" v-else v-model="row.stlmtDate"/>
+        <input class="cell cell2"  v-else v-model="row.stlmtDate"/>
+        <!--<input class="cell cell2" type="date" v-else v-model="row.stlmtDate"/>-->
+        <!--<date-picker v-else v-model="row.stlmtDate" ></date-picker>-->
         <span class="cell cell2" v-if="editIndex !== index">{{ row.action}}</span>
         <input class="cell cell2" v-else v-model="row.action"/>
         <span class="cell cell2" v-if="editIndex !== index">{{ row.qty}}</span>
@@ -48,10 +50,12 @@
 </template>
 
 <script>
-  import {debug, info, error} from '../utils/logging'
+  import {debug, info, error,isDebug} from '../utils/logging'
   import TxnUtil from '../../../server/src/txn'
+  import DatePicker from 'vue2-datepicker'
 
   export default {
+    components: { DatePicker },
     data() {
       return {
         list: [],
@@ -79,7 +83,7 @@
       add() {
         this.originalData = null;
         const obj =  {
-           stlmtDate: '01-01-2018', action: 'buy', symbol: '', description:'some memo', type: '', qty: 0, price: 0, amt: 0,
+           stlmtDate: '2018-06-19', action: 'buy', symbol: '', description:'some memo', type: '', qty: 0, price: 0, amt: 0,
         }
         this.list.push(obj);
         this.editIndex = this.list.length - 1

@@ -1,8 +1,8 @@
 import {debug, error} from './utils/logging'
 import * as accounting from './utils/accounting'
 // import * as moment from 'moment'
-let moment = require('moment');
-let dateFormat = 'DD-MM-YYYY';
+// let moment = require('moment');
+// let dateFormat = 'DD-MM-YYYY';
 const validTxnAction = {
   buy: true,
   sell: true,
@@ -43,11 +43,13 @@ function convertDate(str) {
   //&& moment.isValid(txn.stlmtDate)
   let ret = null;
     try {
-      let dd = str.substr(0,2);
-      let mm = str.substr(3,2);
-      let yyyy = str.substr(6,4);
-      ret = `${mm}/${dd}/${yyyy}`;
-       // ret = new Date(newDate);
+      // let yyyy= str.substr(0,4);
+      // let mm = str.substr(5,2);
+      // let dd = str.substr(7,3);
+      // ret = `${yyyy}-${mm}-${dd}`;
+      //
+      //  ret = new Date(ret);
+      ret = str;
       return ret ;
 
       // moment()

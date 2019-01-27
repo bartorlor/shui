@@ -163,7 +163,11 @@
         let dates = objs.map(item => {
           return item.stlmtDate;
         })
-        ValidDate.getInstance().transfer(dates);
+        dates = ValidDate.getInstance().transfer(dates);
+        for(let index in objs){
+          objs[index].stlmtDate = dates[index];
+        }
+        return objs;
       },
       createObject(obj, self) {
         return {
