@@ -40,9 +40,9 @@ function processPdf(records, year, accountId) {
   };
   let mydata = docDefinition.content[0].table.body;
   let total = 0;
-  let row = [];
   for(let index in records){
     let record = records[index];
+    let row = [];
     row[0] = record.symbol;
     row[1] = record.result.year.toString(10);
     row[2] = accounting.formatMoney(record.result.acb).toString(10);
@@ -51,6 +51,7 @@ function processPdf(records, year, accountId) {
     mydata.push(row);
     total += record.result.gain;
   }
+  total = accounting.formatMoney(total).toString(10);
   mydata.push(['','','','total:',total]);
   
   var pdfDoc = printer.createPdfKitDocument(docDefinition);

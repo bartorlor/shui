@@ -3,6 +3,45 @@
     <router-link tag="button" :to="{name: 'txns'}" class="secondary">
       Go back
     </router-link>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div>
+      <div>
+        <span> Year: </span>
+        <select v-model="form.year">
+          <option v-for="option in form.years" v-bind:value="option">
+            {{ option }}
+          </option>
+        </select>
+        <span>Selected: {{ form.year }}</span>
+      </div>
+      <div>
+        <span> Tax Year End: </span>
+        <select v-model="form.month">
+          <option v-for="option in form.months" v-bind:value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+        <select v-model="form.day">
+          <option v-for="option in form.days" v-bind:value="option">
+            {{ option }}
+          </option>
+        </select>
+        <span>Selected: {{ form.month}}</span>
+        <span>Selected: {{ form.day}}</span>
+      </div>
+      <div>
+        <span>Notes(optional)</span>
+        <textarea v-model="form.notes" placeholder="add notes"></textarea>
+      </div>
+
+      <button @click="createReport()">Create Report</button>
+      <br>
+      <br>
+      <br>
+    </div>
     <div class="empty" v-if="records.length === 0">
       You don't have any record yet.
     </div>
@@ -21,11 +60,11 @@
           <label class="cell cell2 ">Price</label>
           <label class="cell cell2 ">Amount</label>
           <!--<section v-if=" record.result.status === 'ok'">-->
-            <label class="cell cell2 ">Changed ACB</label>
-            <label class="cell cell2 ">New ACB</label>
-            <label class="cell cell2 ">New Price</label>
-            <label class="cell cell2 ">Remain Quantity</label>
-            <label class="cell cell2 ">Gain</label>
+          <label class="cell cell2 ">Changed ACB</label>
+          <label class="cell cell2 ">New ACB</label>
+          <label class="cell cell2 ">New Price</label>
+          <label class="cell cell2 ">Remain Quantity</label>
+          <label class="cell cell2 ">Gain</label>
           <!--</section>-->
         </div>
         <div class="table-line flex-container" v-for="(row, index) in record.txns" :key="index">
@@ -35,12 +74,12 @@
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
           <!--<section v-if=" record.result.status === 'ok'">-->
-            <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
-            <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
-            <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
-            <span class="cell cell2">{{ row.remainQty}}</span>
-            <span class="cell cell2" v-if="row.action === 'buy' "> - </span>
-            <span class="cell cell2" v-else >{{ formatMoney(row.gain)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
+          <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
+          <span class="cell cell2">{{ row.remainQty}}</span>
+          <span class="cell cell2" v-if="row.action === 'buy' "> - </span>
+          <span class="cell cell2" v-else>{{ formatMoney(row.gain)}}</span>
           <!--</section>-->
         </div>
 
@@ -64,29 +103,28 @@
             <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
           </div>
-          <button @click="download(record._id)">download</button>
         </div>
         <br>
         <br>
       </div>
-          <div class="table-line-header  flex-container">
-            <label class="cell cell2">Symbol</label>
-            <label class="cell cell2">Year</label>
-            <label class="cell cell2 ">ACB</label>
-            <label class="cell cell2 ">Number</label>
-            <label class="cell cell2 ">Gain</label>
-          </div>
+      <div class="table-line-header  flex-container">
+        <label class="cell cell2">Symbol</label>
+        <label class="cell cell2">Year</label>
+        <label class="cell cell2 ">ACB</label>
+        <label class="cell cell2 ">Number</label>
+        <label class="cell cell2 ">Gain</label>
+      </div>
 
-      <div  v-for="(record, index) in records" :key="index">
+      <div v-for="(record, index) in records" :key="index">
         <section class="table-line flex-container" v-if=" record.result.status === 'ok'">
-            <span class="cell cell2">{{ record.symbol}}</span>
-            <span class="cell cell2">{{ record.result.year}}</span>
-            <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
-            <span class="cell cell2">{{ record.result.sellQty}}</span>
-            <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
+          <span class="cell cell2">{{ record.symbol}}</span>
+          <span class="cell cell2">{{ record.result.year}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
+          <span class="cell cell2">{{ record.result.sellQty}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
         </section>
-     </div>
-      <div class="table-line flex-container" >
+      </div>
+      <div class="table-line flex-container">
         <span class="cell cell2"></span>
         <span class="cell cell2"></span>
         <span class="cell cell2"></span>
@@ -106,6 +144,31 @@
   export default {
     data() {
       return {
+        form: {
+          year: 2015,
+          month: '12',
+          day: 31,
+          hasSuperficialLoss: true,
+          format: 'pdf',
+          notes: '',
+          years: [2019, 2018, 2017, 2016, 2015],
+          months: [
+            {text: 'Jan', value: '01'},
+            {text: 'Feb', value: '02'},
+            {text: 'Mar', value: '03'},
+            {text: 'Apr', value: '04'},
+            {text: 'May', value: '05'},
+            {text: 'Jun', value: '06'},
+            {text: 'Jul', value: '07'},
+            {text: 'Aug', value: '08'},
+            {text: 'Sep', value: '09'},
+            {text: 'Oct', value: '10'},
+            {text: 'Nov', value: '11'},
+            {text: 'Dec', value: '12'}
+          ],
+          days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+        },
+
         records: [
           {
             symbol: 'vips',
@@ -135,14 +198,14 @@
       test() {
         return accounting.formatMoney(100.4)
       },
-       totalGain(){
+      totalGain() {
         let ret = 0;
-        if(this.records.length > 0){
-            this.records.map(item => {
-              if(item.result.status === 'ok'){
-                ret += item.result.gain;
-              }
-            })
+        if (this.records.length > 0) {
+          this.records.map(item => {
+            if (item.result.status === 'ok') {
+              ret += item.result.gain;
+            }
+          })
         }
         return ret;
       }
@@ -151,24 +214,18 @@
       formatMoney(m) {
         return accounting.formatMoney(m)
       },
-      download(id) {
-        this.$fetch(`records/${id}`, {method: 'DELETE'}).then(response => {
-          if (response.status !== 'ok') error('Failed to delete issue');
-          else this.loadData()
-        })
+      createReport() {
+        this.loadData();
       },
-      // async loadData() {
-      //   try {
-      //     this.records = await this.$fetch('report')
-      //   } catch (e) {
-      //     error(e)
-      //   }
-      // },
       async loadData() {
         try {
           const query = {};
           // query.year = 2016;
           query.accountId = this.$state.user.curAccountId;
+          query.year = this.form.year;
+          query.month = this.form.month;
+          query.day = this.form.day;
+          query.notes = this.form.notes;
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
           this.records = await this.$fetch(`report?${search}`);
@@ -183,7 +240,7 @@
 
     },
     mounted() {
-      this.loadData();
+      // this.loadData();
     },
     watch: {
       records(newValue, oldValue) {

@@ -226,10 +226,12 @@ export default function (app) {
 //  db.inventory.find( { tags: ["red", "blank"] } )
   // db.txns.find( { symbol: { $in:["VIPS", "SCTY"]} });
   app.get('/report', privateRoute, (req, res) => {
-    //req.query.symbol =  { $in:["VIPS", "SCTY"] };
+    req.query.symbol =  { $in:["VIPS", "SCTY"] };
     const filter = {};
     if (req.query.symbol) filter.symbol = req.query.symbol;
     if (req.query.accountId) filter.accountId= req.query.accountId;
+    const date = `${req.query.year}-${req.query.month}-${req.query.day}`
+    filter.stlmtDate = { $lte: date };
     const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
     let limit = req.query._limit ? parseInt(req.query._limit, 10) : LimitTxns;
     if (limit > LimitTxns) limit = LimitTxns;
@@ -245,7 +247,7 @@ export default function (app) {
       return cursor.toArray();
     })
     .then(txns => {
-      let objs = Report.procTxns(txns, 2016, filter.accountId);
+      let objs = Report.procTxns(txns, req.query.year, filter.accountId);
       // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
       // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
       Pdf.processPdf(objs,2016,filter.accountId);
