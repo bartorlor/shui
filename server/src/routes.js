@@ -171,6 +171,7 @@ export default function (app) {
   app.get('/txns', (req, res) => {
     const filter = {};
     if (req.query.accountId) filter.accountId= req.query.accountId;
+    Reports.main(req.query.accountId);
     // filter.accountId = req.user.curAccountId;
     // if (req.query.symbol) filter.symbol = req.query.symbol;
     //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
@@ -252,7 +253,7 @@ export default function (app) {
       // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
       Pdf.processPdf(objs,2016,filter.accountId);
       res.json({metadata:objs.length, records: objs});
-      
+
 
     })
     .catch(error => {

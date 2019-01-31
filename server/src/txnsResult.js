@@ -1,23 +1,8 @@
 import {debug, error} from './utils/logging'
 import * as accounting from './utils/accounting'
 import * as Txn from './txn'
+import moment from 'moment'
 
-
-// const txnsResult = {
-//   accountId: getCurAccountId(),
-//   year: getCurYear(),
-//   symbol: 'tsla',
-//   gain: 10,
-//   acb: 1000,
-//   qty: 20,
-// }
-
-function getCurYear() {
-  return 2016;
-}
-// function getCurAccountId() {
-//   return 1;
-// }
 function calcTxn(result, txn) {
   txn.comm = 0;
   if (txn.action === 'buy') {
@@ -39,47 +24,14 @@ function calcTxn(result, txn) {
     result.yearOfAcquisition.add(new Date(txn.stlmtDate).getFullYear());
     result.sellAmt += txn.amt * rate(txn.stlmtDate)  - txn.comm * rate(txn.stlmtDate);
     result.buyAmt += Math.abs(txn.changedAcb);
-    
-    
   }
-  if (txn.remainQty != 0) {
+  if (txn.remainQty !== 0) {
     txn.newPrc = txn.newAcb / txn.remainQty;
   } else {
     txn.newPrc = 0;
   }
   return txn;
 }
-function procTxnsByCompany(obj,year,accountId){
-  let symbol = obj.symbol;
-  let arr = obj.txns;
-  let result = {
-    accountId: accountId,
-    year: year,
-    symbol: symbol,
-    acb: 0,
-    remainQty: 0,
-    gain: 0,
-    sellQty: 0,
-    lastSellDate: '01-01-2016',
-    yearOfAcquisition :new Set(),
-    buyAmt : 0,
-    sellAmt: 0,
-    status: 'ok',
-  }
-  let newArr = arr.map((txn) => {
-    txn = calcTxn(result, txn);
-    // if(txn === null ) return txn;
-    result.acb = txn.newAcb;
-    result.remainQty = txn.remainQty;
-    result.gain += txn.gain;
-    printTxn(txn); //update one recorder to db
-    return txn;
-  })
-  obj.txns = newArr;
-  obj.result = result ;
-  printTxnResult(result);
-}
-
 function getTxnGroupByCompany(orgTxns){
     //find all symbol base on orgTxns
   //for loop get corresponed records
@@ -119,18 +71,6 @@ function getSymbolsOfQtyNotMatch(objs){
   });
   return symbols;
 }
-function procTxns(orgTxns, year, accountId) {
-  let objs = getTxnGroupByCompany(orgTxns);
-  let symbols = getSymbolsOfQtyNotMatch(objs);
-  objs.forEach(item=>{
-    if(!symbols.includes(item.symbol)){
-      procTxnsByCompany(item,year,accountId);
-    }else{
-     item.result = {status : 'SellTooMuch',msg: 'Error:  selling quantity is more than your have! '};
-    }
-  })
-  return objs;
-}
 
 function printTxnResult(result) {
   debug(`result : ${JSON.stringify(result)}`);
@@ -146,19 +86,106 @@ function rate(stlmtDate) {
   return 1;
 }
 
+function main(accountId){
+  let str = '2016-12-31';
+  let fmt = 'YYYY-MM-DD';
+  let end = moment(str,fmt);
+  let preEnd = end.subtract(12,'months');
+  let start = preEnd.add(1,'day').format(fmt);
+     preEnd = preEnd.format(fmt);
+  let preStart = '1970-01-01';
+  let txns = getTxns(db,preStart,preEnd,accountId);
+  let preRecords = null;
+  preRecords = procTxns(txns,year,accountId,preRecords);
+  txns = getTxns(db,start,end,accountId);
+  let records = procTxns(txns,year,accountId,preRecords);
+  return records;
 
-function isExistRsult(result) {
-  //todo check data base accountId , year and symbol
-  return false;
+}
+function procTxns(orgTxns, year, accountId,preRecords) {
+  let objs = getTxnGroupByCompany(orgTxns);
+  let symbols = getSymbolsOfQtyNotMatch(objs);
+  objs.forEach(item=>{
+    if(!symbols.includes(item.symbol)){
+      let result = getResult(symbol,preRecords,accountId);
+      procTxnsByCompany(item,year,accountId,result);
+    }else{
+     item.result = {status : 'SellTooMuch',msg: 'Error:  selling quantity is more than your have! '};
+    }
+  })
+  return objs;
 }
 
-function myerror(num, str) {
-  // throw error(`${num} : ${str}`);
-  error(`${num} : ${str}`);
+function getTxns(start,end , accountId){
+    const filter = {};
 
+    filter.stlmtDate = { $gte: start, $lte: end };
+    if (accountId) filter.accountId= accountId;
+    let limit = 5000;
+    let offset = 0;
+
+    const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
+    .skip(offset)
+    .limit(limit);
+
+    let totalCount;
+    cursor.count(false).then(result => {
+      totalCount = result;
+      return cursor.toArray();
+    })
+    .then(txns => {
+      return txns;
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  }
+
+function getResult(symbol,preRecords,accountId){
+
+  let remainQty = 0 ;
+  let acb = 0;
+  if(preRecords !== null){
+    let found = preRecords.find(function(element) {
+      return element.result.symbol === symbol ;
+    });
+    remainQty = found.result.remainQty;
+    acb = found.result.acb;
+  }
+  let result = {
+      accountId: accountId,
+      //year: 2016,
+      symbol: symbol,
+      acb: acb,
+      remainQty: remainQty,
+      gain: 0,
+      sellQty: 0,
+      lastSellDate: '01-01-2016',
+      yearOfAcquisition :new Set(),
+      buyAmt : 0,
+      sellAmt: 0,
+      status: 'ok',
+    }
+    return result;
+}
+function procTxnsByCompany(obj,year,accountId,result){
+  let arr = obj.txns;
+    obj.txns = arr.map((txn) => {
+    txn = calcTxn(result, txn);
+    // if(txn === null ) return txn;
+    result.acb = txn.newAcb;
+    result.remainQty = txn.remainQty;
+    result.gain += txn.gain;
+    printTxn(txn); //update one recorder to db
+    return txn;
+  })
+  obj.result = result ;
+  printTxnResult(result);
 }
 
 export {
   procTxns,
+  main,
 };
 
