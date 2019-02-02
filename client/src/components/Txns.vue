@@ -172,8 +172,8 @@
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
           this.list = await this.$fetch(`txns?${search}`);
           this.list.forEach((item) => {
-            debug(`txn : ${TxnUtil.format(item)}`);
-            debug(item.stlmtDate);
+            // debug(`txn : ${TxnUtil.format(item)}`);
+            // debug(item.stlmtDate);
           })
         } catch (e) {
           error(e)

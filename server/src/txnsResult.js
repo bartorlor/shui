@@ -15,14 +15,14 @@ function calcTxn(result, txn) {
       error(5, `sell 0  security found error before this transaction  ${txn.stlmtDate} ${txn.action} ${txn.symbol}  ${txn.amt}`)
       return null;
     }
-    txn.changedAcb = - result.acb / result.remainQty * txn.qty;
+    txn.changedAcb = -result.acb / result.remainQty * txn.qty;
     txn.newAcb = result.acb + txn.changedAcb;
     txn.remainQty = result.remainQty - txn.qty;
     txn.gain = txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate) + txn.changedAcb;
     result.sellQty += txn.qty;
     result.lastSellDate = txn.stlmtDate;
     result.yearOfAcquisition.add(new Date(txn.stlmtDate).getFullYear());
-    result.sellAmt += txn.amt * rate(txn.stlmtDate)  - txn.comm * rate(txn.stlmtDate);
+    result.sellAmt += txn.amt * rate(txn.stlmtDate) - txn.comm * rate(txn.stlmtDate);
     result.buyAmt += Math.abs(txn.changedAcb);
   }
   if (txn.remainQty !== 0) {
@@ -32,16 +32,19 @@ function calcTxn(result, txn) {
   }
   return txn;
 }
-function getTxnGroupByCompany(orgTxns){
-    //find all symbol base on orgTxns
+
+function getTxnGroupByCompany(orgTxns) {
+  //find all symbol base on orgTxns
   //for loop get corresponed records
   let companys = new Set();
-  orgTxns.forEach(item=>companys.add(item.symbol));
+  orgTxns.forEach(item => companys.add(item.symbol));
   let objs = [];
-  companys.forEach(item=>{objs.push({symbol:item,txns:[]})});
-  orgTxns.forEach(item=>{
-    objs.some(item2=>{
-      if(item2.symbol === item.symbol){
+  companys.forEach(item => {
+    objs.push({symbol: item, txns: []})
+  });
+  orgTxns.forEach(item => {
+    objs.some(item2 => {
+      if (item2.symbol === item.symbol) {
         item2.txns.push(item);
         return true;
       }
@@ -50,19 +53,20 @@ function getTxnGroupByCompany(orgTxns){
   return objs;
 }
 
-function getSymbolsOfQtyNotMatch(objs){
+function getSymbolsOfQtyNotMatch(objs,preRecords,accountId) {
   let symbols = [];
-  objs.forEach(item =>{
-    let buy = 0;
+  objs.forEach(item => {
+    let result = getInitResult(item.symbol, preRecords, accountId);
+    let buy = result.remainQty;
     let sell = 0;
-    for(let index in item.txns){
+    for (let index in item.txns) {
       let txn = item.txns[index];
-      if(txn.action === 'buy'){
+      if (txn.action === 'buy') {
         buy += txn.qty;
-      }else if(txn.action === 'sell'){
+      } else if (txn.action === 'sell') {
         sell += txn.qty;
       }
-      if(buy < Math.abs(sell)){
+      if (buy < Math.abs(sell)) {
         symbols.push(txn.symbol);
         error(`${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`)
         break;
@@ -77,8 +81,8 @@ function printTxnResult(result) {
 }
 
 function printTxn(txn) {
-  debug(`new txn : ${JSON.stringify(txn)}`);
-
+  // debug(`new txn : ${JSON.stringify(txn)}`);
+  
 }
 
 
@@ -86,92 +90,131 @@ function rate(stlmtDate) {
   return 1;
 }
 
-function main(accountId){
+async function main(accountId, db) {
   let str = '2016-12-31';
   let fmt = 'YYYY-MM-DD';
-  let end = moment(str,fmt);
-  let preEnd = end.subtract(12,'months');
-  let start = preEnd.add(1,'day').format(fmt);
-     preEnd = preEnd.format(fmt);
   let preStart = '1970-01-01';
-  let txns = getTxns(db,preStart,preEnd,accountId);
+  let preEnd = moment(str, fmt).subtract(12, 'months').format(fmt);
+  let txns = await getTxns(db, preStart, preEnd, accountId);
   let preRecords = null;
-  preRecords = procTxns(txns,year,accountId,preRecords);
-  txns = getTxns(db,start,end,accountId);
-  let records = procTxns(txns,year,accountId,preRecords);
+  preRecords = procTxns(txns, accountId, preRecords);
+  
+  let start = moment(str, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
+  let end = str;
+  txns = await getTxns(db, start, end, accountId);
+  if(txns && txns.length > 0) console.log(`txns: ${txns.length}`);
+  let records = procTxns(txns, accountId, preRecords);
   return records;
-
+  
 }
-function procTxns(orgTxns, year, accountId,preRecords) {
+
+function procTxns(orgTxns, accountId, preRecords) {
   let objs = getTxnGroupByCompany(orgTxns);
-  let symbols = getSymbolsOfQtyNotMatch(objs);
-  objs.forEach(item=>{
-    if(!symbols.includes(item.symbol)){
-      let result = getResult(symbol,preRecords,accountId);
-      procTxnsByCompany(item,year,accountId,result);
-    }else{
-     item.result = {status : 'SellTooMuch',msg: 'Error:  selling quantity is more than your have! '};
+  let symbols = getSymbolsOfQtyNotMatch(objs,preRecords,accountId);
+  objs.forEach(item => {
+    if (!symbols.includes(item.symbol)) {
+      let result = getInitResult(item.symbol, preRecords, accountId);
+      procTxnsByCompany(item,  accountId, result);
+    } else {
+      item.result = {status: 'SellTooMuch', msg: 'Error:  selling quantity is more than your have! '};
     }
   })
   return objs;
 }
 
-function getTxns(start,end , accountId){
-    const filter = {};
-
-    filter.stlmtDate = { $gte: start, $lte: end };
-    if (accountId) filter.accountId= accountId;
-    let limit = 5000;
-    let offset = 0;
-
-    const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
-    .skip(offset)
-    .limit(limit);
-
-    let totalCount;
-    cursor.count(false).then(result => {
-      totalCount = result;
-      return cursor.toArray();
-    })
-    .then(txns => {
-      return txns;
-    })
-    .catch(error => {
-      console.log(error);
-      return null;
-    });
+async function getTxns(db, start, end, accountId) {
+  const filter = {};
+  
+  filter.stlmtDate = {$gte: start, $lte: end};
+  if (accountId) filter.accountId = accountId;
+  // filter.symbol = 'AAPL'; //wrlog
+  let limit = 5000;
+  let offset = 0;
+  try {
+    // assert.equal(null, err);
+    //Step 1: declare promise
+    let myPromise = () => {
+      return new Promise((resolve, reject) => {
+        db.collection('txns').find(filter)
+        .sort({stlmtDate: 1})
+        .skip(offset)
+        .limit(limit)
+        .toArray(function(err, data) {
+          if(err){
+            console.log(err)
+            reject(err)
+          }else{
+            resolve(data);
+          }
+           
+           });
+      });
+    };
+    //await myPromise
+    let txns = await myPromise();
+    if(txns && txns.length > 0) console.log(`txns: ${txns.length}`);
+    return txns;
+    //continue execution
+  } catch (e) {
+    console.log(e);
+    return null;
   }
+}
+  //
+  // const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
+  // .skip(offset)
+  // .limit(limit);
+  //
+  // let totalCount;
+  // cursor.count(false).then(result => {
+  //   totalCount = result;
+  //   return cursor.toArray();
+  // })
+  // .then(txns => {
+  //   return txns;
+  // })
+  // .catch(error => {
+  //   console.log(error);
+  //   return null;
+  // });
 
-function getResult(symbol,preRecords,accountId){
-
-  let remainQty = 0 ;
+function getInitResult(symbol, preRecords, accountId) {
+  
+  let remainQty = 0;
   let acb = 0;
-  if(preRecords !== null){
-    let found = preRecords.find(function(element) {
-      return element.result.symbol === symbol ;
+  if (preRecords !== null) {
+    let found = preRecords.find(function (element) {
+      return element.result.symbol === symbol;
     });
-    remainQty = found.result.remainQty;
-    acb = found.result.acb;
+    if(typeof found === 'undefined'){
+      debug(`last year no this data : undefined found ${symbol}`)
+      remainQty = 0;
+      acb = 0;
+    }else{
+      remainQty = found.result.remainQty;
+      acb = found.result.acb;
+    }
   }
   let result = {
-      accountId: accountId,
-      //year: 2016,
-      symbol: symbol,
-      acb: acb,
-      remainQty: remainQty,
-      gain: 0,
-      sellQty: 0,
-      lastSellDate: '01-01-2016',
-      yearOfAcquisition :new Set(),
-      buyAmt : 0,
-      sellAmt: 0,
-      status: 'ok',
-    }
-    return result;
+    accountId: accountId,
+    //year: 2016,
+    symbol: symbol,
+    acb: acb,
+    remainQty: remainQty,
+    gain: 0,
+    sellQty: 0,
+    lastSellDate: '01-01-2016',
+    yearOfAcquisition: new Set(),
+    buyAmt: 0,
+    sellAmt: 0,
+    status: 'ok',
+  }
+  return result;
 }
-function procTxnsByCompany(obj,year,accountId,result){
+
+function procTxnsByCompany(obj,  accountId, result) {
   let arr = obj.txns;
-    obj.txns = arr.map((txn) => {
+  obj.txns = arr.map((txn) => {
     txn = calcTxn(result, txn);
     // if(txn === null ) return txn;
     result.acb = txn.newAcb;
@@ -180,7 +223,7 @@ function procTxnsByCompany(obj,year,accountId,result){
     printTxn(txn); //update one recorder to db
     return txn;
   })
-  obj.result = result ;
+  obj.result = result;
   printTxnResult(result);
 }
 

@@ -168,10 +168,10 @@ export default function (app) {
     });
   });
 
-  app.get('/txns', (req, res) => {
+  app.get('/txns', async (req, res) => {
     const filter = {};
     if (req.query.accountId) filter.accountId= req.query.accountId;
-    Reports.main(req.query.accountId);
+    await Report.main(req.query.accountId,db);
     // filter.accountId = req.user.curAccountId;
     // if (req.query.symbol) filter.symbol = req.query.symbol;
     //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
@@ -195,7 +195,7 @@ export default function (app) {
       })
       .then(txns => {
         txns.forEach((item) => {
-          debug(`txn : ${TxnUtil.format(item)}`);
+          // debug(`txn : ${TxnUtil.format(item)}`);
         })
         res.json({metadata: {totalCount}, records: txns});
       })
