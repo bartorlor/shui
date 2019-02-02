@@ -90,17 +90,17 @@ function rate(stlmtDate) {
   return 1;
 }
 
-async function main(accountId, db) {
-  let str = '2016-12-31';
+async function main(accountId, db,dateStr) {
+  //let dateStr = '2016-12-31';
   let fmt = 'YYYY-MM-DD';
   let preStart = '1970-01-01';
-  let preEnd = moment(str, fmt).subtract(12, 'months').format(fmt);
+  let preEnd = moment(dateStr, fmt).subtract(12, 'months').format(fmt);
   let txns = await getTxns(db, preStart, preEnd, accountId);
   let preRecords = null;
   preRecords = procTxns(txns, accountId, preRecords);
   
-  let start = moment(str, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
-  let end = str;
+  let start = moment(dateStr, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
+  let end = dateStr;
   txns = await getTxns(db, start, end, accountId);
   if(txns && txns.length > 0) console.log(`txns: ${txns.length}`);
   let records = procTxns(txns, accountId, preRecords);
@@ -160,23 +160,6 @@ async function getTxns(db, start, end, accountId) {
     return null;
   }
 }
-  //
-  // const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
-  // .skip(offset)
-  // .limit(limit);
-  //
-  // let totalCount;
-  // cursor.count(false).then(result => {
-  //   totalCount = result;
-  //   return cursor.toArray();
-  // })
-  // .then(txns => {
-  //   return txns;
-  // })
-  // .catch(error => {
-  //   console.log(error);
-  //   return null;
-  // });
 
 function getInitResult(symbol, preRecords, accountId) {
   

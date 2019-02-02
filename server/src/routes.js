@@ -171,7 +171,6 @@ export default function (app) {
   app.get('/txns', async (req, res) => {
     const filter = {};
     if (req.query.accountId) filter.accountId= req.query.accountId;
-    await Report.main(req.query.accountId,db);
     // filter.accountId = req.user.curAccountId;
     // if (req.query.symbol) filter.symbol = req.query.symbol;
     //if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
@@ -226,41 +225,55 @@ export default function (app) {
 // years:'2015,2016', disposition:1548.95, acb:1435.01, expense:1.00, gain:22.94, });
 //  db.inventory.find( { tags: ["red", "blank"] } )
   // db.txns.find( { symbol: { $in:["VIPS", "SCTY"]} });
-  app.get('/report', privateRoute, (req, res) => {
-    req.query.symbol =  { $in:["VIPS", "SCTY"] };
-    const filter = {};
-    if (req.query.symbol) filter.symbol = req.query.symbol;
-    if (req.query.accountId) filter.accountId= req.query.accountId;
-    const date = `${req.query.year}-${req.query.month}-${req.query.day}`
-    filter.stlmtDate = { $lte: date };
-    const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
-    let limit = req.query._limit ? parseInt(req.query._limit, 10) : LimitTxns;
-    if (limit > LimitTxns) limit = LimitTxns;
-
-    const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
-    .skip(offset)
-    .limit(limit);
-
-
-    let totalCount;
-    cursor.count(false).then(result => {
-      totalCount = result;
-      return cursor.toArray();
-    })
-    .then(txns => {
-      let objs = Report.procTxns(txns, req.query.year, filter.accountId);
-      // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
-      // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
-      Pdf.processPdf(objs,2016,filter.accountId);
+  app.get('/report', privateRoute, async (req, res) => {
+    try{
+      const date = `${req.query.year}-${req.query.month}-${req.query.day}`
+      const objs = await Report.main(req.query.accountId,db,date);
+        Pdf.processPdf(objs,2016,req.query.accountId);
       res.json({metadata:objs.length, records: objs});
-
-
-    })
-    .catch(error => {
+      }
+      catch(error) {
       console.log(error);
       res.status(500).json({message: `Internal Server Error: ${error}`});
-    });
+    }
+    
   });
+  // app.get('/report', privateRoute, (req, res) => {
+  //   req.query.symbol =  { $in:["VIPS", "SCTY"] };
+  //   const filter = {};
+  //   if (req.query.symbol) filter.symbol = req.query.symbol;
+  //   if (req.query.accountId) filter.accountId= req.query.accountId;
+  //   const date = `${req.query.year}-${req.query.month}-${req.query.day}`
+  //   filter.stlmtDate = { $lte: date };
+  //   const offset = req.query._offset ? parseInt(req.query._offset, 10) : 0;
+  //   let limit = req.query._limit ? parseInt(req.query._limit, 10) : LimitTxns;
+  //   if (limit > LimitTxns) limit = LimitTxns;
+  //
+  //   //await Report.main(req.query.accountId,db);
+  //   const cursor = db.collection('txns').find(filter).sort({stlmtDate: 1})
+  //   .skip(offset)
+  //   .limit(limit);
+  //
+  //
+  //   let totalCount;
+  //   cursor.count(false).then(result => {
+  //     totalCount = result;
+  //     return cursor.toArray();
+  //   })
+  //   .then(txns => {
+  //     let objs = Report.procTxns(txns, req.query.year, filter.accountId);
+  //     // objs.data.forEach(item => debug(`clc txn: ${JSON.stringify(item)}`));
+  //     // objs.result.forEach(item => debug(`result : ${JSON.stringify(item)}`));
+  //     Pdf.processPdf(objs,2016,filter.accountId);
+  //     res.json({metadata:objs.length, records: objs});
+  //
+  //
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //     res.status(500).json({message: `Internal Server Error: ${error}`});
+  //   });
+  // });
 // acct
   app.post('/txns/new', privateRoute, (req, res) => {
     debug('new ', req.body);

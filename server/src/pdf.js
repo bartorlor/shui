@@ -44,7 +44,7 @@ function processPdf(records, year, accountId) {
     let record = records[index];
     let row = [];
     row[0] = record.symbol;
-    row[1] = record.result.year.toString(10);
+    row[1] = '2016';//record.result.year.toString(10);
     row[2] = accounting.formatMoney(record.result.acb).toString(10);
     row[3] = record.result.sellQty.toString(10);
     row[4] = accounting.formatMoney(record.result.gain).toString(10);
