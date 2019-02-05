@@ -1,26 +1,26 @@
 <template>
   <main class="home">
 
-    <div > Step 1) : please select a pdf file  </div>
-           <br>
+    <div> Step 1) : please select a pdf file</div>
+    <br>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
-           fileCount="$event.target.files.length" accept="application/pdf" />
+           fileCount="$event.target.files.length" accept="application/pdf"/>
     <!--v-model="/Users\/admin\/Downloads/edoc2117.pdf"-->
-           <br>
-    <div > Step 2) : please select an header for each item column using  an drop down </div>
-           <br>
-    <div > Step 3) : please click import button to store the data to your portfolio .</div>
-           <br>
+    <br>
+    <div> Step 2) : please select an header for each item column using an drop down</div>
+    <br>
+    <div> Step 3) : please click import button to store the data to your portfolio .</div>
+    <br>
     <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
-           <br>
+    <br>
 
-       <div class="table-line-header flex-container">
-        <span class="cell cell2">index </span>
-        <span class="cell cell2" v-for="(header,index) in table.headers">
+    <div class="table-line-header flex-container">
+      <span class="cell cell2">index </span>
+      <span class="cell cell2" v-for="(header,index) in table.headers">
           <dropdown id="component-dropdown" :options="table.headerOptions" v-model="table.headers[index]">
           </dropdown>
         </span>
-      </div>
+    </div>
 
     <div class="empty" v-if="paras.length === 0"> You don't have any txns yet.</div>
     <section v-else>
@@ -66,43 +66,9 @@
       'dropdown': Dropdown
     },
     data() {
-      return {
-        myurl: '',
-        fileCount: 0,
-        pdf: undefined,
-        pages: [],
-        items: [],
-        paras: [],
-        lines: [],
-        curY: 0,
-        line: [],
-        reg: /\d{4,}/,
-        para: {
-          cols: 0,
-          data: [],
-        },
-        numArray: [],
-        strArray: [],
-        index: 0,
-        table: {
-          // headers: ['', '', '', '', '', '', '', ''],
-          headers: ['date', 'action', 'symbol', 'description', 'type', 'qty', 'price', 'amt'],
-          rows: [],
-          headerOptions: {
-            'date': 'date',
-            'action': 'action',
-            'symbol': 'symbol',
-            'description': 'description',
-            'type': 'type',
-            'qty': 'qty',
-            'price': 'price',
-            'amt': 'amt',
-          }
+     const  obj=this.init() ;
 
-        },
-        //selectedFruit: 'Apple',
-
-      };
+      return obj;
     },
 
     watch: {
@@ -139,6 +105,65 @@
     },
 
     methods: {
+      init() {
+        return {
+          fileCount: 0,
+          fileBuffer: '',
+          pdf: undefined,
+          pages: [],
+          items: [],
+          paras: [],
+          lines: [],
+          curY: 0,
+          line: [],
+          reg: /\d{4,}/,
+          para: {
+            cols: 0,
+            data: [],
+          },
+          numArray: [],
+          strArray: [],
+          index: 0,
+          table: {
+            // headers: ['', '', '', '', '', '', '', ''],
+            headers: ['date', 'action', 'symbol', 'description', 'type', 'qty', 'price', 'amt'],
+            rows: [],
+            headerOptions: {
+              'date': 'date',
+              'action': 'action',
+              'symbol': 'symbol',
+              'description': 'description',
+              'type': 'type',
+              'qty': 'qty',
+              'price': 'price',
+              'amt': 'amt',
+            }
+
+          },
+          //selectedFruit: 'Apple',
+
+        };
+
+      },
+      reset() {
+           this.fileBuffer = '';
+          //this.pdf= undefined;
+          this.pages= [];
+          this.items= [];
+          this.paras= [];
+          this.lines= [];
+          this.curY= 0;
+          this.line= [];
+          this.reg= /\d{4;}/;
+          this.para= {
+            cols: 0,
+            data: [],
+          };
+          this.numArray= [];
+          this.strArray= [];
+          this.index= 0;
+          this.table.rows = [];
+      },
       // whereis(str, flag) {
       //   if (typeof str !== 'undefined' && str.includes("30-12-2016")) {
       //     debug(` .................................finding ${flag} : ${str}`);
@@ -149,7 +174,7 @@
         let objs = [];
         const self = this;
         arr.forEach(row => {
-          if (true){ //row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
+          if (true) { //row.indexOf('VIPS') > 0 || row.indexOf('SCTY') > 0) {
             let obj = this.createObjects(row)
             obj = this.createObject(obj, self);
             objs.push(obj);
@@ -159,12 +184,12 @@
         this.convertDatesToYmd(objs);
         this.operation(objs);
       },
-      convertDatesToYmd(objs){
+      convertDatesToYmd(objs) {
         let dates = objs.map(item => {
           return item.stlmtDate;
         })
         dates = ValidDate.getInstance().transfer(dates);
-        for(let index in objs){
+        for (let index in objs) {
           objs[index].stlmtDate = dates[index];
         }
         return objs;
@@ -185,10 +210,10 @@
       ,
       async operation(objs) {
         const response = await this.$fetch('txns/newMany', {
-            method: 'POST',
-            body: JSON.stringify(objs),
+          method: 'POST',
+          body: JSON.stringify(objs),
         })
-        if(response.ok === 1){
+        if (response.ok === 1) {
           alert(`Successfully imported ${response.n} rows!`)
         }
       }
@@ -204,25 +229,28 @@
       ,
       process() {
         this.createLines()
+        info(`2 a ${this.para.data.length}`);
         this.handleLines()
+        info(`3 a ${this.para.data.length}`);
         this.printData()
         this.printMeta()
       }
       ,
       fileChange(name, files) {
+        this.reset();
         let file = files[0];
         let fileReader = new FileReader();
         let self = this;
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
-          self.myurl = new Uint8Array(this.result);
+          self.fileBuffer = new Uint8Array(this.result);
           self.fetchPDF();
         };
       }
       ,
       fetchPDF() {
         // debug(`url : ${this.myurl}`);
-        pdfjs.getDocument(this.myurl).then(pdf => (this.pdf = pdf)).then(() => debug('pdf fetched'))
+        pdfjs.getDocument(this.fileBuffer).then(pdf => (this.pdf = pdf)).then(() => debug('pdf fetched'))
       }
       ,
       isNextLine(item) {
@@ -243,7 +271,7 @@
           this.line.push(item.str)
         })
         this.lines.forEach((line) => {
-          debug(`createLines:  ${line.join()} \n`)
+          // debug(`createLines:  ${line.join()} \n`)
         })
       }
       ,
@@ -291,7 +319,9 @@
         this.paras.forEach((para, i) => {
           debug(`para:--------------------------${i} \n `)
           para.data.forEach((line, i) => {
-            info(`line: ${i}-- ${line.join()}`)
+            if(line.includes('30-04-2015')){
+              debug(`line: ${i}-- ${line.join()}`)
+            }
             this.table.rows.push(line);
           })
         })
@@ -304,7 +334,7 @@
         })
         debug(`meta others:--------------------------\n `)
         this.strArray.forEach((item) => {
-          debug(`${item}`)
+          // debug(`${item}`)
         })
       }
       ,
@@ -322,8 +352,10 @@
 
   .table-line-header
     width 120 * 9px
+
   .table-line
     width 120 * 9px
+
   .mycursor
     cursor pointer
 
