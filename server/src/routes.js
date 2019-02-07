@@ -229,7 +229,7 @@ export default function (app) {
     try{
       const date = `${req.query.year}-${req.query.month}-${req.query.day}`
       const objs = await Report.main(req.query.accountId,db,date);
-        Pdf.processPdf(objs,2016,req.query.accountId);
+        Pdf.processPdf(objs,req.query.year,req.user.username,req.query.accountId);
       res.json({metadata:objs.length, records: objs});
       }
       catch(error) {

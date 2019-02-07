@@ -6,7 +6,7 @@ var PdfPrinter = require('pdfmake');
 var fs = require('fs');
 var fontsfile = require('pdfmake/build/vfs_fonts.js');
 
-function processPdf(records, year, accountId) {
+function processPdf(records, year,email, accountId) {
 // Define font files
   var fonts = {
     Roboto: {
@@ -44,7 +44,7 @@ function processPdf(records, year, accountId) {
     let record = records[index];
     let row = [];
     row[0] = record.symbol;
-    row[1] = '2016';//record.result.year.toString(10);
+    row[1] = year;//record.result.year.toString(10);
     row[2] = accounting.formatMoney(record.result.acb).toString(10);
     row[3] = record.result.sellQty.toString(10);
     row[4] = accounting.formatMoney(record.result.gain).toString(10);
@@ -55,7 +55,8 @@ function processPdf(records, year, accountId) {
   mydata.push(['','','','total:',total]);
   
   var pdfDoc = printer.createPdfKitDocument(docDefinition);
-  pdfDoc.pipe(fs.createWriteStream('document.pdf'));
+  let fileName = `${email}_${accountId}_${year}.pdf`;
+  pdfDoc.pipe(fs.createWriteStream(fileName));
   pdfDoc.end();
   
 }
