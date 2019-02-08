@@ -88,19 +88,15 @@
           <div class="table-line-header table-line-header-short flex-container">
             <label class="cell cell2 ">Number</label>
             <label class="cell cell2">Date</label>
-            <label class="cell cell2">Year</label>
-            <label class="cell cell2 ">sellAmt</label>
-            <label class="cell cell2 ">buyAmt</label>
-            <label class="cell cell2 ">ACB</label>
-            <label class="cell cell2 ">Gain</label>
+            <label class="cell cell2 ">Proceeds of disposition</label>
+            <label class="cell cell2 ">Adjusted cost base</label>
+            <label class="cell cell2 ">Gain or loss</label>
           </div>
           <div class="table-line table-line-short flex-container ">
             <span class="cell cell2">{{ record.result.sellQty}}</span>
             <span class="cell cell2">{{ record.result.lastSellDate}}</span>
-            <span class="cell cell2">{{ record.result.yearOfAcquisition.join(',')}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.sellAmt)}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.buyAmt)}}</span>
-            <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
             <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
           </div>
         </div>
@@ -108,19 +104,21 @@
         <br>
       </div>
       <div class="table-line-header  flex-container">
+      <label class="cell cell2 ">Number</label>
         <label class="cell cell2">Symbol</label>
-        <label class="cell cell2">Year</label>
-        <label class="cell cell2 ">ACB</label>
-        <label class="cell cell2 ">Number</label>
-        <label class="cell cell2 ">Gain</label>
+        <label class="cell cell2">Date</label>
+        <label class="cell cell2 ">Proceeds of disposition</label>
+        <label class="cell cell2 ">Adjusted cost base</label>
+        <label class="cell cell2 ">Gain or loss</label>
       </div>
 
       <div v-for="(record, index) in records" :key="index">
         <section class="table-line flex-container" v-if=" record.result.status === 'ok' && record.result.sellAmt !== 0">
-          <span class="cell cell2">{{ record.symbol}}</span>
-          <span class="cell cell2">{{ record.result.year}}</span>
-          <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>
           <span class="cell cell2">{{ record.result.sellQty}}</span>
+          <span class="cell cell2">{{ record.symbol}}</span>
+          <span class="cell cell2">{{ record.result.lastSellDate}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.sellAmt)}}</span>
+          <span class="cell cell2">{{ formatMoney(record.result.buyAmt)}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.gain)}}</span>
         </section>
       </div>
