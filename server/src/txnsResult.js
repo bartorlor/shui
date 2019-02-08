@@ -1,7 +1,8 @@
-import {debug, error} from './utils/logging'
+import {debug,warn, error} from './utils/logging'
 import * as accounting from './utils/accounting'
 import * as Txn from './txn'
 import moment from 'moment'
+import {ObjectId} from 'mongodb';
 
 function calcTxn(result, txn) {
   txn.comm = 0;
@@ -82,7 +83,7 @@ function printTxnResult(result) {
 
 function printTxn(txn) {
   // debug(`new txn : ${JSON.stringify(txn)}`);
-  
+
 }
 
 
@@ -98,14 +99,14 @@ async function main(accountId, db,dateStr) {
   let txns = await getTxns(db, preStart, preEnd, accountId);
   let preRecords = null;
   preRecords = procTxns(txns, accountId, preRecords);
-  
+
   let start = moment(dateStr, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
   let end = dateStr;
   txns = await getTxns(db, start, end, accountId);
   if(txns && txns.length > 0) console.log(`txns: ${txns.length}`);
   let records = procTxns(txns, accountId, preRecords);
   return records;
-  
+
 }
 
 function procTxns(orgTxns, accountId, preRecords) {
@@ -124,7 +125,7 @@ function procTxns(orgTxns, accountId, preRecords) {
 
 async function getTxns(db, start, end, accountId) {
   const filter = {};
-  
+
   filter.stlmtDate = {$gte: start, $lte: end};
   if (accountId) filter.accountId = accountId;
   // filter.symbol = 'AAPL'; //wrlog
@@ -146,7 +147,7 @@ async function getTxns(db, start, end, accountId) {
           }else{
             resolve(data);
           }
-           
+
            });
       });
     };
@@ -160,9 +161,46 @@ async function getTxns(db, start, end, accountId) {
     return null;
   }
 }
+async function getAccountName(db, id) {
+    let accountId;
+    try {
+      accountId = new ObjectId(id);
+    } catch (error) {
+      warn(`Invalid acc ID format: ${error}`);
+      return;
+    }
+  const filter = {};
+  if (accountId) filter._id = accountId;
+  let limit = 1;
+  let offset = 0;
+  try {
+    let myPromise = () => {
+      return new Promise((resolve, reject) => {
+        db.collection('accounts').find(filter)
+        .skip(offset)
+        .limit(limit)
+        .toArray(function(err, data) {
+          if(err){
+            console.log(err)
+            reject(err)
+          }else{
+            resolve(data);
+          }
+           });
+      });
+    };
+    let account = await myPromise();
+    if(account && account.length > 0) console.log(`account: ${JSON.stringify(account)}`);
+    return account[0].name;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
 
 function getInitResult(symbol, preRecords, accountId) {
-  
+
   let remainQty = 0;
   let acb = 0;
   if (preRecords !== null) {
@@ -211,6 +249,7 @@ function procTxnsByCompany(obj,  accountId, result) {
 }
 
 export {
+  getAccountName,
   procTxns,
   main,
 };

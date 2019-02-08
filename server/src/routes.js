@@ -229,14 +229,15 @@ export default function (app) {
     try{
       const date = `${req.query.year}-${req.query.month}-${req.query.day}`
       const objs = await Report.main(req.query.accountId,db,date);
-        Pdf.processPdf(objs,req.query.year,req.user.username,req.query.accountId);
+      let accountName = await Report.getAccountName(db,req.query.accountId); //wr to be.. name
+        Pdf.processPdf(objs,req.query.year,date,req.user.username,accountName);
       res.json({metadata:objs.length, records: objs});
       }
       catch(error) {
       console.log(error);
       res.status(500).json({message: `Internal Server Error: ${error}`});
     }
-    
+
   });
   // app.get('/report', privateRoute, (req, res) => {
   //   req.query.symbol =  { $in:["VIPS", "SCTY"] };

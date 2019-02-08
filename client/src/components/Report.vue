@@ -145,7 +145,7 @@
     data() {
       return {
         form: {
-          year: 2015,
+          year: 2016,
           month: '12',
           day: 31,
           hasSuperficialLoss: true,

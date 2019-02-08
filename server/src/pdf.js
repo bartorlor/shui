@@ -6,7 +6,7 @@ var PdfPrinter = require('pdfmake');
 var fs = require('fs');
 var fontsfile = require('pdfmake/build/vfs_fonts.js');
 
-function processPdf(records, year,email, accountId) {
+function processPdf(records, year,date,email, accountName) {
 // Define font files
   var fonts = {
     Roboto: {
@@ -16,9 +16,9 @@ function processPdf(records, year,email, accountId) {
       bolditalics: new Buffer(fontsfile.pdfMake.vfs['Roboto-MediumItalic.ttf'], 'base64')
     }
   };
-  
+
   var printer = new PdfPrinter(fonts);
-  
+
   // headers are automatically repeated if the table spans over multiple pages
   // you can declare how many rows should be treated as headers
   // widths: ['*', 'auto', 100, '*'],
@@ -26,13 +26,15 @@ function processPdf(records, year,email, accountId) {
   var docDefinition = {
     content: [
       {
+        // header: `Capital Gains (or Losses) for Year Ended ${date} --- Portfolio: ${accountName}`,
         layout: 'lightHorizontalLines', // optional
         table: {
           headerRows: 1,
-          widths: ['auto', 'auto', 'auto', 'auto', 'auto'],
+          widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
           body: [
-            ['Symbol', 'Year', 'ACB', 'Number','Gain'],
-            // ['Value 1', 'Value 2', 'Value 3', 'Value 4'],
+            // ['Number','Symbol', '1)Date', '2)Proceeds of disposition','3)Adjusted cost base','4)Gain(or loss)'],
+            // ['Value 1', 'Value 2', 'Value 3', 'Value 4', 'Value 3', 'Value 4'],
+            ['1)Number','2)Symbol', '3)Date', '4)Proceeds of disposition','5)Adjusted cost base','6)Gain or loss'],
           ]
         }
       }
@@ -43,27 +45,25 @@ function processPdf(records, year,email, accountId) {
   for(let index in records){
     let record = records[index];
     let row = [];
-    row[0] = record.symbol;
-    row[1] = year;//record.result.year.toString(10);
-    row[2] = accounting.formatMoney(record.result.acb).toString(10);
-    row[3] = record.result.sellQty.toString(10);
-    row[4] = accounting.formatMoney(record.result.gain).toString(10);
+    row[0] = record.result.sellQty.toString(10);
+    row[1] = record.symbol;
+    row[2] = record.result.lastSellDate;//record.result.year.toString(10);
+    row[3] = accounting.formatMoney(record.result.sellAmt).toString(10);
+    row[4] = accounting.formatMoney(record.result.acb).toString(10);
+    row[5] = accounting.formatMoney(record.result.gain).toString(10);
     mydata.push(row);
     total += record.result.gain;
   }
   total = accounting.formatMoney(total).toString(10);
-  mydata.push(['','','','total:',total]);
-  
+  mydata.push(['','','','','total:',total]);
+
+//  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
+
   var pdfDoc = printer.createPdfKitDocument(docDefinition);
-  let fileName = `${email}_${accountId}_${year}.pdf`;
+  let fileName = `${email}_${accountName}_${year}.pdf`;
   pdfDoc.pipe(fs.createWriteStream(fileName));
   pdfDoc.end();
-  
-}
 
-function myerror(num, str) {
-  // throw error(`${num} : ${str}`);
-  error(`${num} : ${str}`);
 }
 
 export {

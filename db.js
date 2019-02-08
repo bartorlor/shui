@@ -19,17 +19,19 @@
 
   //db.accounts.remove({});
 
-  //print('3 ---------------------');
-  //r = db.accounts.find({}).pretty();
-  //printRecorders(r);
+  print('3 ---------------------');
+  r = db.accounts.find({_id: ObjectId("5c550eba8054420304570ed4")}).pretty();
+  printRecorders(r);
+  
 
 // db.txns.remove({ symbol : "VIPS" })
 //   db.txns.remove({ symbol : "SCTY" })
-  db.txns.remove({  })
 
-  print('4 ---------------------');
-  r = db.txns.find({}).pretty();
-  printRecorders(r);
+//   db.txns.remove({  })
+
+  // print('4 ---------------------');
+  // r = db.txns.find({}).pretty();
+  // printRecorders(r);
 
 
 
