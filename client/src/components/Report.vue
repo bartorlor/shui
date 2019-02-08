@@ -116,7 +116,7 @@
       </div>
 
       <div v-for="(record, index) in records" :key="index">
-        <section class="table-line flex-container" v-if=" record.result.status === 'ok'">
+        <section class="table-line flex-container" v-if=" record.result.status === 'ok' && record.result.sellAmt !== 0">
           <span class="cell cell2">{{ record.symbol}}</span>
           <span class="cell cell2">{{ record.result.year}}</span>
           <span class="cell cell2">{{ formatMoney(record.result.acb)}}</span>

@@ -26,7 +26,8 @@ function processPdf(records, year,date,email, accountName) {
   var docDefinition = {
     content: [
       {
-        // header: `Capital Gains (or Losses) for Year Ended ${date} --- Portfolio: ${accountName}`,
+        // header: `Capital Gains (or Losses) for Year Ended ${date} --- \n Portfolio: ${accountName}`,
+        header: 'test -----------------------------',
         layout: 'lightHorizontalLines', // optional
         table: {
           headerRows: 1,
@@ -44,12 +45,16 @@ function processPdf(records, year,date,email, accountName) {
   let total = 0;
   for(let index in records){
     let record = records[index];
+    if(record.result.sellAmt === 0){
+      debug(`${record.symbol} no sell any shares.`);
+      continue;
+    }
     let row = [];
     row[0] = record.result.sellQty.toString(10);
     row[1] = record.symbol;
     row[2] = record.result.lastSellDate;//record.result.year.toString(10);
     row[3] = accounting.formatMoney(record.result.sellAmt).toString(10);
-    row[4] = accounting.formatMoney(record.result.acb).toString(10);
+    row[4] = accounting.formatMoney(record.result.buyAmt).toString(10);
     row[5] = accounting.formatMoney(record.result.gain).toString(10);
     mydata.push(row);
     total += record.result.gain;
@@ -60,7 +65,8 @@ function processPdf(records, year,date,email, accountName) {
 //  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
 
   var pdfDoc = printer.createPdfKitDocument(docDefinition);
-  let fileName = `${email}_${accountName}_${year}.pdf`;
+  // let fileName = `${email}_${accountName}_${year}.pdf`;
+  let fileName = `${email}_${year}.pdf`;
   pdfDoc.pipe(fs.createWriteStream(fileName));
   pdfDoc.end();
 
