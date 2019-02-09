@@ -1,12 +1,8 @@
 import {debug, error} from './utils/logging'
 import * as accounting from './utils/accounting'
-import * as Txn from './txn'
 var PdfPrinter = require('pdfmake');
 var fs = require('fs');
 var fontsfile = require('pdfmake/build/vfs_fonts.js');
-
-function processPdf(records, year,date,email, accountName) {
-// Define font files
   var fonts = {
     Roboto: {
       normal: new Buffer(fontsfile.pdfMake.vfs['Roboto-Regular.ttf'], 'base64'),
@@ -15,9 +11,16 @@ function processPdf(records, year,date,email, accountName) {
       bolditalics: new Buffer(fontsfile.pdfMake.vfs['Roboto-MediumItalic.ttf'], 'base64')
     }
   };
-  var printer = new PdfPrinter(fonts);
-  var docDefinition = {
+//
+//got data evey thing
+//create core data
+//file name
+//call
+function createSummary(records, year,date,email, accountName) {
+   var docDefinition = {
     content: [
+      { text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 15 },
+      { text: `Portfolio: ${accountName}`, fontSize: 15 },
       {
         // header: `Capital Gains (or Losses) for Year Ended ${date} --- \n Portfolio: ${accountName}`,
         header: 'test -----------------------------',
@@ -26,15 +29,14 @@ function processPdf(records, year,date,email, accountName) {
           headerRows: 1,
           widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
           body: [
-            // ['Number','Symbol', '1)Date', '2)Proceeds of disposition','3)Adjusted cost base','4)Gain(or loss)'],
-            // ['Value 1', 'Value 2', 'Value 3', 'Value 4', 'Value 3', 'Value 4'],
             ['1)Number','2)Symbol', '3)Date', '4)Proceeds of disposition','5)Adjusted cost base','6)Gain or loss'],
           ]
         }
-      }
+      },
+      { text: '-------This is a sample data ! ------------', fontSize: 15 },
     ]
   };
-  let mydata = docDefinition.content[0].table.body;
+  let mydata = docDefinition.content[2].table.body;
   let total = 0;
   for(let index in records){
     let record = records[index];
@@ -54,15 +56,23 @@ function processPdf(records, year,date,email, accountName) {
   }
   total = accounting.formatMoney(total).toString(10);
   mydata.push(['','','','','total:',total]);
+  
+  let fileName = `${email}_${year}_Summary.pdf`;
+  let pdfDoc = create(docDefinition);
+  save(pdfDoc,fileName);
+}
+function createDetail(){
 
-//  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
+}
 
+function create(docDefinition){
+  var printer = new PdfPrinter(fonts);
   var pdfDoc = printer.createPdfKitDocument(docDefinition);
-  // let fileName = `${email}_${accountName}_${year}.pdf`;
-  let fileName = `${email}_${year}.pdf`;
+  return pdfDoc;
+}
+function save(pdfDoc,fileName){
   pdfDoc.pipe(fs.createWriteStream(fileName));
   pdfDoc.end();
-
 }
 function test() {
 // Define font files
@@ -76,17 +86,11 @@ function test() {
   };
 
   var printer = new PdfPrinter(fonts);
-
+  let i = 5;
   var docDefinition = {
     content: [
-      // {
-      //   header: 'test -----------------------------',
-      // },
-      // if you don't need styles, you can use a simple string to define a paragraph
     'This is a standard paragraph, using default style',
-
-    // using a { text: '...' } object lets you set styling properties
-    { text: 'Account: aaa', fontSize: 15 },
+    { text: `test i : ${i}  `, fontSize: 15 },
   
       {
         layout: 'lightHorizontalLines',
@@ -111,7 +115,8 @@ function test() {
 
 }
 export {
-  processPdf,
+  createSummary,
+  createDetail,
   test,
 };
 
