@@ -41,6 +41,7 @@ export function setDb(newDb) {
 
 export default function (app) {
   app.get('/questions', async (req, res) => {
+    Pdf.test();
     const result = await Questions.getAll()
     setTimeout(() => {
       res.json(result)

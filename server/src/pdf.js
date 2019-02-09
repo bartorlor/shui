@@ -1,7 +1,6 @@
 import {debug, error} from './utils/logging'
 import * as accounting from './utils/accounting'
 import * as Txn from './txn'
-
 var PdfPrinter = require('pdfmake');
 var fs = require('fs');
 var fontsfile = require('pdfmake/build/vfs_fonts.js');
@@ -16,13 +15,7 @@ function processPdf(records, year,date,email, accountName) {
       bolditalics: new Buffer(fontsfile.pdfMake.vfs['Roboto-MediumItalic.ttf'], 'base64')
     }
   };
-
   var printer = new PdfPrinter(fonts);
-
-  // headers are automatically repeated if the table spans over multiple pages
-  // you can declare how many rows should be treated as headers
-  // widths: ['*', 'auto', 100, '*'],
-  // [{text: 'Bold value', bold: true}, 'Val 2', 'Val 3', 'Val 4']
   var docDefinition = {
     content: [
       {
@@ -71,8 +64,54 @@ function processPdf(records, year,date,email, accountName) {
   pdfDoc.end();
 
 }
+function test() {
+// Define font files
+  var fonts = {
+    Roboto: {
+      normal: new Buffer(fontsfile.pdfMake.vfs['Roboto-Regular.ttf'], 'base64'),
+      bold: new Buffer(fontsfile.pdfMake.vfs['Roboto-Medium.ttf'], 'base64'),
+      italics: new Buffer(fontsfile.pdfMake.vfs['Roboto-Italic.ttf'], 'base64'),
+      bolditalics: new Buffer(fontsfile.pdfMake.vfs['Roboto-MediumItalic.ttf'], 'base64')
+    }
+  };
 
+  var printer = new PdfPrinter(fonts);
+
+  var docDefinition = {
+    content: [
+      // {
+      //   header: 'test -----------------------------',
+      // },
+      // if you don't need styles, you can use a simple string to define a paragraph
+    'This is a standard paragraph, using default style',
+
+    // using a { text: '...' } object lets you set styling properties
+    { text: 'Account: aaa', fontSize: 15 },
+  
+      {
+        layout: 'lightHorizontalLines',
+        table: {
+          headerRows: 1,
+          widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+          body: [
+            ['1)Number','2)Symbol', '3)Date', '4)Proceeds of disposition','5)Adjusted cost base','6)Gain or loss'],
+          ]
+        } //table
+      }, //first content
+      { text: '..........This is a sample .......', fontSize: 17 },
+    ]
+  };
+
+//  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
+
+  var pdfDoc = printer.createPdfKitDocument(docDefinition);
+  let fileName = `test.pdf`;
+  pdfDoc.pipe(fs.createWriteStream(fileName));
+  pdfDoc.end();
+
+}
 export {
   processPdf,
+  test,
 };
 
