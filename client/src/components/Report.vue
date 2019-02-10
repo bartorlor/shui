@@ -73,14 +73,14 @@
           <span class="cell cell2">{{ row.qty}}</span>
           <span class="cell cell2">{{ formatMoney(row.price)}}</span>
           <span class="cell cell2">{{ formatMoney(row.amt)}}</span>
-          <!--<section v-if=" record.result.status === 'ok'">-->
+               <!--<section v-if=" record.result.status === 'ok'">-->
           <span class="cell cell2">{{ formatMoney(row.changedAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(row.newAcb)}}</span>
           <span class="cell cell2">{{ formatMoney(row.newPrc)}}</span>
           <span class="cell cell2">{{ row.remainQty}}</span>
           <span class="cell cell2" v-if="row.action === 'buy' "> - </span>
           <span class="cell cell2" v-else>{{ formatMoney(row.gain)}}</span>
-          <!--</section>-->
+               <!--</section>-->
         </div>
 
         <div class="errorResult" v-if="record.result.status  !== 'ok' "> {{record.result.msg}}</div>
