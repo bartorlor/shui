@@ -71,13 +71,13 @@ function createSummary(records, year, date, email, accountName) {
   let data = docDefinition.content;
   for (let index in records) {
     let record = records[index];
-    if (record.result.sellAmt === 0) {
-      debug(`${record.symbol} no sell any shares.`);
-      continue;
-    }
-    data.push(createSymbolObj());
-    data.push(createTxnDetail());
-    data.push(createOneSecSummary());
+    // if (record.result.sellAmt === 0) {
+    //   debug(`${record.symbol} no sell any shares.`);
+    //   continue;
+    // }
+    data.push(createOneSecSymbolObj(record));
+    data.push(createOneSecDetail(record));
+    data.push(createOneSecSummary(record));
   }
   data.push({text: '-------This is a sample data ! ------------', fontSize: 15});
   let fileName = `${email}_${year}_Detail.pdf`;
@@ -137,7 +137,7 @@ function test() {
   
 }
 
-function createTxnDetail(record){
+function createOneSecDetail(record){
   let obj = {
       layout: 'lightHorizontalLines',
       table: {
@@ -161,12 +161,12 @@ function createTxnDetail(record){
     row[6] = accounting.formatMoney(txn.newAcb).toString(10);
     row[7] = accounting.formatMoney(txn.newPrc).toString(10);
     row[8] = accounting.formatMoney(txn.remainQty).toString(10);
-    row[9] = (txn.action === 'buy') ? '-' : accounting.formatMoney(txn.result.gain).toString(10);
+    row[9] = (txn.action === 'buy') ? '-' : accounting.formatMoney(record.result.gain).toString(10);
     data.push(row);
   }
   return obj;
 }
-function createSymbolObj(record){
+function createOneSecSymbolObj(record){
   return {text : `${record.symbol}`, fontSize: 15};
 }
 
