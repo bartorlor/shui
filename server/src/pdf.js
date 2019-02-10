@@ -20,8 +20,8 @@ let fonts = {
 function createSummary(records, year, date, email, accountName) {
   let docDefinition = {
     content: [
-      {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 15},
-      {text: `Portfolio: ${accountName}`, fontSize: 15},
+      {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 12},
+      {text: `Portfolio: ${accountName}`, fontSize: 12},
       {
         layout: 'lightHorizontalLines',
         table: {
@@ -32,8 +32,10 @@ function createSummary(records, year, date, email, accountName) {
           ]
         }
       },
-      {text: '-------This is a sample data ! ------------', fontSize: 15},
+      // {text: '-------This is a sample data ! ------------', fontSize: 12},
     ]
+    // ,
+    // footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
   };
   let mydata = docDefinition.content[2].table.body;
   let total = 0;
@@ -64,9 +66,12 @@ function createSummary(records, year, date, email, accountName) {
   function createDetail(records, year, date, email, accountName) {
   let docDefinition = {
     content: [
-      {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 15},
-      {text: `Portfolio: ${accountName}`, fontSize: 15},
+      {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 12},
+      {text: `Portfolio: ${accountName}`, fontSize: 12},
+      {text: ``, fontSize: 12},
     ]
+    // ,
+    // footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
   };
   let data = docDefinition.content;
   for (let index in records) {
@@ -79,7 +84,7 @@ function createSummary(records, year, date, email, accountName) {
     data.push(createOneSecDetail(record));
     data.push(createOneSecSummary(record));
   }
-  data.push({text: '-------This is a sample data ! ------------', fontSize: 15});
+  // data.push({text: '-------This is a sample data ! ------------', fontSize: 12});
   let fileName = `${email}_${year}_Detail.pdf`;
   let pdfDoc = create(docDefinition);
   save(pdfDoc, fileName);
@@ -111,10 +116,12 @@ function test() {
   let i = 5;
   let docDefinition = {
     content: [
-      'This is a standard paragraph, using default style',
-      {text: `test i : ${i}  `, fontSize: 15},
+      'new 2 This is a standard paragraph, using default style',
+      {text: `test i : ${i}  `, fontSize: 12},
       
       {
+        margin: [ 10, 5, 10, 5 ],
+        fontSize: 7,
         layout: 'lightHorizontalLines',
         table: {
           headerRows: 1,
@@ -124,8 +131,9 @@ function test() {
           ]
         } //table
       }, //first content
-      {text: '..........This is a sample .......', fontSize: 17},
-    ]
+      // {text: '..........This is a sample .......', fontSize: 17},
+    ],
+    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
   };
 
 //  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
@@ -139,12 +147,15 @@ function test() {
 
 function createOneSecDetail(record){
   let obj = {
+      // margin: [ 10, 5, 10, 5 ],
+      fontSize: 9,
       layout: 'lightHorizontalLines',
       table: {
         headerRows: 1,
         widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
         body: [
-          ['1)Date', '2)Action', '3)Quantity', '4)Price', '5)Amount', '6)Changed ACB', '7)New ACB', '8)New Price', '9)Remain Quantity', '10)Gain'],
+          // ['1)Date', '2)Action', '3)Quantity', '4)Price', '5)Amount', '6)Changed ACB', '7)New ACB', '8)New Price', '9)Remain Quantity', '10)Gain'],
+          ['Date', 'Action', 'Quantity', 'Price', 'Amount', 'Changed ACB', 'New ACB', 'New Price', 'Remain Qty', 'Gain'],
         ]
       }
     };
@@ -164,20 +175,22 @@ function createOneSecDetail(record){
     row[9] = (txn.action === 'buy') ? '-' : accounting.formatMoney(record.result.gain).toString(10);
     data.push(row);
   }
+  data.push( ['', '', '', '', '', '', '', '', '', '']);
   return obj;
 }
 function createOneSecSymbolObj(record){
-  return {text : `${record.symbol}`, fontSize: 15};
+  return {text : `${record.symbol}`, fontSize: 12};
 }
 
 function createOneSecSummary(record) {
   let data = {
       layout: 'lightHorizontalLines',
       table: {
+        fontSize: 11,
         headerRows: 1,
-        widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+        widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
         body: [
-          ['1)Number', '2)Symbol', '3)Date', '4)Proceeds of disposition', '5)Adjusted cost base', '6)Gain or loss', '7)remainQty', '8)remainAcb'],
+          ['Number', 'Date', 'Proceeds of disposition', 'Adjusted cost base', 'Gain or loss', 'remainQty', 'remainAcb'],
         ]
       }
     };
@@ -185,14 +198,14 @@ function createOneSecSummary(record) {
   let body = data.table.body;
   let row = [];
   row[0] = record.result.sellQty.toString(10);
-  row[1] = record.symbol;
-  row[2] = record.result.lastSellDate;
-  row[3] = accounting.formatMoney(record.result.sellAmt).toString(10);
-  row[4] = accounting.formatMoney(record.result.buyAmt).toString(10);
-  row[5] = accounting.formatMoney(record.result.gain).toString(10);
-  row[6] = accounting.formatMoney(record.result.remainQty).toString(10);
-  row[7] = accounting.formatMoney(record.result.acb).toString(10);
+  row[1] = record.result.lastSellDate;
+  row[2] = accounting.formatMoney(record.result.sellAmt).toString(10);
+  row[3] = accounting.formatMoney(record.result.buyAmt).toString(10);
+  row[4] = accounting.formatMoney(record.result.gain).toString(10);
+  row[5] = accounting.formatMoney(record.result.remainQty).toString(10);
+  row[6] = accounting.formatMoney(record.result.acb).toString(10);
   body.push(row);
+  body.push( ['', '', '', '', '', '', '', '']);
   return data;
 }
 
