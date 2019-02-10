@@ -33,8 +33,10 @@ function createSummary(records, year, date, email, accountName) {
         }
       },
       // {text: '-------This is a sample data ! ------------', fontSize: 12},
-    ] ,
-    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
+    ],
+    footer: function (currentPage, pageCount) {
+      return {text: `${currentPage.toString()}  of ${pageCount}`, alignment: 'center'};
+    },
   };
   let mydata = docDefinition.content[2].table.body;
   let total = 0;
@@ -62,19 +64,21 @@ function createSummary(records, year, date, email, accountName) {
   save(pdfDoc, fileName);
 }
 
-  function createDetail(records, year, date, email, accountName) {
+function createDetail(records, year, date, email, accountName) {
   let docDefinition = {
     content: [
       {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 12},
       {text: `Portfolio: ${accountName}`, fontSize: 12},
       {text: ``, fontSize: 12},
     ],
-    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
+    footer: function (currentPage, pageCount) {
+      return {text: `${currentPage.toString()}  of ${pageCount}`, alignment: 'center'};
+    },
   };
   let data = docDefinition.content;
   for (let index in records) {
     let record = records[index];
-
+    
     data.push(createOneSecSymbolObj(record));
     data.push(createOneSecDetail(record));
     data.push(createOneSecSummary(record));
@@ -115,7 +119,7 @@ function test() {
       {text: `test i : ${i}  `, fontSize: 12},
       
       {
-        margin: [ 10, 5, 10, 5 ],
+        margin: [10, 5, 10, 5],
         fontSize: 7,
         layout: 'lightHorizontalLines',
         table: {
@@ -128,7 +132,9 @@ function test() {
       }, //first content
       // {text: '..........This is a sample .......', fontSize: 17},
     ],
-    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
+    footer: function (currentPage, pageCount) {
+      return {text: `${currentPage.toString()}  of ${pageCount}`, alignment: 'center'};
+    },
   };
 
 //  docDefinition.content[0].header = `Capital Gains (or Losses) for Year Ended ${date} \n Portfolio: ${accountName}`;
@@ -140,20 +146,20 @@ function test() {
   
 }
 
-function createOneSecDetail(record){
+function createOneSecDetail(record) {
   let obj = {
-      // margin: [ 10, 5, 10, 5 ],
-      fontSize: 9,
-      layout: 'lightHorizontalLines',
-      table: {
-        headerRows: 1,
-        widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-        body: [
-          // ['1)Date', '2)Action', '3)Quantity', '4)Price', '5)Amount', '6)Changed ACB', '7)New ACB', '8)New Price', '9)Remain Quantity', '10)Gain'],
-          ['Date', 'Action', 'Quantity', 'Price', 'Amount', 'Changed ACB', 'New ACB', 'New Price', 'Remain Qty', 'Gain'],
-        ]
-      }
-    };
+    // margin: [ 10, 5, 10, 5 ],
+    fontSize: 9,
+    layout: 'lightHorizontalLines',
+    table: {
+      headerRows: 1,
+      widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+      body: [
+        // ['1)Date', '2)Action', '3)Quantity', '4)Price', '5)Amount', '6)Changed ACB', '7)New ACB', '8)New Price', '9)Remain Quantity', '10)Gain'],
+        ['Date', 'Action', 'Quantity', 'Price', 'Amount', 'Changed ACB', 'New ACB', 'New Price', 'Remain Qty', 'Gain'],
+      ]
+    }
+  };
   let data = obj.table.body;
   for (let index in record.txns) {
     let txn = record.txns[index];
@@ -170,37 +176,48 @@ function createOneSecDetail(record){
     row[9] = (txn.action === 'buy') ? '-' : accounting.formatMoney(record.result.gain).toString(10);
     data.push(row);
   }
-  data.push( ['', '', '', '', '', '', '', '', '', '']);
+  data.push(['', '', '', '', '', '', '', '', '', '']);
   return obj;
 }
-function createOneSecSymbolObj(record){
-  return {text : `${record.symbol}`, fontSize: 12};
+
+function createOneSecSymbolObj(record) {
+  return {text: `${record.symbol}`, fontSize: 12};
 }
 
 function createOneSecSummary(record) {
   let data = {
-      layout: 'lightHorizontalLines',
-      table: {
-        fontSize: 9,
-        headerRows: 1,
-        widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-        body: [
-          ['Number', 'Date', 'Proceeds of disposition', 'Adjusted cost base', 'Gain or loss', 'remainQty', 'remainAcb'],
-        ]
-      }
-    };
-
+    fontSize: 9,
+    layout: 'lightHorizontalLines',
+    table: {
+      headerRows: 1,
+      widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+      body: [
+        ['Number', 'Date', 'Proceeds of disposition', 'Adjusted cost base', 'Gain or loss', 'remainQty', 'remainAcb'],
+      ]
+    }
+  };
+  
   let body = data.table.body;
   let row = [];
-  row[0] = record.result.sellQty.toString(10);
-  row[1] = record.result.lastSellDate;
-  row[2] = accounting.formatMoney(record.result.sellAmt).toString(10);
-  row[3] = accounting.formatMoney(record.result.buyAmt).toString(10);
-  row[4] = accounting.formatMoney(record.result.gain).toString(10);
-  row[5] = accounting.formatMoney(record.result.remainQty).toString(10);
+  if (record.result.sellAmt === 0) {
+    // debug(`${record.symbol} no sell any shares.`);
+    row[0] = '-';
+    row[1] = '-';
+    row[2] = '-';
+    row[3] = '-';
+    row[4] = '-';
+  } else {
+    row[0] = record.result.sellQty.toString(10);
+    row[1] = record.result.lastSellDate;
+    row[2] = accounting.formatMoney(record.result.sellAmt).toString(10);
+    row[3] = accounting.formatMoney(record.result.buyAmt).toString(10);
+    row[4] = accounting.formatMoney(record.result.gain).toString(10);
+  }
+  row[5] = record.result.remainQty.toString(10);
   row[6] = accounting.formatMoney(record.result.acb).toString(10);
   body.push(row);
-  body.push( ['', '', '', '', '', '', '']);
+  
+  body.push(['', '', '', '', '', '', '']);
   return data;
 }
 
