@@ -33,9 +33,8 @@ function createSummary(records, year, date, email, accountName) {
         }
       },
       // {text: '-------This is a sample data ! ------------', fontSize: 12},
-    ]
-    // ,
-    // footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
+    ] ,
+    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
   };
   let mydata = docDefinition.content[2].table.body;
   let total = 0;
@@ -69,17 +68,13 @@ function createSummary(records, year, date, email, accountName) {
       {text: `Capital Gains (or Losses) for Year Ended ${date} `, fontSize: 12},
       {text: `Portfolio: ${accountName}`, fontSize: 12},
       {text: ``, fontSize: 12},
-    ]
-    // ,
-    // footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
+    ],
+    footer: function(currentPage, pageCount) { return { text: `${currentPage.toString()}  of ${pageCount}`,   alignment: 'center'  }; },
   };
   let data = docDefinition.content;
   for (let index in records) {
     let record = records[index];
-    // if (record.result.sellAmt === 0) {
-    //   debug(`${record.symbol} no sell any shares.`);
-    //   continue;
-    // }
+
     data.push(createOneSecSymbolObj(record));
     data.push(createOneSecDetail(record));
     data.push(createOneSecSummary(record));
@@ -171,7 +166,7 @@ function createOneSecDetail(record){
     row[5] = accounting.formatMoney(txn.changedAcb).toString(10);
     row[6] = accounting.formatMoney(txn.newAcb).toString(10);
     row[7] = accounting.formatMoney(txn.newPrc).toString(10);
-    row[8] = accounting.formatMoney(txn.remainQty).toString(10);
+    row[8] = (txn.remainQty).toString(10);
     row[9] = (txn.action === 'buy') ? '-' : accounting.formatMoney(record.result.gain).toString(10);
     data.push(row);
   }
@@ -186,7 +181,7 @@ function createOneSecSummary(record) {
   let data = {
       layout: 'lightHorizontalLines',
       table: {
-        fontSize: 11,
+        fontSize: 9,
         headerRows: 1,
         widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
         body: [
@@ -205,7 +200,7 @@ function createOneSecSummary(record) {
   row[5] = accounting.formatMoney(record.result.remainQty).toString(10);
   row[6] = accounting.formatMoney(record.result.acb).toString(10);
   body.push(row);
-  body.push( ['', '', '', '', '', '', '', '']);
+  body.push( ['', '', '', '', '', '', '']);
   return data;
 }
 
