@@ -61,7 +61,7 @@
   // const log = debug('app:components/PDFDocument');
   import pdfjs from 'pdfjs-dist/webpack';
   import {$sendFile} from '../plugins/fetch.js';
-  
+
 
   export default {
     components: {
@@ -242,7 +242,6 @@
         this.reset();
         let file = files[0];
         $sendFile('single-file',file);
-        return;
         let fileReader = new FileReader();
         let self = this;
         fileReader.readAsArrayBuffer(file);

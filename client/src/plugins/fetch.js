@@ -53,8 +53,8 @@ export async function $sendFile(url, file) {
     headers: {
       //'Content-Type': 'multipart/form-data'
     },
+    credentials: 'include',
   }, options)
-  // credentials: 'include',
   const response = await fetch(`${baseUrl}${url}`, finalOptions)
   debug(`----2 sendFile response :${JSON.stringify(response)}`)
 }

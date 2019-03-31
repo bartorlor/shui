@@ -49,15 +49,15 @@ export default function (app) {
     }, 1500)
   })
   app.post('/single-file', async (req, res) => {
-    debug(` got single-file`);
+    debug(` got single-file ${req.user.username}`);
     var form = new formidable.IncomingForm();
     form.parse(req);
     form.on('fileBegin', function (name, file){
-        file.path = __dirname + '/uploads/' + file.name;
+        file.path = `${__dirname}/uploads/${req.user.username}_${file.name}`;
     });
 
     form.on('file', function (name, file){
-        console.log('Uploaded ' + file.name);
+        console.log('Uploaded ' + `${__dirname}/uploads/${req.user.username}_${file.name}`);
     });
     //res.sendFile(__dirname + '/index.html');
 
