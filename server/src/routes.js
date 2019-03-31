@@ -8,6 +8,7 @@ import {debug} from './utils/logging'
 import {ObjectId} from 'mongodb';
 import * as Report from './txnsResult'
 import * as Pdf from './pdf'
+var formidable = require('formidable');
 
 let db;
 const LimitTxns = 5000;
@@ -47,6 +48,21 @@ export default function (app) {
       res.json(result)
     }, 1500)
   })
+  app.post('/single-file', async (req, res) => {
+    debug(` got single-file`);
+    var form = new formidable.IncomingForm();
+    form.parse(req);
+    form.on('fileBegin', function (name, file){
+        file.path = __dirname + '/uploads/' + file.name;
+    });
+
+    form.on('file', function (name, file){
+        console.log('Uploaded ' + file.name);
+    });
+    //res.sendFile(__dirname + '/index.html');
+
+  })
+
 
   app.post('/signup', async (req, res) => {
     try {

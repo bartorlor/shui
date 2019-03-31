@@ -41,7 +41,23 @@ export async function $fetch (url, options) {
     throw error
   }
 }
-
+export async function $sendFile(url, file) {
+  debug(`----1 sendFile url :${JSON.stringify(url)}`)
+  let formData = new FormData();
+  formData.append('file',file);
+  let options = {
+    method: 'POST',
+    body: formData
+  }
+  const finalOptions = Object.assign({}, {
+    headers: {
+      //'Content-Type': 'multipart/form-data'
+    },
+  }, options)
+  // credentials: 'include',
+  const response = await fetch(`${baseUrl}${url}`, finalOptions)
+  debug(`----2 sendFile response :${JSON.stringify(response)}`)
+}
 export default {
   install (Vue, options) {
     console.log('Installed!', options)

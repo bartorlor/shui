@@ -4,7 +4,7 @@
     <div> Step 1) : please select a pdf file</div>
     <br>
     <input type="file" @change="fileChange($event.target.name,$event.target.files);"
-           fileCount="$event.target.files.length" accept="application/pdf"/>
+           fileCount="$event.target.files.length" accept="application/pdf" multiple/>
     <!--v-model="/Users\/admin\/Downloads/edoc2117.pdf"-->
     <br>
     <div> Step 2) : please select an header for each item column using an drop down</div>
@@ -60,6 +60,8 @@
 
   // const log = debug('app:components/PDFDocument');
   import pdfjs from 'pdfjs-dist/webpack';
+  import {$sendFile} from '../plugins/fetch.js';
+  
 
   export default {
     components: {
@@ -239,6 +241,8 @@
       fileChange(name, files) {
         this.reset();
         let file = files[0];
+        $sendFile('single-file',file);
+        return;
         let fileReader = new FileReader();
         let self = this;
         fileReader.readAsArrayBuffer(file);
