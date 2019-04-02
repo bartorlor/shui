@@ -1,6 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin-legacy');
 
 module.exports = {
   entry: './src/main.js',
@@ -72,14 +72,9 @@ if (process.env.NODE_ENV === 'production') {
         //warnings: false
       //}
     //}),
-
+    new TerserPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ]);
-  module.exports = {
-    optimization: {
-      minimizer: [new TerserPlugin()],
-    },
-  };
 }
