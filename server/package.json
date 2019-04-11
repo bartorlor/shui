@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "compile": "babel src --es2015 --out-dir static",
+    "build_server": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "start": "nodemon --inspect=3010 src/index.js --exec babel-node --presets es2015,stage-0"
   },
   "author": "",
@@ -17,6 +18,7 @@
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.3",
+    "cross-env": "^5.0.5",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "formidable": "^1.2.1",
