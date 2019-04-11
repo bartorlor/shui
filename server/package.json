@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "compile": "babel src --es2015 --out-dir static",
     "start": "nodemon --inspect=3010 src/index.js --exec babel-node --presets es2015,stage-0"
   },
   "author": "",

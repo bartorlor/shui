@@ -57,7 +57,7 @@ export function cacheFactory (options) {
       return item
     },
 
-    ...finalOptions,
+    // ...finalOptions,
   }
 
   return cache
