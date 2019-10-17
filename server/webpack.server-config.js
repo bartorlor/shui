@@ -18,7 +18,7 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015-node4'],
+          presets: ['react', '@babel/preset-env'],
         },
       },
       {
@@ -26,7 +26,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015-node4'],
+          presets: ['@babel/preset-env'],
         },
       },
     ],
