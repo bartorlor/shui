@@ -7,7 +7,8 @@
     "build": "rm -rf dist  & npm run build_server",
     "build_server": "cross-env NODE_ENV=production webpack --progress --hide-modules --config webpack.server-config.js ",
     "compile-server": "webpack --config webpack.server-config.js",
-    "start": "nodemon --inspect=3010 dist/server.bundle.js --exec babel-node --presets es2015,stage-0"
+    "start3": "nodemon --inspect=3010 dist/server.bundle.js --exec babel-node --presets es2015,stage-0",
+    "start": "nodemon -w dist dist/server.bundle.js"
   },
   "author": "",
   "license": "ISC",
@@ -43,7 +44,11 @@
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.14.0",
     "nodemon": "^1.10.0",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.15.0"
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-middleware": "^3.5.0",
+    "webpack-hot-middleware": "^2.24.3",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2"
   }
 }
