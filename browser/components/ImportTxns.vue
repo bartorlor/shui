@@ -53,7 +53,7 @@
   // PDF.js and <canvas>. Currently does not support,
   // rendering of selected pages (but could be easily
   // updated to do so).
-  import Dropdown from './Dropdown'
+  import Dropdown from './Dropdown.vue'
   import {isDebug, debug, info} from '../utils/logging'
   import ValidDate from '../utils/ValidDate'
   // import debug from 'debug';

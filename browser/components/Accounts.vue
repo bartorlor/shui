@@ -39,7 +39,7 @@
 
 <script>
   import {debug, info, error} from '../utils/logging'
-  import Account from '../../../server/src/account'
+  import Account from '../../server/account'
 
   export default {
     name: 'my',

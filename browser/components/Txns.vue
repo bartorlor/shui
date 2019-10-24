@@ -51,7 +51,7 @@
 
 <script>
   import {debug, info, error,isDebug} from '../utils/logging'
-  import TxnUtil from '../../../server/src/txn'
+  import TxnUtil from '../../server/txn'
   import DatePicker from 'vue2-datepicker'
 
   export default {

@@ -137,7 +137,7 @@
 <script>
   import {debug, info, error} from '../utils/logging'
   import * as accounting from '../utils/accounting.js'
-  import TxnUtil from '../../../server/src/txn'
+  import TxnUtil from '../../server/txn'
 
   export default {
     data() {
