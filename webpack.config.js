@@ -1,6 +1,7 @@
     const path = require('path');
     const nodeExternals = require('webpack-node-externals');
     const webpack = require('webpack');
+    const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
     const browserConfig = {
       mode: 'development',
@@ -13,25 +14,30 @@
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ],
-      },      {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          loaders: {
-          }
-          // other vue-loader options go here
-        }
+        exclude: /node_modules/
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
       },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ],
+      },
+     {
+      test: /\.styl(us)?$/,
+      use: [
+        'vue-style-loader',
+        'css-loader',
+        'stylus-loader'
+      ],
+     },
       {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
@@ -41,61 +47,20 @@
       }
     ]
   },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+  optimization: {
+    splitChunks: {
+      name: 'vendor',
+      chunks: 'all',
     },
-    extensions: ['*', '.js', '.vue', '.json']
   },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true,
-    overlay: true
-  },
-  performance: {
-    hints: false
-  },
-  devtool: '#eval-source-map'
-/*
-      module: {
-        rules: [
-          {
-            test: /\.vue?$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: [
-                  ['@babel/preset-env', {
-                    targets: {
-                      ie: '11',
-                      edge: '15',
-                      safari: '10',
-                      firefox: '50',
-                      chrome: '49',
-                    },
-                  }],
-                  'babel-preset-vue',
-                ],
-              },
-            },
-          },
-        ],
-      },
-      optimization: {
-        splitChunks: {
-          name: 'vendor',
-          chunks: 'all',
-        },
-      },
-      plugins: [
-        new webpack.DefinePlugin({
-          __isBrowser__: 'true',
-        }),
-      ],
-      devtool: 'source-map',
-        */
-    };
+  plugins: [
+    new webpack.DefinePlugin({
+      __isBrowser__: 'true',
+    }),
+    new VueLoaderPlugin()
+  ],
+  devtool: 'source-map',
+};
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
