@@ -27,11 +27,12 @@ const corsOptions = {
   origin: CLIENT_ORIGIN,
   credentials: true,
 }
+const app = express()
+app.use(express.static('public'));
 let db;
 MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
   db = connection.db('tax')
-  const app = express()
 
   app.use(cors(corsOptions))
 
@@ -57,8 +58,6 @@ MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(con
       app.use(devMiddleware(compiler));
       app.use(hotMiddleware(compiler));
     }
-  app.use(serveStatic(__dirname + "/../dist"));
-  //app.use(express.static(__dirname + "/../dist"));
   app.use(session({
     genid: () => uuid(),
     secret: SECRET,
