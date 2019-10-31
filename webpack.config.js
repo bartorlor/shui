@@ -2,6 +2,9 @@
     const nodeExternals = require('webpack-node-externals');
     const webpack = require('webpack');
     const VueLoaderPlugin = require('vue-loader/lib/plugin')
+    const HtmlPlugin           = require('html-webpack-plugin');
+    const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+    const isDev                = process.env.NODE_ENV === 'development';
 
     const browserConfig = {
       mode: 'development',
@@ -26,8 +29,8 @@
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
-          'css-loader'
+            'vue-style-loader',
+            'css-loader',
         ],
       },
      {
@@ -57,7 +60,8 @@
     new webpack.DefinePlugin({
       __isBrowser__: 'true',
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new HtmlPlugin({ template: 'index.html', chunksSortMode: 'dependency' })
   ],
   devtool: 'source-map',
 };
