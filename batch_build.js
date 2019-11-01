@@ -1,20 +1,19 @@
- require('shelljs/global');
-const sh = require('shelljs');
-sh.config.fatal = true;
-sh.config.verbose = true;
+require('shelljs/global');
+config.fatal = true;
+config.verbose = true;
 
 const curFolder = pwd();
 const prodFolder = `${curFolder}/production`;
 
-sh.rm('-rf', '/public/*','/dist/*');
-// sh.rm('-rf', '/node_modules/'');
-// sh.exec('npm install');
-// sh.exec('npm run compile');
-sh.cp('-R', 'public', `${prodFolder}/`);
-sh.cp('-R', 'dist', `${prodFolder}/`);
-sh.cp('-R', ['package.json','webpack.config.js','webpack.serverHMR.js'], `${prodFolder}/`);
-sh.cd(`${prodFolder}`);
-// sh.rm('-rf', '/node_modules/'');
-// sh.exec('npm install');
-sh.exec('npm run start');
-sh.cd('..');
+rm('-rf', 'public/*','dist/*');
+// rm('-rf', '/node_modules/'');
+// exec('npm install');
+exec('npm run compile');
+cp('-R', 'public', `${prodFolder}/`);
+cp('-R', 'dist', `${prodFolder}/`);
+cp('-R', ['package.json','webpack.config.js','webpack.serverHMR.js'], `${prodFolder}/`);
+cd(`${prodFolder}`);
+// rm('-rf', '/node_modules/'');
+// exec('npm install');
+exec('npm run start');
+cd('..');
