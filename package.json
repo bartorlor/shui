@@ -12,8 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.1",
     "@babel/polyfill": "~7.2",
+    "async": "^2.6.1",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
@@ -39,6 +39,7 @@
     "pdfjs-dist": "^2.0.489",
     "pdfmake": "^0.1.40",
     "serialize-javascript": "^1.6.1",
+    "shelljs": "^0.8.3",
     "source-map-support": "^0.5.9",
     "url-search-params": "^1.1.0",
     "uuid": "^3.0.1",
