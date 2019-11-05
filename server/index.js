@@ -27,12 +27,11 @@ const corsOptions = {
   origin: CLIENT_ORIGIN,
   credentials: true,
 }
-const app = express()
-app.use(express.static('public'));
 let db;
 MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
   db = connection.db('tax')
+  const app = express()
 
   app.use(cors(corsOptions))
 
@@ -41,6 +40,16 @@ MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(con
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
   log.debug(` >>> to2  ${__dirname}  /dist`)
+   app.use(session({
+    genid: () => uuid(),
+    secret: SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 3 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+    },
+  }))
     if (enableHMR && (process.env.NODE_ENV !== 'production')) {
       console.log('Adding dev middlware, enabling HMR');
       /* eslint "global-require": "off" */
@@ -58,16 +67,8 @@ MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(con
       app.use(devMiddleware(compiler));
       app.use(hotMiddleware(compiler));
     }
-  app.use(session({
-    genid: () => uuid(),
-    secret: SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 3 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-    },
-  }))
+  app.use(express.static('public'));
+
 
   app.use(passport.initialize())
   app.use(passport.session())
