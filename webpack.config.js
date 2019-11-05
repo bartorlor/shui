@@ -65,7 +65,7 @@
   ],
   devtool: 'source-map',
 };
-
+/*
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
@@ -81,12 +81,13 @@ if (process.env.NODE_ENV === 'production') {
         //warnings: false
       //}
     //}),
-    new TerserPlugin(),
+    // new TerserPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ]);
 }
+*/
     const serverConfig = {
       mode: 'development',
       entry: { server: ['./server/index.js'] },
