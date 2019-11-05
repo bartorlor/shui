@@ -9,6 +9,10 @@
     "dev-all": "rm dist/* && npm run watch-server-hmr & sleep 5 && npm start",
     "heroku-postbuild": "npm run compile && ln -sf ../node_modules/bootstrap/dist public/bootstrap"
   },
+  "engines": {
+    "node": "8.9.1",
+    "npm": "5.5.1"
+  }
   "author": "",
   "license": "ISC",
   "dependencies": {
