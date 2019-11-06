@@ -19,6 +19,7 @@ Vue.use(VuejsDialog)
 
 Vue.use(VueFetch, {
   baseUrl: 'http://localhost:3000/',
+  // baseUrl: 'http://localhost:3000/',
 })
 
 Vue.use(VueState, state)
