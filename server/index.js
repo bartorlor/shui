@@ -30,6 +30,7 @@ const corsOptions = {
 let db;
 
 const url = process.env.DB_URL || 'mongodb://localhost/tax';
+  console.log('connection: ', process.env.DB_URL)
 MongoClient.connect(url, {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
   db = connection.db('tax')
