@@ -28,7 +28,9 @@ const corsOptions = {
   credentials: true,
 }
 let db;
-MongoClient.connect('mongodb://localhost/tax', {useNewUrlParser: true}).then(connection => {
+
+const url = process.env.DB_URL || 'mongodb://localhost/tax';
+MongoClient.connect(url, {useNewUrlParser: true}).then(connection => {
   console.log('connection: ', connection)
   db = connection.db('tax')
   const app = express()
