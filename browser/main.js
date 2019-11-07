@@ -18,7 +18,7 @@ import 'vuejs-dialog/dist/vuejs-dialog.min.css' //
 Vue.use(VuejsDialog)
 
 Vue.use(VueFetch, {
-  baseUrl: 'http://localhost:3000/',
+  baseUrl: 'http://localhost:80/',
   // baseUrl: 'http://localhost:3000/',
 })
 
