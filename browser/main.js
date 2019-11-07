@@ -18,7 +18,7 @@ import 'vuejs-dialog/dist/vuejs-dialog.min.css' //
 Vue.use(VuejsDialog)
 
 Vue.use(VueFetch, {
-  baseUrl: 'https://quiet-castle-17838.herokuapp.com:80/',
+  baseUrl: 'http://acb2019.herokuapp.com/',
   // baseUrl: 'http://localhost:3000/',
 })
 
