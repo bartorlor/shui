@@ -1,5 +1,5 @@
 <template>
-  <div class="app-layout">
+  <div id='app' class="app-layout">
     <header class="header">
       <!--<div><img class="img" src="../assets/logo.svg"/></div>-->
       <div>ACB shop</div>

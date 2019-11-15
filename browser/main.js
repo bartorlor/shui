@@ -18,8 +18,8 @@ import 'vuejs-dialog/dist/vuejs-dialog.min.css' //
 Vue.use(VuejsDialog)
 
 Vue.use(VueFetch, {
-  baseUrl: 'http://acb2019.herokuapp.com/',
-  // baseUrl: 'http://localhost:3000/',
+  // baseUrl: 'http://acb2019.herokuapp.com/',
+  baseUrl: 'http://localhost:3000/',
 })
 
 Vue.use(VueState, state)
