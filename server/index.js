@@ -12,8 +12,8 @@ var serveStatic = require('serve-static');
 import './auth'
 import {MongoClient} from 'mongodb';
 import * as log from './utils/logging.js';
-
 import {default as routes, setDb} from './routes'
+import Nav from '../browser/components/NavMenu.vue'
 
 const PORT = process.env.PORT || 3000
 const SECRET = process.env.SECRET || 'TR7_9cDZ5Re-@lT3Z1|58F'
@@ -30,9 +30,9 @@ const corsOptions = {
 let db;
 
 const url = process.env.DB_URL || 'mongodb://localhost/tax';
-  console.log('connection: ', process.env.DB_URL)
+  console.log('url: ', url)
+  console.log('port: ', PORT)
 MongoClient.connect(url, {useNewUrlParser: true}).then(connection => {
-  console.log('connection: ', connection)
   db = connection.db('tax')
   const app = express()
 
