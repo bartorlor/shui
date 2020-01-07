@@ -16,8 +16,8 @@ console.log('22');
     page.on('console', msg => console.log('PAGE LOG:', msg.text()));
     page.setCacheEnabled([false]);
     await page.setViewport({
-      width: 640,
-      height: 480,
+      width: 1920,
+      height: 1280,
       deviceScaleFactor: 1,
     });
     console.log(`Msg 1 ${page}`);
