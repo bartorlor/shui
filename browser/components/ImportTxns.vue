@@ -251,9 +251,12 @@
         };
       }
       ,
-      fetchPDF() {
+      async fetchPDF() {
         // debug(`url : ${this.myurl}`);
         pdfjs.getDocument(this.fileBuffer).then(pdf => (this.pdf = pdf)).then(() => debug('pdf fetched'))
+        /* const pdf = await pdfjs.getDocument(file).promise; //<-- simply change it here */
+        /* this.pdf = pdf; */
+        debug('pdf fetched');
       }
       ,
       isNextLine(item) {
@@ -341,9 +344,6 @@
         })
       }
       ,
-      // created() {
-      //   // this.fetchPDF();
-      // },
     },
 
   }
