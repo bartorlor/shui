@@ -12,19 +12,28 @@ export function init_logging(level) {
     _log_level = level;
   }
 
+  console.log(`log : ${level} `)
   debug = info = warn = error = () => {};
 
   if (typeof console !== "undefined") {
     /* eslint-disable no-console, no-fallthrough */
     switch (level) {
       case 'debug':
-        debug = console.debug.bind(console);
+        debug = (...args) => {
+          console.log.apply(this, args)
+        }
       case 'info':
-        info  = console.info.bind(console);
+        info  = (...args) => {
+          console.log.apply(this, args)
+        }
       case 'warn':
-        warn  = console.warn.bind(console);
+        warn  = (...args) => {
+          console.log.apply(this, args)
+        }
       case 'error':
-        error = console.error.bind(console);
+        error = (...args) => {
+          console.log.apply(this, args)
+        }
       case 'none':
         break;
       default:
