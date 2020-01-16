@@ -49,7 +49,7 @@ export default function (app) {
     }, 1500)
   })
   app.post('/single-file', async (req, res) => {
-    debug(` got single-file ${req.user.username}`);
+    debug(` got single-file ${req.user.username} folder: ${__dirname}`);
     var form = new formidable.IncomingForm();
     form.parse(req);
     form.on('fileBegin', function (name, file){

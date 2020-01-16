@@ -80,7 +80,9 @@ MongoClient.connect(url, {useNewUrlParser: true}).then(connection => {
   setDb(db)
   app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`)
+    console.log(` current root folder: ${path.resolve(__dirname)}`);
     console.log(` ${process.env.NODE_ENV}`)
+console.log(`pwd : process.cwd()`) 
   })
 }).catch(error => {
   console.log('ERROR:', error);
