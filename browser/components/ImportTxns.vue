@@ -3,7 +3,7 @@
 
     <div> Step 1) : please select a pdf file</div>
     <br>
-    <input type="file" @change="fileChange($event.target.name,$event.target.files);"
+    <input type="file" name='upload-file-button' @change="fileChange($event.target.name,$event.target.files);"
            fileCount="$event.target.files.length" accept="application/pdf" multiple/>
     <!--v-model="/Users\/admin\/Downloads/edoc2117.pdf"-->
     <br>
@@ -11,7 +11,7 @@
     <br>
     <div> Step 3) : please click import button to store the data to your portfolio .</div>
     <br>
-    <button @click="importData" :disabled="table.rows.length==0">Import Data</button>
+    <button name='import' @click="importData" :disabled="table.rows.length==0">Import Data</button>
     <br>
 
     <div class="table-line-header flex-container">
@@ -241,7 +241,7 @@
       fileChange(name, files) {
         this.reset();
         let file = files[0];
-        $sendFile('single-file',file);
+        // $sendFile('single-file',file);
         let fileReader = new FileReader();
         let self = this;
         fileReader.readAsArrayBuffer(file);
