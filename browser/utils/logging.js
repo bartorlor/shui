@@ -14,14 +14,13 @@ export function isDebug(){
   return true;
 }
 function debug(msg){
-  if(isDebug()){
+  if(isDebug()) {
     if(isInIgnores(ignores, msg)){
       return;
     }
-    console.debug(`${getCurMinSec()}: ${msg} }`);
+    console.debug(`${getCurMinSec()}: ${msg} `);
   }
 }
-let debug = () => {};
 let info = () => {};
 let warn = () => {};
 let error = () => {};
@@ -33,13 +32,12 @@ export function init_logging(level) {
     _log_level = level;
   }
   
-  debug = info = warn = error = () => {};
+  info = warn = error = () => {};
   
   if (typeof window.console !== "undefined") {
     /* eslint-disable no-console, no-fallthrough */
     switch (level) {
       case 'debug':
-        debug = console.debug.bind(window.console);
       case 'info':
         info  = console.info.bind(window.console);
       case 'warn':

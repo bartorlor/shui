@@ -23,18 +23,19 @@ export async function $fetch (url, options) {
     }
     return data
   } else if (response.status === 403) {
-    // If the session is no longer valid
-    // We logout
+    // If the session is no longer valid // We logout
     state.user = null
 
-    // If the route is private
-    // We go to the login screen
+    // If the route is private // We go to the login screen
     if (router.currentRoute.matched.some(r => r.meta.private)) {
       router.replace({ name: 'login', params: {
         wantedRoute: router.currentRoute.fullPath,
       }})
     }
-  } else {
+  } else if (response.status === 402) {
+    const message = await response.text()
+    debug(`402 err ${JSON.stringify(message)}`)
+  } else { //handle 500 error
     const message = await response.text()
     const error = new Error(message)
     error.response = response

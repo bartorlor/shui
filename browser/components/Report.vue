@@ -225,11 +225,16 @@
           query.notes = this.form.notes;
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
-          this.records = await this.$fetch(`report?${search}`);
-          this.records.forEach((item) => {
-            // debug(`txn : ${TxnUtil.format(item)}`);
-            // debug(item.stlmtDate);
-          })
+          let ret = await this.$fetch(`report?${search}`);
+          if(ret.status === 'ok'){
+            this.records = ret.records;
+            this.records.forEach((item) => {
+              // debug(`txn : ${TxnUtil.format(item)}`);
+              // debug(item.stlmtDate);
+            })
+          } else {
+            debug(`finaol at browser ... ${ret.message}`);
+          }
         } catch (e) {
           error(e)
         }

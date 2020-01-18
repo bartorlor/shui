@@ -70,8 +70,8 @@ function getSymbolsOfQtyNotMatch(objs,preRecords,accountId) {
       }
       if (buy < Math.abs(sell)) {
         symbols.push(txn.symbol);
-        let str = `${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`; 
-        // error(str)
+        let str = `--------- ${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`; 
+        debug(str)
         Err.append(str)
         break;
       }
@@ -103,6 +103,7 @@ async function main(accountId, db,dateStr) {
   let preRecords = null;
   preRecords = procTxns(txns, accountId, preRecords);
   if(Err.exist()) {
+    debug(`------- 2error happends`);
     return null;
   }
   let start = moment(dateStr, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
@@ -118,6 +119,7 @@ function procTxns(orgTxns, accountId, preRecords) {
   let objs = getTxnGroupByCompany(orgTxns);
   let symbols = getSymbolsOfQtyNotMatch(objs,preRecords,accountId);
   if(Err.exist()) {
+    debug(`------- 1error happends`);
     return null;
   }
   objs.forEach(item => {

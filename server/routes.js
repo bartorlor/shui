@@ -250,13 +250,16 @@ export default function (app) {
       if(Err.exist()) {
         let err = JSON.stringify(Err.get());
         debug(err);
-        res.status(500).json({message: `Data Error: ${err}`});
+        // res.status(402).json({message: `Data Error: ${err}`});
+        let ret = {status: 'error', messge: err};
+        res.json({metadata:1, records: ret});
         return ;
       }
       let accountName = await Report.getAccountName(db,req.query.accountId); //wr to be.. name
         Pdf.createSummary(objs,req.query.year,date,req.user.username,accountName);
         Pdf.createDetail(objs,req.query.year,date,req.user.username,accountName);
-      res.json({metadata:objs.length, records: objs});
+        let ret = {status: 'ok', records: objs};
+        res.json({metadata:objs.length, records: ret});
       }
       catch(error) {
       console.log(error);
