@@ -3,6 +3,7 @@ import * as accounting from './utils/accounting'
 import * as Txn from './txn'
 import moment from 'moment'
 import {ObjectId} from 'mongodb';
+import * as Err from './errHandler.js'
 
 function calcTxn(result, txn) {
   txn.comm = 0;
@@ -69,7 +70,9 @@ function getSymbolsOfQtyNotMatch(objs,preRecords,accountId) {
       }
       if (buy < Math.abs(sell)) {
         symbols.push(txn.symbol);
-        error(`${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`)
+        let str = `${txn.symbol} is ${txn.action} ${txn.qty} which selling more than own on ${txn.stlmtDate}`; 
+        // error(str)
+        Err.append(str)
         break;
       }
     }
@@ -99,7 +102,9 @@ async function main(accountId, db,dateStr) {
   let txns = await getTxns(db, preStart, preEnd, accountId);
   let preRecords = null;
   preRecords = procTxns(txns, accountId, preRecords);
-
+  if(Err.exist()) {
+    return null;
+  }
   let start = moment(dateStr, fmt).subtract(12, 'months').add(1, 'day').format(fmt);
   let end = dateStr;
   txns = await getTxns(db, start, end, accountId);
@@ -112,6 +117,9 @@ async function main(accountId, db,dateStr) {
 function procTxns(orgTxns, accountId, preRecords) {
   let objs = getTxnGroupByCompany(orgTxns);
   let symbols = getSymbolsOfQtyNotMatch(objs,preRecords,accountId);
+  if(Err.exist()) {
+    return null;
+  }
   objs.forEach(item => {
     if (!symbols.includes(item.symbol)) {
       let result = getInitResult(item.symbol, preRecords, accountId);

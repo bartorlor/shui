@@ -36,8 +36,7 @@
         <span>Notes(optional)</span>
         <textarea v-model="form.notes" placeholder="add notes"></textarea>
       </div>
-
-      <button @click="createReport()">Create Report</button>
+      <button name='createReport' @click="createReport()">Create Report</button>
       <br>
       <br>
       <br>

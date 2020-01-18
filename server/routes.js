@@ -8,6 +8,7 @@ import {debug} from './utils/logging'
 import {ObjectId} from 'mongodb';
 import * as Report from './txnsResult'
 import * as Pdf from './pdf'
+import * as Err from './errHandler.js'
 var formidable = require('formidable');
 
 let db;
@@ -246,6 +247,12 @@ export default function (app) {
     try{
       const date = `${req.query.year}-${req.query.month}-${req.query.day}`
       const objs = await Report.main(req.query.accountId,db,date);
+      if(Err.exist()) {
+        let err = JSON.stringify(Err.get());
+        debug(err);
+        res.status(500).json({message: `Data Error: ${err}`});
+        return ;
+      }
       let accountName = await Report.getAccountName(db,req.query.accountId); //wr to be.. name
         Pdf.createSummary(objs,req.query.year,date,req.user.username,accountName);
         Pdf.createDetail(objs,req.query.year,date,req.user.username,accountName);

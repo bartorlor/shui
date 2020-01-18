@@ -1,5 +1,26 @@
 let _log_level = 'debug';
+let ignores = ['fetch data', 'tsla', 'amzn'];
 
+export function isInIgnores(arr, msg) {
+  return arr.some( x=> msg.toLowerCase().includes(x));
+}
+export function getCurMinSec() {
+  const min = new Date().getMinutes();
+  const sec = new Date().getSeconds();
+  const msec = new Date().getMilliseconds();
+  return `--${min}:${sec}:${msec}`;
+}
+export function isDebug(){
+  return true;
+}
+function debug(msg){
+  if(isDebug()){
+    if(isInIgnores(ignores, msg)){
+      return;
+    }
+    console.debug(`${getCurMinSec()}: ${msg} }`);
+  }
+}
 let debug = () => {};
 let info = () => {};
 let warn = () => {};
@@ -38,9 +59,6 @@ export function get_logging() {
   return _log_level;
 }
 
-export function isDebug(){
-  return true;
-}
 
 export { debug, info, warn, error };
 
