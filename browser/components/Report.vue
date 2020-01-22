@@ -41,6 +41,14 @@
       <br>
       <br>
     </div>
+
+    <div class="empty" v-if="errors.length > 0">
+        <div class="table-line flex-container" v-for="(row, index) in errors" :key="index">
+          <span class="cell cell2">{{ row}}</span>
+        </div>
+    </div>
+
+
     <div class="empty" v-if="records.length === 0">
       You don't have any record yet.
     </div>
@@ -189,6 +197,7 @@
 
           }
         ],
+        errors: [],
       }
     },
     computed: {
@@ -212,6 +221,7 @@
         return accounting.formatMoney(m)
       },
       createReport() {
+        this.errors = [];
         this.loadData();
       },
       async loadData() {
@@ -226,14 +236,16 @@
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
           let ret = await this.$fetch(`report?${search}`);
+          debug(`fetch ret:${JSON.stringify(ret)}`)
           if(ret.status === 'ok'){
             this.records = ret.records;
             this.records.forEach((item) => {
               // debug(`txn : ${TxnUtil.format(item)}`);
               // debug(item.stlmtDate);
             })
-          } else {
-            debug(`finaol at browser ... ${ret.message}`);
+          } else if(ret.status === 'error'){
+            /* debug(`finaol at browser ... ${ret.errors}`); */
+            this.errors = ret.errors;
           }
         } catch (e) {
           error(e)
@@ -249,7 +261,7 @@
         if (newValue.length > 0) {
           newValue.forEach(item => {
             if (item.symbol === 'AMZN') {
-              info('amzn:', JSON.stringify(item));
+              // info('amzn:', JSON.stringify(item));
             }
           })
         }

@@ -38,6 +38,7 @@ export function init_logging(level) {
     /* eslint-disable no-console, no-fallthrough */
     switch (level) {
       case 'debug':
+        debug= console.debug.bind(window.console);
       case 'info':
         info  = console.info.bind(window.console);
       case 'warn':

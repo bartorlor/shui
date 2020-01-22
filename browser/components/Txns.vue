@@ -188,7 +188,7 @@
         if (newValue.length > 0) {
           newValue.forEach(item => {
             if (item.symbol === 'AMZN') {
-              info('amzn:', JSON.stringify(item));
+              // info('amzn:', JSON.stringify(item));
             }
           })
         }

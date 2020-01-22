@@ -248,10 +248,10 @@ export default function (app) {
       const date = `${req.query.year}-${req.query.month}-${req.query.day}`
       const objs = await Report.main(req.query.accountId,db,date);
       if(Err.exist()) {
-        let err = JSON.stringify(Err.get());
-        debug(err);
+        // let err = JSON.stringify(Err.get());
+        // debug(err);
         // res.status(402).json({message: `Data Error: ${err}`});
-        let ret = {status: 'error', messge: err};
+        let ret = {status: 'error', errors: Err.get()};
         res.json({metadata:1, records: ret});
         return ;
       }

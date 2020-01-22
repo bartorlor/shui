@@ -11,6 +11,9 @@ export function clear(obj){
   return errs.length = 0;
 } 
 export function get(obj){
+  return errs;
+}
+export function toString(obj){
   let str = '';
   errs.forEach( x =>{ str = `${str}-${JSON.stringify(x)} ` } );
   debug(str);
