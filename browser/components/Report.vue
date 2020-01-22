@@ -42,15 +42,17 @@
       <br>
     </div>
 
-    <div class="empty" v-if="errors.length > 0">
-        <div class="table-line flex-container" v-for="(row, index) in errors" :key="index">
-          <span class="cell cell2">{{ row}}</span>
-        </div>
-    </div>
 
 
     <div class="empty" v-if="records.length === 0">
-      You don't have any record yet.
+      <div v-if="errors.length > 0">
+          <div  v-for="(row, index) in errors" :key="index">
+            <span >{{ row}}</span>
+          </div>
+      </div>
+      <div v-else>
+        You don't have any record yet.
+      </div>
     </div>
 
     <section v-else class="txns-list">
@@ -173,31 +175,31 @@
           ],
           days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
         },
-
-        records: [
-          {
-            symbol: 'vips',
-            txns: [
-              {
-                qty: 100,
-                symbol: 'fake vips',
-                stlmtDate: '02/14/2016',
-                years: '2015,2016',
-                disposition: 1548.95,
-                acb: 1435.01,
-                expense: 1.00,
-                gain: 22.93,
-              },
-            ],
-            result: {
-              acb: 0,
-              qty: 1,
-              gain: 100,
-            }
-
-          }
-        ],
+        records: [],
         errors: [],
+        /* records: [ */
+          /* { */
+            /* symbol: 'vips', */
+            /* txns: [ */
+              /* { */
+                /* qty: 100, */
+                /* symbol: 'fake vips', */
+                /* stlmtDate: '02/14/2016', */
+                /* years: '2015,2016', */
+                /* disposition: 1548.95, */
+                /* acb: 1435.01, */
+                /* expense: 1.00, */
+                /* gain: 22.93, */
+              /* }, */
+            /* ], */
+            /* result: { */
+              /* acb: 0, */
+              /* qty: 1, */
+              /* gain: 100, */
+            /* } */
+/*  */
+          /* } */
+        /* ], */
       }
     },
     computed: {
