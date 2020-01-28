@@ -253,6 +253,7 @@ export default function (app) {
         // res.status(402).json({message: `Data Error: ${err}`});
         let ret = {status: 'error', errors: Err.get()};
         res.json({metadata:1, records: ret});
+        Err.clear();
         return ;
       }
       let accountName = await Report.getAccountName(db,req.query.accountId); //wr to be.. name

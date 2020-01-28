@@ -238,7 +238,8 @@
           const search = Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
           // return fetch(`${urlBase || ''}/api/issues?${search}`)
           let ret = await this.$fetch(`report?${search}`);
-          debug(`fetch ret:${JSON.stringify(ret)}`)
+          // debug(`fetch ret:${JSON.stringify(ret)}`)
+          debug(`fetch ret:${ret.status}`)
           if(ret.status === 'ok'){
             this.records = ret.records;
             this.records.forEach((item) => {
